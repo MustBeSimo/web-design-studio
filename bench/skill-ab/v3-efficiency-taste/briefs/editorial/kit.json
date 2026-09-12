@@ -1,0 +1,9 @@
+{
+  "files": [
+    { "source": "assets/night-depot.svg", "target": "assets/night-depot.svg", "role": "opening photograph treatment" },
+    { "source": "assets/night-punch.svg", "target": "assets/night-punch.svg", "role": "signature portrait treatment" },
+    { "source": "assets/night-terminus.svg", "target": "assets/night-terminus.svg", "role": "closing photograph treatment" },
+    { "source": "assets/route-86.svg", "target": "assets/route-86.svg", "role": "route line overlay" }
+  ],
+  "requiredUsage": ["night-depot.svg", "night-punch.svg", "night-terminus.svg", "route-86.svg"]
+}

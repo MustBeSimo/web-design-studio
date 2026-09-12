@@ -1,0 +1,9 @@
+{
+  "files": [
+    { "source": "assets/fold-closed.svg", "target": "assets/fold-closed.svg", "role": "closed product render" },
+    { "source": "assets/fold-open.svg", "target": "assets/fold-open.svg", "role": "open product render" },
+    { "source": "assets/fold-lit.svg", "target": "assets/fold-lit.svg", "role": "lit product render" },
+    { "source": "assets/fold-detail.svg", "target": "assets/fold-detail.svg", "role": "hinge detail drawing" }
+  ],
+  "requiredUsage": ["fold-closed.svg", "fold-open.svg", "fold-lit.svg", "fold-detail.svg"]
+}

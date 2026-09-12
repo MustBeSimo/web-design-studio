@@ -1,0 +1,75 @@
+{
+  "protocolVersion": "3.0.0",
+  "status": "draft-not-frozen",
+  "question": "Does the candidate skill improve functional completion and author-blinded visual preference over both a competent expert prompt and the frozen current skill without adding more than 10% median cost or elapsed time?",
+  "conditions": [
+    {
+      "id": "A",
+      "label": "expert-prompt",
+      "prompt": "prompts/expert.txt"
+    },
+    {
+      "id": "B",
+      "label": "current-skill",
+      "prompt": "prompts/skill.txt",
+      "skillRef": "dd2ecfb"
+    },
+    {
+      "id": "C",
+      "label": "candidate-skill",
+      "prompt": "prompts/skill.txt",
+      "skillRef": "candidate"
+    }
+  ],
+  "briefs": [
+    {
+      "id": "editorial",
+      "category": "editorial-scroll-story",
+      "brief": "briefs/editorial/brief.md",
+      "copy": "briefs/editorial/copy.json",
+      "kit": "briefs/editorial/kit.json",
+      "captureFractions": [0, 0.34, 0.64, 1]
+    },
+    {
+      "id": "product",
+      "category": "product-reveal",
+      "brief": "briefs/product/brief.md",
+      "copy": "briefs/product/copy.json",
+      "kit": "briefs/product/kit.json",
+      "captureFractions": [0, 0.3, 0.62, 1]
+    },
+    {
+      "id": "three-d",
+      "category": "real-3d-inspection-camera-scene",
+      "brief": "briefs/three-d/brief.md",
+      "copy": "briefs/three-d/copy.json",
+      "kit": "briefs/three-d/kit.json",
+      "captureFractions": [0, 0.28, 0.61, 1]
+    }
+  ],
+  "attemptsPerCondition": 2,
+  "runner": {
+    "executable": "claude",
+    "maxTurns": 60,
+    "maxBudgetUsd": 2,
+    "timeoutSeconds": 1200,
+      "allowedTools": "Read,Write,Edit,Glob,Grep",
+      "disallowedTools": "Bash,WebFetch,WebSearch,Skill,Agent,Task,NotebookEdit"
+  },
+  "budget": {
+    "overallUsd": 50,
+    "developmentUsd": 12,
+    "evaluationUsd": 36,
+    "reserveUsd": 2
+  },
+  "acceptance": {
+    "candidateFunctionalCompletion": 1,
+    "candidatePreferenceWinsOfSix": 5,
+    "candidatePreferenceWinEachCategory": true,
+    "medianCostRatioCandidateToExpertMax": 1.1,
+    "medianTimeRatioCandidateToExpertMax": 1.1,
+    "categoryMedianRatioMax": 1.25,
+    "noFunctionalRegressionVsCurrent": true,
+    "noInventedFactualClaims": true
+  }
+}

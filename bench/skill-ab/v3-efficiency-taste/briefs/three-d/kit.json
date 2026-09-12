@@ -1,0 +1,13 @@
+{
+  "files": [
+    { "base64Source": "assets/axis-24.glb.base64", "sha256": "832801535b08fe2d8d17a277e71ac35257dacac197a8e4404e2f3576f6c81885", "target": "assets/axis-24.glb", "role": "required live model" },
+    { "source": "assets/axis-poster.svg", "target": "assets/axis-poster.svg", "role": "failure and no-JavaScript poster" },
+    { "source": "assets/axis-viewer.js", "target": "assets/axis-viewer.js", "role": "dependency-free local GLB renderer" }
+  ],
+  "requiredUsage": ["axis-24.glb", "axis-poster.svg", "axis-viewer.js"],
+  "model": {
+    "path": "assets/axis-24.glb",
+    "requiredExtensions": [],
+    "renderer": "assets/axis-viewer.js"
+  }
+}

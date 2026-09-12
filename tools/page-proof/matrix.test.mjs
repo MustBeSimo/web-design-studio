@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { runMatrix } from './matrix.mjs';
+import { profiles, runMatrix } from './matrix.mjs';
 
 function run(t, failingProfile, status) {
   const out = mkdtempSync(join(tmpdir(), 'cinematic-matrix-test-'));
@@ -27,6 +27,22 @@ test('matrix actually requests touch, reduced-motion and disabled-JS browser con
   assert.ok(calls.some(a => a.includes('--mobile') && a.includes('--reduced-motion')));
   assert.ok(calls.some(a => a.includes('--no-js')));
   assert.ok(calls.every(a => a.includes('--check-layout')));
+});
+test('focused runs execute only the requested browser profiles', t => {
+  const selectedProfiles = profiles.filter(profile => ['desktop', 'mobile'].includes(profile.name));
+  const out = mkdtempSync(join(tmpdir(), 'cinematic-focused-matrix-test-'));
+  t.after(() => rmSync(out, { recursive: true, force: true }));
+  const calls = [];
+  const report = runMatrix('x.html', { out, selectedProfiles, execute: (cmd, args) => {
+    calls.push(args);
+    const dir = args[args.indexOf('--out') + 1];
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, 'proof.json'), JSON.stringify({ verdict: 'CLEAN', shots: ['shot.png'] }));
+    return { status: 0 };
+  } });
+  assert.equal(report.ok, true);
+  assert.equal(calls.length, 2);
+  assert.ok(calls.some(args => args.includes('--mobile')));
 });
 test('one broken mobile profile fails the whole matrix', t => {
   assert.equal(run(t, 'mobile', 1).report.exitCode, 1);

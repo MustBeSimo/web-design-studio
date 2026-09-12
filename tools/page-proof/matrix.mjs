@@ -12,12 +12,12 @@ export const profiles = [
   { name: 'no-js', flags: ['--viewport', '1440x900', '--no-js'] },
 ];
 
-export function runMatrix(target, { out = '.page-proof/matrix', extra = [], execute = spawnSync } = {}) {
+export function runMatrix(target, { out = '.page-proof/matrix', extra = [], selectedProfiles = profiles, execute = spawnSync } = {}) {
   out = resolve(out);
   mkdirSync(out, { recursive: true });
   const proof = join(dirname(fileURLToPath(import.meta.url)), 'proof.mjs');
   const results = [];
-  for (const profile of profiles) {
+  for (const profile of selectedProfiles) {
     const dir = join(out, profile.name);
     const r = execute(process.execPath, [proof, target, '--out', dir, '--check-layout', ...profile.flags, ...extra],
       { encoding: 'utf8', timeout: 240000, maxBuffer: 4 * 1024 * 1024 });
@@ -44,15 +44,25 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   try {
     const args = process.argv.slice(2);
     const target = args.shift();
-    if (!target || target.startsWith('--')) throw new Error('Usage: matrix.mjs <url-or-file> [--out dir] [--browser path] [--wait ms] [--shots fractions]');
+    if (!target || target.startsWith('--')) throw new Error('Usage: matrix.mjs <url-or-file> [--out dir] [--browser path] [--profiles names] [--wait ms] [--shots fractions]');
     let out;
     const extra = [];
+    let selectedProfiles = profiles;
     for (let i = 0; i < args.length; i++) {
-      if (!['--out', '--browser', '--wait', '--shots'].includes(args[i]) || !args[i + 1] || args[i + 1].startsWith('--')) throw new Error('Invalid option: ' + args[i]);
+      if (!['--out', '--browser', '--profiles', '--wait', '--shots'].includes(args[i]) || !args[i + 1] || args[i + 1].startsWith('--')) throw new Error('Invalid option: ' + args[i]);
       if (args[i] === '--out') out = args[++i];
+      else if (args[i] === '--profiles') {
+        const names = [...new Set(args[++i].split(',').map(value => value.trim()).filter(Boolean))];
+        selectedProfiles = names.map(name => {
+          const profile = profiles.find(candidate => candidate.name === name);
+          if (!profile) throw new Error('Unknown profile: ' + name);
+          return profile;
+        });
+        if (!selectedProfiles.length) throw new Error('--profiles requires at least one profile');
+      }
       else extra.push(args[i], args[++i]);
     }
-    const report = runMatrix(target, { out, extra });
+    const report = runMatrix(target, { out, extra, selectedProfiles });
     for (const p of report.profiles) console.log(`${p.ok ? 'PASS' : p.incomplete ? 'SKIP' : 'FAIL'} ${p.name}${p.report ? ': ' + p.report : ''}`);
     console.log('page-proof matrix: ' + report.verdict);
     process.exitCode = report.exitCode;

@@ -67,7 +67,7 @@
     "test:runtime:assets": "node --test runtime/assets.browser.test.mjs",
     "test:runtime:field": "node --test runtime/field.browser.test.mjs examples/v3-flagship/interaction.test.mjs",
     "test:presentation": "node --test runtime/presentation.browser.test.mjs",
-    "test:workflow": "node --test tools/verify/verify.test.mjs tools/tastehq/tastehq.test.mjs tools/page-proof/matrix.test.mjs tools/page-proof/request-failure.test.mjs tools/check-package.test.mjs tools/choreography.test.mjs tools/cinematic-doctor/stylesheets.test.mjs",
+    "test:workflow": "node --test tools/verify/verify.test.mjs tools/verify/preflight-3d.test.mjs tools/tastehq/tastehq.test.mjs tools/page-proof/matrix.test.mjs tools/page-proof/request-failure.test.mjs tools/check-package.test.mjs tools/choreography.test.mjs tools/cinematic-doctor/stylesheets.test.mjs",
     "test:home": "node --test tools/page-proof/home.browser.test.mjs",
     "proof:matrix": "node tools/page-proof/matrix.mjs",
     "tastehq": "node tools/tastehq/cli.mjs",

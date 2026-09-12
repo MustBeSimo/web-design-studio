@@ -1,0 +1,14 @@
+{
+  "required": [
+    "Night Lines",
+    "Three conductors, one last circuit",
+    "At 11:42 pm, Route 86 turns east and the city changes register.",
+    "Mara checks the brass punch by touch. She has worked the late shift for eleven winters.",
+    "At the depot, every ticket is counted before the lights go out.",
+    "The final tram reaches Preston at 1:08 am.",
+    "Photographs by Inez Park",
+    "Words by Rowan Bell",
+    "Read the field notes"
+  ],
+  "allowedUi": ["Menu", "Close", "Previous", "Next", "Skip to story", "Pause motion", "Play motion"]
+}

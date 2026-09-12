@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="t d">
+  <title id="t">Tram waiting in the depot at night</title><desc id="d">A graphic supplied editorial image in indigo, amber and cream.</desc>
+  <defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#111735"/><stop offset="1" stop-color="#29305a"/></linearGradient><filter id="grain"><feTurbulence baseFrequency=".8" numOctaves="2" seed="8"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 .12 0"/></filter></defs>
+  <rect width="1600" height="1000" fill="url(#sky)"/><path d="M0 730 1600 590v410H0z" fill="#080b19"/><path d="m180 760 1180-104M260 850l1120-110" stroke="#f5a623" stroke-width="8" opacity=".65"/>
+  <g transform="translate(470 190)"><path d="M90 90h650l95 580H0z" fill="#e9e2cf" stroke="#12162b" stroke-width="16"/><path d="M175 165h195v230H150zm270 0h195l35 230H445z" fill="#1a2145"/><rect x="135" y="450" width="570" height="105" rx="8" fill="#b74735"/><circle cx="170" cy="650" r="54" fill="#0a0d18"/><circle cx="670" cy="650" r="54" fill="#0a0d18"/><circle cx="92" cy="580" r="28" fill="#ffd57a"/><circle cx="738" cy="580" r="28" fill="#ffd57a"/></g>
+  <rect width="1600" height="1000" filter="url(#grain)" opacity=".5"/>
+</svg>

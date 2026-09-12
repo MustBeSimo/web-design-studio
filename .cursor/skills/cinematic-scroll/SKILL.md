@@ -1,6 +1,6 @@
 ---
 name: cinematic-scroll
-description: Design and build cinematic websites, 3D websites, interactive portfolios and product landing pages with scroll-driven storytelling, parallax, text animation and optional Three.js/WebGL scenes. Use for new experiences, motion improvements, scroll audits and storyboards in standalone HTML or an existing app. Includes responsive, reduced-motion and static fallbacks; not for ordinary dashboards or unrelated animation.
+description: Design and build cinematic websites, interactive portfolios, product stories, and real-time 3D experiences with subject-specific art direction and scroll choreography. Use for new builds, redesigns, motion improvements, scroll audits, or storyboards in standalone HTML and existing apps; includes responsive, reduced-motion, and static fallbacks. Not for ordinary dashboards or unrelated animation.
 ---
 
 # cinematic-scroll (pointer)

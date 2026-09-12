@@ -4,6 +4,10 @@ Use a real-time renderer for requested 3D, camera journeys, lighting, material
 response or direct manipulation. Match the scene to the brief and optimize its
 cost while preserving the defining interaction.
 
+Before building, name focal geometry, material and light, camera verb, type
+hierarchy, motifs, and the hardest transition frame. Borrow renderer lifecycle and
+camera structure; derive shape, palette, surfaces, and composition from the brief.
+
 ## Match the mechanism to the subject
 
 - **A place:** travel between legible camera stops. Use thresholds, light and

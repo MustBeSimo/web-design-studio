@@ -1,0 +1,14 @@
+{
+  "required": [
+    "Fold One",
+    "Light where the page turns",
+    "Closed, the lamp is 28 millimetres deep.",
+    "The arm opens through 118 degrees and holds at any angle.",
+    "A warm 2700 K pool reaches both pages without lighting the room.",
+    "Anodised aluminium, linen cable, replaceable LED module.",
+    "Designed for desks, shelves and bedside tables.",
+    "Available in graphite and chalk.",
+    "View dimensions"
+  ],
+  "allowedUi": ["Menu", "Close", "Previous", "Next", "Skip to product", "Pause motion", "Play motion"]
+}

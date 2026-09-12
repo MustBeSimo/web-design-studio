@@ -15,7 +15,13 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const SCAN = ["SKILL.md", "design.md"];
+const SCAN = [
+  "SKILL.md", "design.md", "references/recipe-catalog.md",
+  "references/recipes/editorial-story.md", "references/recipes/product-reveal.md", "references/recipes/real-time-3d.md",
+  "skills/cinematic-scroll/SKILL.md", "skills/cinematic-scroll/references/recipe-catalog.md",
+  "skills/cinematic-scroll/references/editorial-story.md", "skills/cinematic-scroll/references/product-reveal.md",
+  "skills/cinematic-scroll/references/real-time-3d.md",
+];
 const REPO_DIRS = ["references/", "templates/", "examples/", "tokens/", "themes/", "components/", "evals/", "tools/", "bin/", "docs/", "launch/", "video/", "assets/"];
 const ROOT_FILE = /^[A-Za-z0-9_][A-Za-z0-9_.-]*\.(md|json|mjs|js|ts)$/;
 // Filenames the 5-phase pipeline / audit mode EMIT at build time — documented outputs, not repo files.
@@ -48,20 +54,25 @@ for (const file of SCAN) {
   }
 
   // candidate paths: backtick spans + markdown link targets
-  const cands = new Set();
-  for (const m of text.matchAll(/`([^`]+)`/g)) cands.add(m[1]);
-  for (const m of text.matchAll(/\]\(([^)]+)\)/g)) cands.add(m[1]);
+  const cands = new Map();
+  for (const m of text.matchAll(/`([^`]+)`/g)) {
+    const repoPath = REPO_DIRS.some(dir => m[1].startsWith(dir));
+    cands.set(`root:${m[1]}`, { raw: m[1], base: repoPath ? ROOT : dirname(p), link: false });
+  }
+  for (const m of text.matchAll(/\]\(([^)]+)\)/g)) cands.set(`link:${m[1]}`, { raw: m[1], base: dirname(p), link: true });
 
-  for (let raw of cands) {
+  for (const { raw, base, link } of cands.values()) {
     let tok = raw.trim().replace(/[#?].*$/, "").replace(/[.,;:]+$/, ""); // drop #anchor / ?query before checking the file
     if (/[\s{}*<>()|=$#]/.test(tok)) continue;          // placeholders / code / commands
-    if (/^(https?:|#|npm |node |git |cd |ls |\.\/)/.test(tok)) continue;
+    if (/^(https?:|#)/.test(tok)) continue;
+    if (!link && /^(npm |node |git |cd |ls |\.\/)/.test(tok)) continue;
     if (ARTIFACTS.has(tok)) continue;                   // pipeline outputs, not repo files
     const inRepoDir = REPO_DIRS.some((d) => tok.startsWith(d));
-    const isRootFile = ROOT_FILE.test(tok);
-    if (!inRepoDir && !isRootFile) continue;            // skip generated-project paths
+    const isRootFile = ROOT_FILE.test(tok) && (base === ROOT || link);
+    const isRelativeLink = link && /(?:\/|\.(?:md|json|mjs|js|ts))$/.test(tok);
+    if (!inRepoDir && !isRootFile && !isRelativeLink) continue; // skip generated-project paths
     checked++;
-    const target = join(ROOT, tok.replace(/\/$/, ""));
+    const target = join(base, tok.replace(/\/$/, ""));
     if (!existsSync(target)) errors.push(`${file}: dead path \`${tok}\``);
   }
 }

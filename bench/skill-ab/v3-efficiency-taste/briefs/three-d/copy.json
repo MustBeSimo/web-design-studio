@@ -1,0 +1,14 @@
+{
+  "required": [
+    "Axis 24",
+    "A study in weight and balance",
+    "The form begins as one continuous cast.",
+    "A shallow ridge marks the point of balance.",
+    "The surface is bead-blasted, then sealed by hand.",
+    "240 millimetres tall. 1.9 kilograms.",
+    "Made in a run of twenty-four.",
+    "Inspect the object",
+    "Request the material sheet"
+  ],
+  "allowedUi": ["Menu", "Close", "Previous", "Next", "Loading object", "Loading 3D object", "Pause motion", "Play motion", "3D unavailable"]
+}

@@ -1,6 +1,6 @@
 ---
 name: cinematic-scroll
-description: Design and build cinematic websites, 3D websites, interactive portfolios and product landing pages with scroll-driven storytelling, parallax, text animation and optional Three.js/WebGL scenes. Use for new experiences, motion improvements, scroll audits and storyboards in standalone HTML or an existing app. Includes responsive, reduced-motion and static fallbacks; not for ordinary dashboards or unrelated animation.
+description: Design and build cinematic websites, interactive portfolios, product stories, and real-time 3D experiences with subject-specific art direction and scroll choreography. Use for new builds, redesigns, motion improvements, scroll audits, or storyboards in standalone HTML and existing apps; includes responsive, reduced-motion, and static fallbacks. Not for ordinary dashboards or unrelated animation.
 license: MIT
 metadata:
   version: 2.7.6
@@ -13,206 +13,89 @@ metadata:
 
 # Web Design Studio
 
-Make the first build worth keeping. Deliver a distinctive scroll experience with
-a clear story, a memorable moment, and complete mobile and static compositions.
-The motion craft comes from this skill; the aesthetic belongs to the user.
+Build a distinctive experience whose motion explains the subject. The craft comes
+from this skill; the visual identity comes from the user's brief and project.
 
-This is the **free MIT edition of Web Design Studio**. It builds complete sites without a Pro
-license, account, generated assets, or TasteHQ connection. Existing 3D examples,
-Next.js templates, audit tools, and the basic choreography compiler remain included.
-Web Design Studio Pro adds the proprietary Motif Engine: accumulated knowledge, reuse tracking,
-retrieval, and variants. Read [edition boundaries](references/editions.md) when
-upgrades are relevant. Never add sales messages to a generated website.
+The free MIT edition builds complete sites without an account, generated assets,
+or TasteHQ. Web Design Studio Pro adds reusable visual memory; it is never required
+for an ordinary build. Do not add product promotion to a user's website.
 
-## Route to the requested experience
+## Choose one route
 
-| Request | Route | Read when needed |
-|---|---|---|
-| Hero, section, one-page story, first experiment | **Mode A:** standalone HTML; no build step or key | [Build recipes](references/build-recipes.md), [components](references/component-grammar.md) |
-| Add or fix motion in an existing app | **Integrate:** preserve framework, routes, styling, dependencies | [Build recipes](references/build-recipes.md) |
-| New Next.js release site or multi-route app | **Mode B:** start from the bundled template | [Template](templates/nextjs/FLAGSHIP.md) |
-| Storyboard, direction, or motion ideas only | Deliver the requested plan; no unsolicited app | [Story design](references/story-design.md) |
-| Audit a URL / improve an existing build | Inspect first; recommend for an audit, implement for an improvement request | [Audit mode](audit-mode.md), [doctor](tools/cinematic-doctor/README.md) |
-| Study a reference and distill a recipe | Learn preview; no automatic cross-project memory | [Learn mode](learn-mode.md) |
-| Benchmark a public URL | Passive benchmark with measurement conditions | [Bench mode](bench-mode.md) |
-| Real 3D object or camera flight | Build the requested scene and interaction, with a non-WebGL fallback | [3D stack](references/3d-stack.md), [assets](ASSETS-3D.md); [XR](references/webxr.md) only for XR |
-| Text choreography, pointer/proximity, shader media | Reuse the shared runtime; choose a meaningful response | [Interaction runtime](references/interaction-runtime.md), [effects lab](examples/effects-lab/index.html) |
-| Video timeline from a scene | Basic compiler, not an MP4 renderer | [Compilation](scroll-choreography-compilation.md), [edition boundaries](references/editions.md) |
+For an audit-only request, inspect and report through [audit mode](audit-mode.md).
+For direction or storyboard only, use [story design](references/story-design.md)
+without creating an app. Otherwise, read the compact
+[recipe catalog](references/recipe-catalog.md), then read **one**
+recipe for the primary experience:
 
-Use absolute paths to installed skill tools from another project. Examples are
-references, not mandatory layouts. Do not infer Next.js merely from “page.”
+- [Editorial story](references/recipes/editorial-story.md): image-led narrative,
+  portfolio, longread, or campaign.
+- [Product reveal](references/recipes/product-reveal.md): launch, mechanism,
+  comparison, or object-focused story.
+- [Real-time 3D](references/recipes/real-time-3d.md): GLB, procedural object,
+  orbit, or camera flight.
 
-**Preserve the requested ambition.** Explicit 3D, camera travel, rich motion, or a
-flagship reference sets the intended experience. Choose the simplest implementation
-that delivers it, and use the matching examples and assets to accelerate the build.
-Optimize resolution, effects and asset weight before removing a requested mechanism.
-A poster proves the fallback; it does not complete a requested real-time scene.
+For a small repair, use the closest recipe only for the affected behavior. Do not
+tour other references or examples unless the selected recipe identifies a concrete
+need. Preserve the existing framework, routes, design system, dependencies, and
+working interactions. A self-contained HTML file is valid for a new small build;
+use the bundled Next.js template only when the brief calls for an app or routes.
 
-## Phase 0 — Establish the brief and brand
+## Establish the direction
 
-Inspect applicable `AGENTS.md`, project files, supplied copy/assets, and the current
-page. Resolve audience and desired action; palette/type/density/emphasis; delivery
-format and target browsers; and requested motion intensity.
+Inspect applicable project instructions, current code, supplied copy, and assets.
+Resolve the audience, desired action, delivery format, target devices, and the
+brand's palette, type pairing, density, emphasis, imagery, and motion character.
+When a reversible assumption is enough, state it and proceed.
 
-For a result request, state a reasonable art-direction assumption and proceed.
-Ask only about missing information that materially changes the result. Do not
-require the user to choose film terminology, packages, chapter counts, or providers.
-Honor requested review checkpoints; otherwise finish the work without phase approvals.
+Preserve supplied copy verbatim unless rewriting is requested. Do not invent
+claims, testimonials, metrics, prices, customer logos, or destinations.
 
-**Brand precedence:** explicit user direction → applicable project contract →
-existing brand assets → reference analysis → suggested visual system. Themes are
-starting points. Preserve required axes when adapting an example with a different look.
+Choose one signature moment with a subject-specific consequence: reveal an
+assembly, reframe an image, trace a route, or move through real geometry. Define
+its **opening -> transformation -> readable hold -> exit**, plus mobile and static
+states. Build this vertical slice first and inspect it before expanding the page.
 
-**Supplied copy is verbatim unless the user requests rewriting.** When the brief
-provides copy to use, add no new headings, taglines, promises, claims, prices or quotes. Structure
-and typography may change; the words may not. If a section needs a label the brief
-does not supply, reuse the brief's own section name.
+Taste comes from hierarchy and relationships, not accumulated effects. Establish
+a clear focal point, deliberate type contrast, a named material/light language,
+and one or two recurring motifs. Compose transition frames as carefully as hero
+and final states. Adapt examples by mechanism; never copy their brand styling.
 
-**Optional TasteHQ:** for an in-scope external brand analysis, read
-[the TasteHQ contract](references/tastehq.md). Query `/api/query`, preserve the
-response, and map relevant axes to project tokens. A suggested catalog match does
-not override the user's brand or authorize overwriting `AGENTS.md`. Offline,
-build from the local brief/contract. A required external judge stays unverified
-until it actually runs; an outage is never a passing score.
+## Build the experience
 
-## Phases 1–3 — Direct the story before adding effects
+- Render semantic headings, selectable text, useful links, visible focus, useful
+  image alternatives, and the primary action before enhancement starts.
+- Use one scroll clock and one owner per animated property. Separate pinned
+  geometry from moving children and clean up owned listeners, observers, timelines,
+  media, and render loops.
+- Keep scroll-linked transformations reversible and directly tied to progress.
+  Hold text still while it must be read. Prefer transforms and opacity in hot paths.
+- Treat mobile as a composed state with natural flow, shorter travel, and fewer
+  simultaneous layers. Gate pointer tilt to hover with a fine pointer.
+- Reduced motion removes pinning, parallax, smoothing, autoplay, and continuous
+  loops while leaving every message and action available. Respond to live changes.
+- Script, media, and renderer failure must leave a useful permanent composition.
+  A poster proves fallback behavior; it does not complete requested real-time 3D.
 
-Read [story design](references/story-design.md) for new pages and major redesigns.
-For interactive heroes or flagship improvements, read
-[interactive studies](references/interactive-studies.md). Preserve existing useful
-examples and routes during a showcase redesign. Choose a visitor action with a
-visible, subject-specific consequence; test the scene, not just its surrounding UI.
-Read [taste guardrails](taste-guardrails.md) for craft guidance. The scope, user
-preferences, and accessibility rules here take precedence over legacy blanket
-minima for layers, pins, smooth scrolling, and variation.
+Explicit 3D, camera travel, rich motion, or a flagship reference defines the
+required ambition. First repair dependencies and reduce resolution, effects, or
+asset weight. Do not silently replace the requested mechanism with a simpler one.
 
-Choose a concrete signature moment that explains this subject: expose a product's
-mechanism, reframe an image to reveal scale, or follow a real journey on a map.
-Build an arc from orientation through discovery and evidence to action. Use only
-the chapters the content needs. Not every section needs a pin, a different
-transition, five layers, a temperature change, or 3D.
+## Verify and hand off
 
-For each beat specify **start → transformation → readable hold → exit**, its focal
-point, and its mobile/static versions. Compose midpoints as carefully as opening
-frames. Keep copy and the primary action accessible without waiting for spectacle.
+Prove the signature interaction in one normal browser view, then run focused checks
+after relevant repairs. At final polish inspect desktop, mobile, reduced motion,
+no-JS/failure fallback, keyboard order, reverse scroll, resize, and the actual app
+route. Review screenshots at the opening, transformation midpoint, readable hold,
+and closing action; a clean console is not visual proof.
 
-For an immersive/world-building brief, also read
-[asset direction](references/asset-direction.md) and the [Wow Gate](references/wow-gate.md).
-Use its rubric as a concept critique, not proof of audience preference or a reason
-to override a restrained brief. Prefer supplied assets; CSS/SVG for graphical
-subjects; available image tools for authored imagery when appropriate. Paid
-generation is optional and uses an authorized provider/budget.
+For installed builds, the verifier is available at
+`tools/verify/verify-build.mjs`. During repair use `--scope output --doctor-mode
+advisory --runtime --profiles desktop,mobile`; for final polish omit `--profiles`
+to run all five profiles. Use project tests and builds too. Do not repeat an
+unchanged failure. Missing tooling or external service availability remains
+unverified, and an output that only shows a fallback remains unfinished when the
+brief requested 3D. Run TasteHQ only when the project contract requires it.
 
-**Process should fit the ask.** A section needs brief decisions and polish notes.
-A full story benefits from one project note containing the arc, beat table, asset
-sources, implementation choices, and evidence. Use separate `cinematic-audit.md`,
-`motion-storyboard.md`, `technical-spec.md`, and `polish-report.md` for a requested
-staged process or a complex project; [artifact templates](references/artifact-templates.md)
-are available. Do not impose four documents on a small hero request.
-
-## Phase 4 — Build the readable page, then enhance it
-
-Read [build recipes](references/build-recipes.md). Use existing project tokens or
-adapt [design.md](design.md) and [design tokens](references/design-tokens.md).
-Keep palette, typography, spacing, and motion roles consistent without tokenizing
-every incidental geometric constant or replacing an established design system.
-
-1. **Static composition first.** Semantic headings, selectable text, useful links,
-   meaningful alt text, visible focus, and a working primary action. Essential
-   content renders before enhancement. JS/CDN/video/WebGL failure must not erase it.
-2. **One owner per animated property.** Nest wrappers for parallax, pointer tilt,
-   and entrance transforms. Use one scroll clock and scoped cleanup.
-3. **Direct scrubbing stays direct.** Linear progress suits position-linked motion;
-   chosen easing suits time-based entrances. Avoid stacking smoothing and springs
-   until motion trails the visitor.
-4. **Selective pinning.** Separate the pin shell from moving children. Derive
-   distance from the content and beat budget, not a total-page vh quota. Test
-   anchors, reverse scroll, resize, and restored scroll positions.
-5. **Responsive composition.** Default to free flow on narrow/coarse-pointer
-   devices, modest parallax, and readable reveals. Tilt requires hover and a fine
-   pointer. [Mobile motion](references/mobile-motion.md) provides fallback recipes;
-   test the project's browser targets instead of assuming version support.
-6. **Complete reduced motion.** Skip pinning, parallax, smoothing, autoplay, and
-   continuous loops. Show readable content in flow. Respond to preference changes.
-   A user request for static or minimal motion takes precedence.
-7. **Cheap hot paths.** Prefer transform/opacity; batch geometry reads outside
-   scroll writes; refresh after fonts/assets alter layout; avoid permanent layer
-   promotion. Read [performance budgets](references/performance-budget.md) for
-   substantial scenes. Treat device numbers as targets to measure, not claims.
-8. **Owned lifecycle.** Remove listeners, observers, tickers, split text, and owned
-   triggers on teardown. Never kill all ScrollTriggers in a shared app. Bound
-   loaders; do not cover a usable page indefinitely.
-
-For richer scroll/pointer work read [interaction runtime](references/interaction-runtime.md)
-before implementation. Reuse `runtime/` (vanilla) or the template's
-`lib/cinematic/` (React); keep the core import independent of Three.js. Choose
-from six text treatments, proximity/depth surfaces and four shader families.
-Do not combine every effect or invent a new loop for each component. The shared
-signals, adaptive quality and complete static fallback apply to every preset.
-
-Tier B/C/D additionally requires one renderer, capped pixel ratio, manifest asset
-paths, context-loss recovery, disposed GPU resources, visibility gating, and a
-permanent poster. XR starts only on an explicit user action. For fal.ai, read
-[MODELS.md](MODELS.md) and use the bundled server adapters; keep credentials
-server-side. No provider key is required for the first build.
-
-The [choreography compiler](scroll-choreography-compilation.md) is optional.
-Inspect and test generated code against lifecycle/fallback requirements;
-compilation alone does not certify production readiness.
-
-## Phase 5 — Prove the actual output
-
-Run commands from the user's project, substituting the installed skill path:
-
-```bash
-# Static HTML: contract checks and doctor.
-node /path/to/cinematic-scroll/tools/verify/verify-build.mjs ./index.html
-
-# Final HTML: desktop, mobile, reduced motion, and no-JS evidence.
-node /path/to/cinematic-scroll/tools/verify/verify-build.mjs ./index.html --phase polish
-
-# App: running URL plus the project's own typecheck/build scripts.
-node /path/to/cinematic-scroll/tools/verify/verify-build.mjs http://localhost:3000 --mode-b . --phase polish
-```
-
-The [verifier](tools/verify/README.md) distinguishes PASS, FAIL, and SKIP.
-Requested runtime/build failures fail the command. Missing requested evidence is
-incomplete; `--fast` is diagnostic, not final proof. Doctor is a static heuristic,
-not a visual judge or React runtime test. Fix actual problems, not regex scores.
-
-**Look at screenshots.** Check opening, signature moment, pin boundaries,
-midpoints, and closing on desktop/mobile. Inspect reading order, collisions,
-cropping, blank canvas, readable hold, and reachable CTA. Use
-[page-proof](tools/page-proof/README.md) for extra depths when defaults miss a beat.
-A clean console does not establish visual quality.
-
-Test reduced motion, keyboard navigation, asset failures, and viewport changes.
-Browser emulation is not physical iPhone Safari or a battery test. Report only
-measurements actually made; mark other checks as not run.
-
-If the project requires TasteHQ, score a reachable build against its declared
-target using [the adapter](references/tastehq.md). Preserve fixes, coverage, and
-the project's threshold. Do not publish solely to satisfy a judge without
-deployment authorization.
-
-**Make verification advance the build.** First prove the signature interaction in
-one normal browser view; use focused checks during repairs and the full matrix at
-final polish. Re-run a failed check after a relevant code, dependency, configuration
-or environment change, or when testing a specific transient-failure hypothesis.
-Do not repeat an unchanged failure or the full matrix for an isolated repair.
-Distinguish output defects from missing tools or broken supplied dependencies;
-repair in-scope dependencies and then retest. For 3D, use the dependency preflight
-in [the 3D stack](references/3d-stack.md#dependency-preflight).
-
-When a required capability or check remains blocked after the available in-scope
-repairs, finish independent work and identify the exact missing dependency and
-affected behavior at handoff. Preserve failed evidence; do not count fallback-only
-output as a completed 3D build or missing verification as a pass.
-
-## Handoff
-
-Lead with the preview/file and exact opening command. State the signature moment,
-what can be customized, checks passed, and material limitations. No unsupported
-“60fps” or “production-ready” claims. No unsolicited branding, tracking, attribution
-footer, or upgrade banner in the output. Mention Studio only when its workflow
-answers an expressed need; normal completes ordinary cinematic sites on its own.
+Hand off the working file or route, exact opening command, signature moment,
+checks passed, and material limitations. Make only claims supported by evidence.
