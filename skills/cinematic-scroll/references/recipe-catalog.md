@@ -2,6 +2,7 @@
 
 Choose the primary experience and read only its recipe. Each recipe gives the
 minimum complete build shape, dependencies, responsive behavior, and proof points.
+It is sufficient for a first build; open optional source only for a concrete gap.
 
 | Experience | Recipe | Mechanism | Dependency | Static state |
 |---|---|---|---|---|

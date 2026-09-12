@@ -15,11 +15,17 @@ supplied stills for graphical states, local video for real temporal detail, and 
 
 1. Compose a stable product plate with headline, explanation, action, and a useful
    fallback image or authored graphic.
+   Default to a relative track with a `100svh` sticky plate; stack the same states
+   in normal flow on mobile and under reduced motion.
 2. Create one progress function from real geometry. Drive product state, labels,
    light, and supporting atmosphere from this shared clock.
 3. Allocate a clear establish interval, meaningful transformation, generous readable
    hold, and clean release. Keep direct scroll reversible.
-4. Inspect opening, half-reveal, hold, and reverse path before adding evidence.
+4. Keep the clearest state as a permanent base. Transform child layers without
+   fading the whole plate. Inspect 0/33/66/100%, hold, and reverse path.
+
+With no installed motion library, prefer one scheduled scroll update and CSS
+variables to multiple observers or experimental scroll timelines.
 
 For video, provide a poster and dimensions. Confirm metadata loads, duration is
 finite, seeking changes the visible frame, and decode failure reveals the poster.

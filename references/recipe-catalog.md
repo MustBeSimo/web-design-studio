@@ -1,13 +1,13 @@
 # Recipe catalog
 
 Read this catalog once, choose the primary experience, and open only its recipe.
-Use additional rows as source code to inspect when that mechanism is actually part
-of the brief. Copy behavior and lifecycle contracts; replace the example's subject,
-copy, palette, typography, assets, and composition with the project's own.
+Each recipe contains a complete default approach. The source column is optional:
+inspect one listed file only when the host project or a missing mechanism makes it
+necessary. Copy behavior and lifecycle contracts, never the example's identity.
 
 ## Starting routes
 
-| Primary experience | Recipe | Best starting source | Dependencies | Mobile / static |
+| Primary experience | Recipe | Optional source when blocked | Dependencies | Mobile / static |
 |---|---|---|---|---|
 | Image-led campaign, portfolio, or longread | [Editorial story](recipes/editorial-story.md) | `examples/renaissance/index.html` for alternating image/copy chapters; `examples/v3-flagship/` for a compact interactive study | No JS library; Renaissance loads optional Google Fonts, so substitute local/system fonts for offline use | Natural reading flow; images and controls remain usable without motion |
 | Launch, product detail, or mechanism reveal | [Product reveal](recipes/product-reveal.md) | `examples/luxe/index.html` for one state shared across the story; `examples/kern-calibration/` for scrubbed media | Luxe: none. KERN: one local MP4; optional generation is separate | Stable product plate or poster, stacked evidence, same action |

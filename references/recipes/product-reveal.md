@@ -1,9 +1,9 @@
 # Product reveal recipe
 
 Use for a launch, object story, feature explanation, before/after comparison, or
-mechanism reveal. `examples/luxe/index.html` demonstrates a dependency-free product
-story driven by one shared state. `examples/kern-calibration/` demonstrates a local
-video timeline when the supplied media truly changes over time.
+mechanism reveal. This recipe is sufficient for a first build. Inspect
+`examples/luxe/index.html` only for a missing shared-state detail, or
+`examples/kern-calibration/` only when the brief supplies scrub-ready video.
 
 ## Diagnose the reference before adapting it
 
@@ -30,6 +30,8 @@ performance number to fill a layout.
 
 1. Compose one stable product plate with a headline, concise explanation, and
    useful fallback image or authored graphic.
+   Default to a relative story track with a `100svh` sticky plate and normal-flow
+   copy beats; the plate becomes relative and states stack on mobile/reduced motion.
 2. Create one progress function from the real section geometry. Map the product
    variable and supporting labels from it; avoid separate scroll listeners for
    shadow, caption, color, and position.
@@ -38,10 +40,13 @@ performance number to fill a layout.
    reversible; time-based entrances may use easing.
 4. Inspect the opening, half-reveal, hold, and reverse path before adding evidence
    sections. The product should be legible at every sampled state.
+5. Keep the closed or clearest product state as a permanent base. Change child
+   layers without fading the entire plate; at 0%, 33%, 66%, and 100%, a complete
+   object-and-copy composition must remain visible.
 
-For a still/SVG treatment, inspect `examples/luxe/index.html`: its hour value drives
-background, light, shadow, captions, and diagram from one clock. Replace that idea
-with the product's real variable and preserve the single-owner structure.
+For a still/SVG treatment, calculate one normalized progress value in a scheduled
+animation frame and use it for angle, light, shadow, captions, and diagram. Prefer
+this small local clock over multiple observers or experimental scroll timelines.
 
 For scrubbed video, inspect `components/mode-a/scrub-video.html` or the Mode B
 equivalent plus `examples/kern-calibration/index.html`. Supply a poster and explicit

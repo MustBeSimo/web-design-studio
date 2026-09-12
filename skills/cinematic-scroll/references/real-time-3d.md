@@ -3,6 +3,8 @@
 Use a real-time renderer for requested 3D, camera journeys, lighting, material
 response or direct manipulation. Match the scene to the brief and optimize its
 cost while preserving the defining interaction.
+This recipe is sufficient for a first build; inspect one matching example only
+after dependency preflight identifies a concrete implementation gap.
 
 Before building, name focal geometry, material and light, camera verb, type
 hierarchy, motifs, and the hardest transition frame. Borrow renderer lifecycle and

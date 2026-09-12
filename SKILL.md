@@ -41,6 +41,11 @@ need. Preserve the existing framework, routes, design system, dependencies, and
 working interactions. A self-contained HTML file is valid for a new small build;
 use the bundled Next.js template only when the brief calls for an app or routes.
 
+Keep the first pass lean: project instructions -> brief/assets -> catalog -> one
+recipe -> build. The recipes are self-contained. Do not read showcase source,
+create process documents, or explore optional tools before a concrete gap requires
+them. Spend iteration on the rendered output, not on accumulating context.
+
 ## Establish the direction
 
 Inspect applicable project instructions, current code, supplied copy, and assets.
@@ -68,6 +73,9 @@ and final states. Adapt examples by mechanism; never copy their brand styling.
 - Use one scroll clock and one owner per animated property. Separate pinned
   geometry from moving children and clean up owned listeners, observers, timelines,
   media, and render loops.
+- Keep a complete visible frame at every sampled scroll depth. Leave a permanent
+  base composition behind transitions; never animate the entire stage to empty or
+  rely on an unsupported timeline for essential visibility.
 - Keep scroll-linked transformations reversible and directly tied to progress.
   Hold text still while it must be read. Prefer transforms and opacity in hot paths.
 - Treat mobile as a composed state with natural flow, shorter travel, and fewer

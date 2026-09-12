@@ -34,6 +34,11 @@ Prefer supplied assets and installed packages. Do not publish, deploy, install
 packages, or send project content to a service unless that action is within the
 user's request.
 
+Keep the first pass lean: project instructions -> brief/assets -> catalog -> one
+recipe -> build. The recipes are self-contained. Do not explore optional references
+or create process documents before a concrete gap requires them. Spend iteration on
+the rendered output, not on accumulating context.
+
 ## Establish the direction
 
 Inspect project instructions, existing code, copy, and assets. Resolve the audience,
@@ -60,6 +65,9 @@ Adapt example mechanisms without importing another brand's styling.
 - Use one scroll clock and one owner per animated property. Separate pinned geometry
   from moving children and clean up owned listeners, observers, timelines, media,
   and render loops.
+- Keep a complete visible frame at every sampled scroll depth. Leave a permanent
+  base composition behind transitions; never animate the entire stage to empty or
+  rely on an unsupported timeline for essential visibility.
 - Keep scroll-linked changes reversible and tied to progress. Hold text still while
   it must be read. Prefer transforms and opacity in frequent updates.
 - Treat mobile as a composed state with natural flow and fewer simultaneous layers.

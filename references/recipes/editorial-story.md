@@ -1,10 +1,9 @@
 # Editorial story recipe
 
 Use for an image-led campaign, portfolio, cultural story, essay, or branded
-longread. The source pattern is `examples/renaissance/index.html`; use
-`examples/v3-flagship/` when the story benefits from one compact interactive
-instrument. Both are standalone references with no runtime JS library;
-Renaissance optionally loads Google Fonts and keeps local fallback families.
+longread. This recipe is sufficient for a first build. Only inspect
+`examples/renaissance/index.html` for a missing alternating-layout detail or
+`examples/v3-flagship/` for a requested interactive instrument.
 
 ## Diagnose the reference before adapting it
 
@@ -30,18 +29,25 @@ contrast, material/light, motifs, and hardest midpoint before choosing CSS.
 Create the hero and signature beat before the rest of the page.
 
 - Keep title and core message in semantic HTML above the enhancement layer.
+- Default to a relative story track containing a `100svh` sticky stage and normal-
+  flow beats. Give the track only the height needed for establish, transform,
+  hold, and release. On mobile/reduced motion, make the stage relative and stack
+  the same assets and copy.
 - Let a focal image or authored SVG carry motion while the reading column holds.
 - Use one scroll-derived progress value for the signature. Map that value to the
   image crop, mask, layered depth, or diagram state; reverse scroll must retrace it.
 - Give the transformed state enough distance to settle into a readable frame.
+- Keep one complete base image/composition visible beneath changing layers. Cross-
+  fade or transform child layers; never fade the whole stage. At 0%, 33%, 66%,
+  and 100%, the viewport must contain a deliberate image-and-copy frame.
 - On narrow screens, stack image and copy in the intended reading order and shorten
   or remove the pin. Reduced motion shows the best explanatory frame in normal flow.
 
-Inspect `examples/renaissance/index.html` for alternating image/copy composition,
-decorative depth wrappers, chapter navigation, and touch-safe collapse. Inspect
-`examples/v3-flagship/story.css` and `story.mjs` for a single controlled instrument,
-shared signals, reset/pause controls, and teardown. Reuse one implementation model,
-not both clocks.
+Use a small scroll listener scheduled through one animation frame when the project
+has no motion library. Derive progress from the story track rectangle, set CSS
+custom properties or discrete chapter classes, and remove the listener on teardown.
+Do not introduce experimental scroll-timeline CSS for essential visibility unless
+the project's supported browsers already prove it.
 
 ## Extend without flattening the rhythm
 

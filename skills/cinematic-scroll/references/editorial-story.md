@@ -15,9 +15,16 @@ the brief rather than a reference brand.
 3. Build the hero and signature beat first. Keep title and message in semantic HTML.
    Let the focal image, mask, crop, layered depth, or authored diagram carry motion
    while the reading column holds.
+   Default to a relative track with a `100svh` sticky stage and normal-flow beats;
+   make the stage relative and stack the same content on mobile/reduced motion.
 4. Derive one progress value from real section geometry. Map the signature state
    from it so reverse scroll retraces the change. Include a stable readable hold.
-5. Inspect opening, midpoint, hold, exit, and reverse path before adding the rest.
+5. Keep a complete base composition visible beneath transitions. Transform child
+   layers; never fade the whole stage. Inspect 0/33/66/100%, hold, and reverse path.
+
+With no installed motion library, use one scheduled scroll update and CSS variables
+or chapter classes. Avoid experimental scroll timelines for essential visibility
+unless the project's supported browsers already prove them.
 
 Complete remaining beats with composition that suits their content: image scale,
 alignment, or text measure may change while typography, spacing, emphasis, material,

@@ -6,6 +6,10 @@ Three.js reference. `examples/flagship/main.js`, `runtime/assets.tsx`, and the
 Next.js flagship chapters show real GLB loading. Keep all Three.js core, addons,
 React bindings, and decoders on compatible versions.
 
+This recipe is sufficient for a first build. Inspect only the one source matching
+the requested asset/runtime after preflight identifies a concrete implementation
+gap; do not tour all 3D examples.
+
 ## Diagnose the reference before adapting it
 
 The crystalline monolith coordinates silhouette, refractive material, core light,
