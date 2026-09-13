@@ -158,12 +158,12 @@ On 12 September 2026, source v2.7.6 passed **6 reference fixtures** and **9 veri
 failure-path tests**; FIELD returned clean reports in **5 browser profiles**.
 [Test scope and reproduction commands](docs/skill-advantage/README.md#verification-actually-run).
 
-Exploratory prompt comparisons are available with their builds, costs and
-screenshots: [first comparison](bench/skill-ab/REVEAL.md) ·
-[second run](bench/skill-ab/run2-hard/RESULTS-RUN2.md). The first identified areas
-to improve copy fidelity and workflow efficiency; the second exposed a shared
-broken 3D asset kit and could not evaluate 3D quality. These small trials do not
-establish a general advantage over prompting alone.
+The skill is hardened in public through prompt comparisons that retain their
+builds, costs, screenshots and failure evidence: [first comparison](bench/skill-ab/REVEAL.md) ·
+[second run](bench/skill-ab/run2-hard/RESULTS-RUN2.md) ·
+[latest sealed forward protocol](bench/skill-ab/v4-forward/README.md). Findings feed
+directly into copy fidelity, fallback, interaction and efficiency safeguards.
+Claims stay scoped to what these reproducible runs actually demonstrate.
 
 ## Web Design Studio and Pro
 

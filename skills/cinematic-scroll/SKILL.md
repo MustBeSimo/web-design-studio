@@ -80,6 +80,9 @@ Adapt example mechanisms without importing another brand's styling.
   rely on an unsupported timeline for essential visibility.
 - Keep scroll-linked changes reversible and tied to progress. Hold text still while
   it must be read. Prefer transforms and opacity in frequent updates.
+- Compare rendered frames across distant scroll positions and at one unchanged
+  position. The intentional change must clearly dominate idle drift; otherwise
+  reduce time-driven movement or strengthen the mapped camera/object change.
 - Treat mobile as a composed state with natural flow and fewer simultaneous layers.
   Gate pointer tilt to hover with a fine pointer.
 - Reduced motion removes pinning, parallax, smoothing, autoplay, and continuous

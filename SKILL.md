@@ -89,6 +89,9 @@ and final states. Adapt examples by mechanism; never copy their brand styling.
   rely on an unsupported timeline for essential visibility.
 - Keep scroll-linked transformations reversible and directly tied to progress.
   Hold text still while it must be read. Prefer transforms and opacity in hot paths.
+- Prove that the signature scroll change clearly dominates same-position idle drift
+  in rendered-frame comparisons. If it does not, reduce time-driven movement or
+  strengthen the mapped camera/object change before adding more effects.
 - Treat mobile as a composed state with natural flow, shorter travel, and fewer
   simultaneous layers. Gate pointer tilt to hover with a fine pointer.
 - Reduced motion removes pinning, parallax, smoothing, autoplay, and continuous
