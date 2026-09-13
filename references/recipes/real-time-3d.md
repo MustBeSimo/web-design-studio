@@ -24,7 +24,15 @@ Before composing the page, make a minimal visible scene with the intended canvas
 camera, one light/environment, and the actual asset.
 
 1. Confirm WebGL creation and show a visible loading/error state over a permanent
-   poster. Serve module imports and local assets over HTTP.
+   poster. Serve module imports and local assets over HTTP. Load a fallible local
+   viewer/addon through a tiny inline `import()` bootstrap with `catch`, rather
+   than a static module import whose fetch failure cannot update the page. Expose
+   one machine-readable `loading` / `fallback` / `ready` state (a root data
+   attribute is sufficient); enter `fallback` on import, model, decoder, timeout,
+   or context failure, and `ready` only after a rendered frame.
+   Do not enable pinned/enhanced chapter mode before that first live frame. Route
+   every failure through one idempotent fallback transition that removes the
+   enhancement and restores every chapter and action.
 2. For GLB, inspect compression/extensions and configure only what it requires:
    `GLTFLoader`; a reachable `DRACOLoader` path for Draco; `MeshoptDecoder` for
    Meshopt; and `KTX2Loader.detectSupport(renderer)` plus a reachable transcoder for
@@ -61,7 +69,9 @@ controls, decoders, observers, and listeners. Preserve shared cached resources.
 - Reduced motion: a deliberate static camera and explicit controls if interaction
   is essential; no scroll camera, autoplay, or continuous ambient loop.
 - WebGL, import, decoder, texture, or context failure: permanent poster, readable
-  copy, and primary action. The failure state must not claim that 3D succeeded.
+  copy, and primary action. Keep supplied copy/actions outside replaceable loader
+  UI and never hide inactive chapters with `hidden`, `inert`, `display:none`, or
+  `visibility:hidden`. The failure state must not claim that 3D succeeded.
 
 ## Acceptance checks
 
@@ -74,3 +84,5 @@ controls, decoders, observers, and listeners. Preserve shared cached resources.
   layout, and asset failure all produce bounded behavior.
 - The poster is intentional and permanent, while verification distinguishes it
   from successful real-time rendering.
+- Block the viewer module itself as well as the model URL: both probes must expose
+  the poster, all supplied copy/actions, and the project's explicit failure state.

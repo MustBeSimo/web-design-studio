@@ -63,6 +63,9 @@ Adapt example mechanisms without importing another brand's styling.
 - Render exactly one semantic `h1`, a coherent heading order, selectable text,
   useful links, visible focus, image alternatives, and the primary action before
   enhancement starts.
+- Keep every supplied message/action available in normal, reduced-motion, failure,
+  and no-JavaScript states. Never mark inactive story copy `hidden`, `inert`,
+  `display:none`, or `visibility:hidden`; animate presentation, not availability.
 - Use one scroll clock and one owner per animated property. Separate pinned geometry
   from moving children and clean up owned listeners, observers, timelines, media,
   and render loops.

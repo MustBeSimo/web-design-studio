@@ -32,6 +32,14 @@ Three.js builds, and keep core and addons on the same version. Inspect the model
 required extensions; configure reachable Draco, Meshopt or KTX2 decoders when used.
 Confirm the actual canvas renders the subject in two camera or interaction states.
 
+Load a fallible local viewer/addon from a tiny inline `import()` bootstrap with
+`catch`, not a static module import whose fetch failure cannot update the page.
+Expose one machine-readable `loading` / `fallback` / `ready` state (a root data
+attribute is sufficient); enter `fallback` on import/model/decoder/timeout/context
+failure and `ready` only after a rendered frame. Do not enable pinned/enhanced
+chapter mode before that frame. Route every failure through one idempotent
+transition that removes enhancement and restores all chapters/actions.
+
 Repair missing paths, imports or decoders within the task's permitted resources.
 If supplied assets are immutable or unavailable, preserve the exact failure and
 continue independent work. Report the scene as unfinished; a poster is fallback
@@ -77,3 +85,8 @@ Verify the poster before renderer initialization and after a simulated failure.
 Exercise resize, restored scroll position, context recovery, page visibility, and
 cleanup. Use a real device for performance claims; software rendering can prove
 layout and error handling but not GPU speed.
+
+Block both the viewer module and model URL. Each failure must expose the poster,
+all supplied copy/actions outside replaceable loader UI, and the project's explicit
+failure state; never hide inactive chapters with `hidden`, `inert`, `display:none`,
+or `visibility:hidden`.
