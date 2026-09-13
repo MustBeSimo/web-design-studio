@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import { assessExactBodyText, bodyStrings, evaluateRun, failurePasses, pixelDifference, profilePasses, progressTracksScroll, summarizeAssetRequests } from "./evaluate.mjs";
-import { authoredOutputViolations, buildConclusion, changedPreparedInputs, makeRunPlan, paidRunAuthorized, parseRunnerResult, validateProtocol } from "./harness.mjs";
+import { authoredOutputViolations, buildConclusion, changedPreparedInputs, makeRunPlan, paidRunAuthorized, parseRunnerResult, preEvaluationFailure, validateProtocol } from "./harness.mjs";
 import { BRIEF, SKILL_PAYLOAD_PATHS, exportGitTree, loadConfig, readJson } from "./lib.mjs";
 import { buildPublicManifest, makeBlindMap, stageBlindBuild } from "./review.mjs";
 
@@ -146,6 +146,14 @@ test("runner telemetry must be finite, successful, and within fixed caps", () =>
   const over = parseRunnerResult(path, 500, { status: 0, signal: null });
   assert.equal(over.runnerValid, false);
   assert.match(over.runnerIssues.join(" "), /outside the cap/);
+});
+
+test("runner infrastructure failure takes precedence over missing authored output", () => {
+  const invalidRunner = { runnerValid: false, runnerIssues: ["runner timed out", "API DNS failure"] };
+  const missingIndex = { valid: false, changed: [], added: [] };
+  assert.equal(preEvaluationFailure(invalidRunner, missingIndex).status, "infrastructure-review");
+  assert.equal(preEvaluationFailure({ runnerValid: true, runnerIssues: [] }, missingIndex).status, "failed");
+  assert.equal(preEvaluationFailure({ runnerValid: true, runnerIssues: [] }, { valid: true, changed: [], added: [] }), null);
 });
 
 test("conclusion requires candidate 2/2, baseline below 2/2, no claims, and all efficiency ratios", () => {

@@ -36,6 +36,16 @@ export function authoredOutputViolations(beforeHashes, afterHashes) {
   return { changed, added, valid: changed.length === 0 && added.length === 0 && Object.hasOwn(afterHashes, "index.html") };
 }
 
+export function preEvaluationFailure(metrics, outputViolations) {
+  if (!metrics.runnerValid) {
+    return { status: "infrastructure-review", functionalComplete: false, reason: metrics.runnerIssues.join("; ") };
+  }
+  if (!outputViolations.valid) {
+    return { status: "failed", functionalComplete: false, reason: `authored output contract failed; changed=[${outputViolations.changed.join(", ")}], added=[${outputViolations.added.join(", ")}]` };
+  }
+  return null;
+}
+
 export function makeRunPlan(seed, isolatedRoot) {
   const first = Number.parseInt(sha256(seed).slice(0, 2), 16) % 2 === 0 ? "B" : "C";
   const order = first === "B" ? ["B", "C", "B", "C"] : ["C", "B", "C", "B"];
@@ -215,12 +225,8 @@ async function runNext() {
   writeFileSync(join(directory, "stderr.log"), result.stderr || String(result.error || ""));
   const metrics = parseRunnerResult(join(directory, "result.json"), Date.now() - started, result);
   const changedInputs = changedPreparedInputs(directory, lock.inputHashes[entry.id]);
-  let evaluation;
-  if (!outputViolations.valid) {
-    evaluation = { status: "failed", functionalComplete: false, reason: `authored output contract failed; changed=[${outputViolations.changed.join(", ")}], added=[${outputViolations.added.join(", ")}]` };
-    writeJson(join(directory, "evaluation.json"), evaluation);
-  } else if (!metrics.runnerValid) {
-    evaluation = { status: "infrastructure-review", functionalComplete: false, reason: metrics.runnerIssues.join("; ") };
+  let evaluation = preEvaluationFailure(metrics, outputViolations);
+  if (evaluation) {
     writeJson(join(directory, "evaluation.json"), evaluation);
   } else {
     try { evaluation = await evaluateRun(directory); }
