@@ -74,7 +74,9 @@ controls, decoders, observers, and listeners. Preserve shared cached resources.
 - WebGL, import, decoder, texture, or context failure: permanent poster, readable
   copy, and primary action. Keep supplied copy/actions outside replaceable loader
   UI and never hide inactive chapters with `hidden`, `inert`, `display:none`, or
-  `visibility:hidden`. The failure state must not claim that 3D succeeded.
+  `visibility:hidden`. If fallback forces a disclosure open, keep its control
+  operable and verify a close/reopen cycle. The failure state must not claim that
+  3D succeeded.
 
 ## Acceptance checks
 

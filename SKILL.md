@@ -78,6 +78,9 @@ and final states. Adapt examples by mechanism; never copy their brand styling.
   failure, and no-JavaScript states. Do not remove or mark inactive story copy
   `hidden`, `inert`, `display:none`, or `visibility:hidden`; animate presentation,
   not content availability.
+- Keep control semantics and computed presentation synchronized at activation
+  boundaries. For disclosures, `aria-expanded` and the controlled region's visible
+  state must change together; animate an inner wrapper only after that state change.
 - Use one scroll clock and one owner per animated property. Separate pinned
   geometry from moving children and clean up owned listeners, observers, timelines,
   media, and render loops.
@@ -104,6 +107,9 @@ after relevant repairs. At final polish inspect desktop, mobile, reduced motion,
 no-JS/failure fallback, keyboard order, reverse scroll, resize, and the actual app
 route. Review screenshots at the opening, transformation midpoint, readable hold,
 and closing action; a clean console is not visual proof.
+Run the no-JavaScript check in a browser with scripting disabled. Prove that its
+exact static status, poster, essential copy, promised action targets, and authored
+media alternatives are perceivable while conflicting loading UI is absent.
 
 For installed builds, the verifier is available at
 `tools/verify/verify-build.mjs`. During repair use `--scope output --doctor-mode

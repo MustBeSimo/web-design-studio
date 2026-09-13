@@ -69,6 +69,9 @@ Adapt example mechanisms without importing another brand's styling.
 - Keep every supplied message/action available in normal, reduced-motion, failure,
   and no-JavaScript states. Never mark inactive story copy `hidden`, `inert`,
   `display:none`, or `visibility:hidden`; animate presentation, not availability.
+- Keep control semantics and computed presentation synchronized at activation
+  boundaries. For disclosures, change `aria-expanded` and the controlled region's
+  visible state together; animate an inner wrapper after that state change.
 - Use one scroll clock and one owner per animated property. Separate pinned geometry
   from moving children and clean up owned listeners, observers, timelines, media,
   and render loops.
@@ -94,6 +97,9 @@ after relevant repairs. At final polish inspect desktop, mobile, reduced motion,
 no-JS/failure fallback, keyboard order, reverse scroll, resize, and the real route.
 Review opening, midpoint, readable hold, and closing frames. Do not repeat an
 unchanged failure or present missing evidence as a pass.
+Run no-JavaScript checks in a browser with scripting disabled. Prove its exact
+static status, poster, essential copy, action targets, and authored media
+alternatives are perceivable while conflicting loading UI is absent.
 
 Hand off the working file or route, exact opening command, signature moment, checks
 passed, and material limitations. Do not add attribution, sales copy, tracking, or

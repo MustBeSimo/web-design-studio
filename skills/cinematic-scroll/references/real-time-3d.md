@@ -91,4 +91,5 @@ layout and error handling but not GPU speed.
 Block both the viewer module and model URL. Each failure must expose the poster,
 all supplied copy/actions outside replaceable loader UI, and the project's explicit
 failure state; never hide inactive chapters with `hidden`, `inert`, `display:none`,
-or `visibility:hidden`.
+or `visibility:hidden`. If fallback forces a disclosure open, keep its control
+operable and verify a close/reopen cycle.
