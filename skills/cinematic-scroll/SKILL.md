@@ -46,7 +46,9 @@ desired action, delivery format, target devices, and the brand's palette, type
 pairing, density, emphasis, imagery, and motion character. When a reversible
 assumption is enough, state it and proceed.
 
-Preserve supplied copy verbatim unless rewriting is requested. Do not invent claims,
+Preserve supplied copy verbatim in both source and rendered text unless rewriting
+is requested. Do not visually rewrite it with `text-transform`, generated
+replacement text, or script-driven case changes. Do not invent claims,
 testimonials, metrics, prices, customer logos, or destinations.
 
 Choose one signature moment with a subject-specific consequence: reveal an
@@ -62,7 +64,8 @@ Adapt example mechanisms without importing another brand's styling.
 
 - Render exactly one semantic `h1`, a coherent heading order, selectable text,
   useful links, visible focus, image alternatives, and the primary action before
-  enhancement starts.
+  enhancement starts. An in-page action must land on a meaningful labelled target
+  containing the content it promises, not only change the URL fragment.
 - Keep every supplied message/action available in normal, reduced-motion, failure,
   and no-JavaScript states. Never mark inactive story copy `hidden`, `inert`,
   `display:none`, or `visibility:hidden`; animate presentation, not availability.

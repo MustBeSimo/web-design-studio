@@ -38,7 +38,9 @@ Expose one machine-readable `loading` / `fallback` / `ready` state (a root data
 attribute is sufficient); enter `fallback` on import/model/decoder/timeout/context
 failure and `ready` only after a rendered frame. Do not enable pinned/enhanced
 chapter mode before that frame. Route every failure through one idempotent
-transition that removes enhancement and restores all chapters/actions.
+transition that removes enhancement and restores all chapters/actions. Await the
+poster's `load`/`decode` result with a bounded timeout before announcing a settled
+fallback, so the declared state never precedes its visual evidence.
 
 Repair missing paths, imports or decoders within the task's permitted resources.
 If supplied assets are immutable or unavailable, preserve the exact failure and

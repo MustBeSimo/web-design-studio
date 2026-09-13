@@ -32,7 +32,10 @@ camera, one light/environment, and the actual asset.
    or context failure, and `ready` only after a rendered frame.
    Do not enable pinned/enhanced chapter mode before that first live frame. Route
    every failure through one idempotent fallback transition that removes the
-   enhancement and restores every chapter and action.
+   enhancement and restores every chapter and action. Keep poster readiness in
+   that lifecycle: await its `load`/`decode` result with a bounded timeout before
+   announcing a settled fallback, so the declared state never precedes the visual
+   evidence meant to support it.
 2. For GLB, inspect compression/extensions and configure only what it requires:
    `GLTFLoader`; a reachable `DRACOLoader` path for Draco; `MeshoptDecoder` for
    Meshopt; and `KTX2Loader.detectSupport(renderer)` plus a reachable transcoder for
