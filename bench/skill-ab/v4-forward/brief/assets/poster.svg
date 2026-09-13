@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" role="img" aria-labelledby="title desc">
+  <title id="title">Still view of the Parallax Index field</title>
+  <desc id="desc">An electric cyan woven contour floating on a deep blue field.</desc>
+  <rect width="1200" height="1500" fill="#07142F"/>
+  <defs>
+    <linearGradient id="fade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#BDF8FA" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#43E8F4" stop-opacity=".18"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <path id="thread" d="M168 804 C280 512 446 332 625 374 C802 416 1005 632 1008 853 C1011 1072 824 1194 632 1128 C438 1062 285 956 168 804Z"/>
+  </defs>
+  <g fill="none" stroke="url(#fade)" stroke-width="2" filter="url(#glow)">
+    <use href="#thread" transform="rotate(-18 600 750) scale(.68) translate(282 344)" opacity=".32"/>
+    <use href="#thread" transform="rotate(-15 600 750) scale(.72) translate(232 290)" opacity=".38"/>
+    <use href="#thread" transform="rotate(-12 600 750) scale(.76) translate(185 240)" opacity=".44"/>
+    <use href="#thread" transform="rotate(-9 600 750) scale(.80) translate(142 188)" opacity=".50"/>
+    <use href="#thread" transform="rotate(-6 600 750) scale(.84) translate(102 143)" opacity=".56"/>
+    <use href="#thread" transform="rotate(-3 600 750) scale(.88) translate(67 101)" opacity=".62"/>
+    <use href="#thread" transform="scale(.92) translate(42 65)" opacity=".7"/>
+    <use href="#thread" transform="rotate(3 600 750) scale(.96) translate(18 28)" opacity=".76"/>
+    <use href="#thread" transform="rotate(6 600 750)" opacity=".84"/>
+    <use href="#thread" transform="rotate(9 600 750) scale(1.04) translate(-22 -28)" opacity=".74"/>
+    <use href="#thread" transform="rotate(12 600 750) scale(1.08) translate(-43 -55)" opacity=".62"/>
+    <use href="#thread" transform="rotate(15 600 750) scale(1.12) translate(-62 -78)" opacity=".5"/>
+  </g>
+  <g fill="#43E8F4">
+    <circle cx="156" cy="181" r="4"/><circle cx="1046" cy="1314" r="4"/>
+  </g>
+  <g stroke="#43E8F4" stroke-opacity=".28" stroke-width="1">
+    <path d="M92 181h128M156 117v128"/><path d="M982 1314h128M1046 1250v128"/>
+  </g>
+</svg>

@@ -1,0 +1,5 @@
+Complete the isolated website build described by `brief.md`.
+
+Read `copy.json`, `kit.json`, and the Web Design Studio skill at `skill/SKILL.md`. Read only the skill references that directly apply to this build. The supplied files in `assets/` are immutable inputs.
+
+Create `index.html` in the current directory. Follow the brief exactly and finish the working implementation, including its normal, mobile, reduced-motion, no-JavaScript, and startup-failure behavior. Do not create a build system or use network resources. Do not edit the brief, ledgers, assets, or skill payload.

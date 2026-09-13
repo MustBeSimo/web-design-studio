@@ -1,0 +1,37 @@
+{
+  "protocolVersion": "4.0.0",
+  "kind": "baseline-candidate-forward-test",
+  "conditions": [
+    { "id": "B", "label": "baseline", "skillRef": "f1b5625" },
+    { "id": "C", "label": "candidate", "skillRef": "eb9e1aa" }
+  ],
+  "model": "claude-sonnet-5",
+  "attempts": 2,
+  "budgetCapUsd": 8,
+  "runner": {
+    "executable": "claude",
+    "allowedTools": "Read,Write,Edit",
+    "disallowedTools": "Bash,WebFetch,WebSearch,Glob,Grep,Skill,Agent,Task,NotebookEdit",
+    "maxBudgetUsd": 2,
+    "maxTurns": 60,
+    "timeoutSeconds": 1200,
+    "safeMode": true,
+    "restricted": true,
+    "sessionPersistence": false
+  },
+  "expectedAssets": [
+    "assets/orbit-field-viewer.js",
+    "assets/scene.json",
+    "assets/poster.svg"
+  ],
+  "acceptance": {
+    "candidateFunctional": 2,
+    "baselineFunctionalMax": 1,
+    "candidateAddedClaimsMax": 0,
+    "medianCostRatioMax": 1.1,
+    "medianTimeRatioMax": 1.1,
+    "medianTurnsRatioMax": 1.1,
+    "tasteClaimRequiresBlindReview": true,
+    "candidateTasteWinsRequired": 2
+  }
+}

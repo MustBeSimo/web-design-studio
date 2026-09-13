@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Blinded taste review</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#07142f;color:#f4fbfc;font:16px/1.5 system-ui,sans-serif}header{padding:18px 24px;border-bottom:1px solid #43e8f457}h1{font:400 2rem/1.1 Baskerville,serif}main{padding:24px}.group{margin-bottom:36px}.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}.candidate{border:1px solid #43e8f457;border-radius:18px;overflow:hidden;background:#0b2045}.candidate b{display:block;padding:8px 14px}.candidate iframe{display:block;width:100%;height:720px;border:0;background:white}.choice{display:flex;gap:14px;padding:14px 0}button{min-height:44px;border:0;border-radius:999px;padding:10px 18px;background:#43e8f4;color:#07142f;font-weight:700}@media(max-width:850px){.pair{grid-template-columns:1fr}.candidate iframe{height:620px}}
+  </style>
+</head>
+<body><header><h1>Blinded taste review</h1><p id="instructions"></p></header><main id="groups"></main><script>
+    const manifest=await fetch('./manifest.json').then(response=>response.json());
+    document.getElementById('instructions').textContent=manifest.instructions;
+    const root=document.getElementById('groups');
+    for(const group of manifest.groups){const section=document.createElement('section');section.className='group';section.innerHTML=`<h2>Attempt ${group.attempt}</h2><div class="pair">${group.candidates.map(item=>`<article class="candidate"><b>${item.label}</b><iframe title="Attempt ${group.attempt}, option ${item.label}" src="${item.path}"></iframe></article>`).join('')}</div><fieldset class="choice"><legend>Which has stronger visual taste?</legend><label><input required type="radio" name="attempt-${group.attempt}" value="X"> X</label><label><input type="radio" name="attempt-${group.attempt}" value="Y"> Y</label><label><input type="radio" name="attempt-${group.attempt}" value="tie"> Tie</label></fieldset>`;root.append(section)}
+    const button=document.createElement('button');button.textContent='Download ratings';button.onclick=()=>{const ratings=manifest.groups.map(group=>({attempt:group.attempt,choice:document.querySelector(`input[name="attempt-${group.attempt}"]:checked`)?.value}));if(ratings.some(item=>!item.choice)){alert('Choose an option for both attempts.');return}const blob=new Blob([JSON.stringify({ratings},null,2)+'\n'],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='v4-taste-ratings.json';a.click();URL.revokeObjectURL(a.href)};root.append(button);
+  </script></body>
+</html>

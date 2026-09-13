@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" data-render-state="loading">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Parallax Index — A study in shifting form</title>
+  <meta name="description" content="A procedural field observed through three changes in view.">
+  <style>
+    *{box-sizing:border-box}html{scroll-behavior:smooth;background:#07142f;color:#bdf8fa}body{margin:0;font:16px/1.5 Inter,ui-sans-serif,system-ui,sans-serif;overflow-x:hidden}main{padding:24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,48vw);gap:24px}.copy{max-width:36rem}.stage{position:sticky;top:24px;aspect-ratio:4/5;box-shadow:0 30px 80px #00081c6b}canvas,.poster{position:absolute;inset:0;width:100%;height:100%}.poster{object-fit:cover;transition:opacity .48s}.ready .poster{opacity:0;pointer-events:none}h1,h2{font-family:Baskerville,"Times New Roman",serif;font-weight:400}h1{font-size:clamp(3rem,7vw,7rem);line-height:.9}section{min-height:75vh;padding:32px 0}a,button{min-height:44px;border:1px solid #43e8f457;border-radius:999px;padding:10px 18px;color:inherit;background:#0b2045;font:inherit;text-decoration:underline;text-underline-offset:.18em}button+div[hidden]{display:none}:focus-visible{outline:3px solid #43e8f4;outline-offset:3px}[data-render-status]{position:fixed;z-index:3;right:16px;bottom:16px;background:#0b2045;padding:8px 14px;border-radius:999px}@media(max-width:719px){main{display:block;padding:18px}.stage{position:relative;top:auto;width:100%;aspect-ratio:4/5;margin:20px 0}section{min-height:auto;padding:40px 0}a,button{display:inline-flex;align-items:center;margin:4px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.poster{transition:none}}
+  </style>
+  <noscript><style>[data-render-status]{display:none}.poster{z-index:2}</style></noscript>
+</head>
+<body>
+  <main>
+    <div class="copy">
+      <p>Field note 07 / Open study</p>
+      <h1>Shape is a matter of position.</h1>
+      <p>A woven signal turns, separates, and resolves as your point of view changes. Scroll to move through the study.</p>
+      <p><a href="#method">Read the method</a> <button type="button" aria-expanded="true" aria-controls="notes">Show field notes</button></p>
+      <section id="method"><div id="notes"><p>Method / Browser study</p><p>One local WebGL program draws the field in real time. Scroll position changes the camera, twist, and separation; no recorded sequence is used.</p></div></section>
+      <section><p>01 / Near</p><h2>A surface becomes a horizon.</h2><p>At close range, density hides the whole. Small shifts reveal the direction of the weave.</p></section>
+      <section><p>02 / Across</p><h2>Distance makes the pattern legible.</h2><p>The field opens into parallel traces, each carrying a slightly different phase.</p></section>
+      <section><p>03 / Through</p><h2>The object is also an interval.</h2><p>Look past the contour and the gaps begin to describe a second, quieter form.</p></section>
+      <footer>Parallax Index / Local render / 2026</footer>
+    </div>
+    <div class="stage"><img class="poster" src="assets/poster.svg" alt="An electric cyan woven contour floating on a deep blue field."><canvas>Live procedural contour view.</canvas></div>
+  </main>
+  <p data-render-status role="status" aria-live="polite">Preparing live field</p>
+  <noscript><p>Still field — JavaScript is off</p></noscript>
+  <script type="module">
+    const root=document.documentElement,status=document.querySelector('[data-render-status]'),poster=document.querySelector('.poster'),canvas=document.querySelector('canvas'),button=document.querySelector('button'),notes=document.getElementById('notes');
+    const labels={ready:'Live field ready',fallback:'Still field — live rendering unavailable'};
+    const setState=(state)=>{root.dataset.renderState=state;status.textContent=labels[state];root.classList.toggle('ready',state==='ready');if(state==='fallback'){button.setAttribute('aria-expanded','true');notes.hidden=false}root.dispatchEvent(new CustomEvent('renderstatechange',{bubbles:true,detail:{state}}))};
+    button.addEventListener('click',()=>{const open=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!open));notes.hidden=open});
+    const decoded=poster.decode().catch(()=>new Promise((resolve,reject)=>{if(poster.complete&&poster.naturalWidth)return resolve();poster.addEventListener('load',resolve,{once:true});poster.addEventListener('error',reject,{once:true})}));
+    const watchdog=setTimeout(()=>setState('fallback'),3500);
+    try{
+      const [{mountOrbitField},scene]=await Promise.all([import('./assets/orbit-field-viewer.js'),fetch('./assets/scene.json').then(response=>{if(!response.ok)throw new Error('scene');return response.json()}),decoded]);
+      const viewer=mountOrbitField({canvas,scene,reducedMotion:matchMedia('(prefers-reduced-motion: reduce)').matches});
+      await viewer.firstFrame;clearTimeout(watchdog);setState('ready');
+      if(!matchMedia('(prefers-reduced-motion: reduce)').matches){let queued=false;addEventListener('scroll',()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;viewer.setProgress(scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight))})},{passive:true})}
+    }catch(error){clearTimeout(watchdog);await decoded.catch(()=>{});setState('fallback')}
+  </script>
+</body>
+</html>

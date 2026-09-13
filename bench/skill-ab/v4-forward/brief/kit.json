@@ -1,0 +1,57 @@
+{
+  "concept": "A neutral editorial exhibit built around a procedural woven contour, with scientific restraint and no institutional branding.",
+  "palette": {
+    "strategy": "duotone",
+    "ink": "#07142F",
+    "inkRaised": "#0B2045",
+    "signal": "#43E8F4",
+    "signalSoft": "#BDF8FA",
+    "paper": "#F4FBFC",
+    "rule": "rgba(67, 232, 244, 0.34)"
+  },
+  "type": {
+    "display": "Iowan Old Style, Baskerville, Times New Roman, serif",
+    "interface": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+    "headingWeight": 400,
+    "headingTracking": "-0.025em",
+    "labelTracking": "0.14em"
+  },
+  "shape": {
+    "controlRadius": "999px",
+    "panelRadius": "28px",
+    "border": "1px solid rgba(67, 232, 244, 0.34)"
+  },
+  "space": {
+    "discipline": "dense",
+    "pageInset": "clamp(18px, 3vw, 46px)",
+    "sectionGap": "clamp(64px, 10vh, 120px)",
+    "elementGap": "clamp(10px, 1.4vw, 18px)",
+    "measure": "36rem"
+  },
+  "emphasis": {
+    "mechanism": "underline",
+    "thickness": "1px",
+    "offset": "0.18em"
+  },
+  "depth": {
+    "stageShadow": "0 30px 80px rgba(0, 8, 28, 0.42), 0 6px 20px rgba(0, 8, 28, 0.28)",
+    "controlShadow": "0 8px 22px rgba(0, 8, 28, 0.22)"
+  },
+  "motion": {
+    "posterFadeMs": 480,
+    "scrollResponse": "requestAnimationFrame",
+    "reducedMotionProgress": 0.52
+  },
+  "layout": {
+    "desktopBreakpoint": "720px",
+    "desktop": "Two-track editorial layout: sticky copy rail and fixed-feeling visual stage, with compact chapter beats.",
+    "mobile": "Single column with the 4:5 stage in normal flow above the chapter sequence."
+  },
+  "viewer": {
+    "module": "./assets/orbit-field-viewer.js",
+    "data": "./assets/scene.json",
+    "poster": "./assets/poster.svg",
+    "export": "mountOrbitField",
+    "progressMethod": "setProgress"
+  }
+}

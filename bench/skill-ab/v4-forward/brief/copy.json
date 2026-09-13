@@ -1,0 +1,45 @@
+{
+  "meta": {
+    "title": "Parallax Index — A study in shifting form",
+    "description": "A procedural field observed through three changes in view."
+  },
+  "hero": {
+    "eyebrow": "Field note 07 / Open study",
+    "title": "Shape is a matter of position.",
+    "intro": "A woven signal turns, separates, and resolves as your point of view changes. Scroll to move through the study.",
+    "primaryAction": "Read the method",
+    "secondaryAction": "Show field notes"
+  },
+  "chapters": [
+    {
+      "label": "01 / Near",
+      "title": "A surface becomes a horizon.",
+      "body": "At close range, density hides the whole. Small shifts reveal the direction of the weave."
+    },
+    {
+      "label": "02 / Across",
+      "title": "Distance makes the pattern legible.",
+      "body": "The field opens into parallel traces, each carrying a slightly different phase."
+    },
+    {
+      "label": "03 / Through",
+      "title": "The object is also an interval.",
+      "body": "Look past the contour and the gaps begin to describe a second, quieter form."
+    }
+  ],
+  "method": {
+    "label": "Method / Browser study",
+    "text": "One local WebGL program draws the field in real time. Scroll position changes the camera, twist, and separation; no recorded sequence is used."
+  },
+  "status": {
+    "loading": "Preparing live field",
+    "ready": "Live field ready",
+    "fallback": "Still field — live rendering unavailable",
+    "noJs": "Still field — JavaScript is off"
+  },
+  "media": {
+    "posterAlt": "An electric cyan woven contour floating on a deep blue field.",
+    "canvasFallback": "Live procedural contour view."
+  },
+  "footer": "Parallax Index / Local render / 2026"
+}
