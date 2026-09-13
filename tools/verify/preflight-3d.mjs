@@ -3,7 +3,7 @@
 import {
   existsSync, readFileSync, readdirSync, statSync, writeFileSync, mkdirSync,
 } from 'node:fs';
-import { dirname, extname, join, resolve } from 'node:path';
+import { basename, dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const SOURCE_EXTENSIONS = new Set(['.html', '.htm', '.js', '.mjs', '.cjs', '.jsx', '.ts', '.tsx']);
@@ -73,7 +73,7 @@ function collectSourceGraph(entry, root) {
     files.push(file);
     const text = readFileSync(file, 'utf8');
     if (/\.html?$/i.test(file)) Object.assign(importMap, parseImportMaps([{ file, text }]).imports);
-    for (const request of parseImports(text)) {
+    for (const request of parseImports(text, file)) {
       const mapped = importMapValue(request, importMap);
       if (!mapped && !isLocalRequest(request)) continue;
       const dependency = mapped ? resolveImportTarget(mapped, root) : resolveLocal(request, file, root);
@@ -135,15 +135,112 @@ function readPackage(root) {
   }
 }
 
-function parseImports(text) {
+function blankComment(text) {
+  return text.replace(/[^\n]/g, ' ');
+}
+
+function stripCodeComments(text) {
+  let output = '';
+  let mode = 'code';
+  let escaped = false;
+  for (let index = 0; index < text.length; index++) {
+    const character = text[index];
+    const next = text[index + 1];
+    if (mode === 'code') {
+      if (character === "'" || character === '"' || character === '`') {
+        mode = character;
+        escaped = false;
+        output += character;
+      } else if (character === '/' && next === '/') {
+        mode = 'line-comment';
+        output += '  ';
+        index++;
+      } else if (character === '/' && next === '*') {
+        mode = 'block-comment';
+        output += '  ';
+        index++;
+      } else if (text.startsWith('<!--', index)) {
+        mode = 'html-comment';
+        output += '    ';
+        index += 3;
+      } else output += character;
+      continue;
+    }
+    if (mode === "'" || mode === '"' || mode === '`') {
+      output += character;
+      if (escaped) escaped = false;
+      else if (character === '\\') escaped = true;
+      else if (character === mode) mode = 'code';
+      continue;
+    }
+    if (character === '\n') {
+      output += '\n';
+      if (mode === 'line-comment') mode = 'code';
+    } else if (mode === 'block-comment' && character === '*' && next === '/') {
+      output += '  ';
+      index++;
+      mode = 'code';
+    } else if (mode === 'html-comment' && text.startsWith('-->', index)) {
+      output += '   ';
+      index += 2;
+      mode = 'code';
+    } else output += ' ';
+  }
+  return output;
+}
+
+function stripSourceComments(text, file = '') {
+  if (!/\.html?$/i.test(file)) {
+    const source = /\.[jt]sx$/i.test(file) ? text.replace(/(?<=[\p{L}\p{N}])'(?=[\p{L}\p{N}])/gu, ' ') : text;
+    return stripCodeComments(source);
+  }
+  const withoutHtmlComments = text.replace(/<!--[\s\S]*?-->/g, blankComment);
+  return withoutHtmlComments.replace(
+    /(<script\b[^>]*>)([\s\S]*?)(<\/script>)/gi,
+    (_match, open, body, close) => open + stripCodeComments(body) + close,
+  );
+}
+
+function parseImports(text, file = '') {
+  text = stripSourceComments(text, file);
   const requests = [];
   const patterns = [
-    /\b(?:import|export)\s+(?:[^'";]*?\s+from\s+)?['"]([^'"]+)['"]/g,
-    /\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/g,
-    /<script\b[^>]*\bsrc\s*=\s*['"]([^'"]+)['"][^>]*>/gi,
+    { pattern: /\b(?:import|export)\s+(?:[^'";]*?\s+from\s+)?['"]([^'"]+)['"]/g },
+    { pattern: /\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/g },
+    { pattern: /<script\b[^>]*\bsrc\s*=\s*['"]([^'"]+)['"][^>]*>/gi, browserRelative: true },
   ];
-  for (const pattern of patterns) for (const match of text.matchAll(pattern)) requests.push(match[1]);
+  for (const { pattern, browserRelative } of patterns) for (const match of text.matchAll(pattern)) {
+    const request = browserRelative && !/^(?:[./]|[a-z][a-z\d+.-]*:)/i.test(match[1]) ? `./${match[1]}` : match[1];
+    requests.push(request);
+  }
   return requests;
+}
+
+function parseNamedImports(text, file = '') {
+  const imports = [];
+  const source = stripSourceComments(text, file);
+  for (const match of source.matchAll(/\bimport\s+(type\s+)?{([\s\S]*?)}\s*from\s*['"]([^'"]+)['"]/g)) {
+    if (match[1]) continue;
+    const names = match[2].split(',').map(item => item.trim()).filter(item => item && !item.startsWith('type '))
+      .map(item => item.split(/\s+as\s+/)[0].trim()).filter(Boolean);
+    if (names.length) imports.push({ request: match[3], names });
+  }
+  return imports;
+}
+
+function explicitModuleExports(text, file = '') {
+  const source = stripSourceComments(text, file);
+  if (/\bexport\s*\*\s*from\b/.test(source)) return null;
+  const names = new Set();
+  for (const match of source.matchAll(/\bexport\s*{([\s\S]*?)}(?:\s*from\s*['"][^'"]+['"])?\s*;?/g)) {
+    for (const item of match[1].split(',')) {
+      const parts = item.trim().replace(/^type\s+/, '').split(/\s+as\s+/);
+      const exported = (parts[1] || parts[0] || '').trim();
+      if (exported) names.add(exported);
+    }
+  }
+  for (const match of source.matchAll(/\bexport\s+(?:async\s+)?(?:class|function|const|let|var)\s+([A-Za-z_$][\w$]*)/g)) names.add(match[1]);
+  return names;
 }
 
 function parseImportMaps(sources) {
@@ -151,7 +248,8 @@ function parseImportMaps(sources) {
   const errors = [];
   for (const source of sources) {
     if (!/\.html?$/i.test(source.file)) continue;
-    for (const match of source.text.matchAll(/<script\b[^>]*type\s*=\s*['"]importmap['"][^>]*>([\s\S]*?)<\/script>/gi)) {
+    const text = source.text.replace(/<!--[\s\S]*?-->/g, blankComment);
+    for (const match of text.matchAll(/<script\b[^>]*type\s*=\s*['"]importmap['"][^>]*>([\s\S]*?)<\/script>/gi)) {
       try {
         for (const [key, value] of Object.entries(JSON.parse(match[1]).imports || {})) imports[key] = { value, source: source.file };
       }
@@ -171,7 +269,7 @@ function importMapValue(request, imports) {
 
 function modelReferences(source) {
   const refs = [];
-  for (const match of source.text.matchAll(/['"]([^'"\n]+\.(?:glb|gltf)(?:[?#][^'"]*)?)['"]/gi)) {
+  for (const match of stripSourceComments(source.text, source.file).matchAll(/['"]([^'"\n]+\.(?:glb|gltf)(?:[?#][^'"]*)?)['"]/gi)) {
     if (!/[${}]|<[^>]+>/.test(match[1])) refs.push(match[1]);
   }
   return refs;
@@ -227,7 +325,7 @@ function versionFromThreeUrl(value) {
 function literalLoaderPaths(sources, method) {
   const paths = [];
   const pattern = new RegExp(`${method}\\s*\\(\\s*(['"])(.*?)\\1`, 'g');
-  for (const source of sources) for (const match of source.text.matchAll(pattern)) paths.push({ request: match[2], source: source.file });
+  for (const source of sources) for (const match of stripSourceComments(source.text, source.file).matchAll(pattern)) paths.push({ request: match[2], source: source.file });
   return paths;
 }
 
@@ -269,10 +367,10 @@ export function preflight3d(target, { models: requestedModels = [] } = {}) {
   const sourceFiles = isDirectory ? walkSources(root) : collectSourceGraph(absoluteTarget, root);
   const sources = sourceFiles.map(file => ({ file, text: readFileSync(file, 'utf8') }));
   const referenceSources = isDirectory ? walkModelReferenceFiles(root).map(file => ({ file, text: readFileSync(file, 'utf8') })) : [];
-  const combined = sources.map(source => source.text).join('\n');
+  const combined = sources.map(source => stripSourceComments(source.text, source.file)).join('\n');
   const { imports: importMap, errors: importMapErrors } = parseImportMaps(sources);
   const packageInfo = readPackage(root);
-  const requests = sources.flatMap(source => parseImports(source.text).map(request => ({ request, source: source.file })));
+  const requests = sources.flatMap(source => parseImports(source.text, source.file).map(request => ({ request, source: source.file })));
   const referencedModels = [...sources, ...referenceSources].flatMap(source =>
     modelReferences(source).map(request => ({ request, source: source.file, authoritative: true })));
   for (const request of requestedModels) referencedModels.push({ request, source: null, authoritative: true });
@@ -292,7 +390,7 @@ export function preflight3d(target, { models: requestedModels = [] } = {}) {
   const dependencies = packageInfo.dependencies;
   const relevantPackages = new Set();
   for (const { request, source } of requests) {
-    if (/^(?:https?:|data:|node:)/i.test(request)) continue;
+    if (/^(?:https?:|data:|node:|\/\/)/i.test(request)) continue;
     if (isLocalRequest(request)) {
       if (!resolveLocal(request, source, root)) check('module-request', false, `missing local module ${request} imported by ${source}`);
       continue;
@@ -303,6 +401,19 @@ export function preflight3d(target, { models: requestedModels = [] } = {}) {
       const mapping = importMapValue(request, importMap);
       if (mapping && !resolveImportTarget(mapping, root)) check('module-request', false, `${request} maps to missing local module ${mapping.value}`);
       else if (!mapping && !dependencies[pkg]) check('module-request', false, `${request} has no import-map entry or ${pkg} package dependency`);
+    }
+  }
+  for (const source of sources) {
+    if (basename(source.file) !== 'three.module.js') continue;
+    for (const imported of parseNamedImports(source.text, source.file)) {
+    const mapping = importMapValue(imported.request, importMap);
+    const target = mapping ? resolveImportTarget(mapping, root) : isLocalRequest(imported.request) ? resolveLocal(imported.request, source.file, root) : null;
+    if (!target || /^(?:https?:|data:)/i.test(target) || basename(target) !== 'three.core.js') continue;
+    const exported = explicitModuleExports(readFileSync(target, 'utf8'), target);
+    if (exported === null) continue;
+    const missing = imported.names.filter(name => !exported.has(name));
+    check('module-exports', missing.length === 0,
+      missing.length ? `${source.file} imports missing export${missing.length === 1 ? '' : 's'} ${missing.join(', ')} from ${target}` : `${source.file} named imports resolve in ${target}`);
     }
   }
   const coreMapping = importMapValue('three', importMap);

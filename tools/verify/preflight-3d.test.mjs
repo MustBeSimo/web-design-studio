@@ -95,6 +95,72 @@ test('follows local module requests and checks external glTF resources', t => {
   assert.ok(report.checks.some(check => check.name === 'model-resource' && check.detail.includes('missing.bin')));
 });
 
+test('ignores model and decoder examples inside source comments', t => {
+  const directory = fixture(t);
+  writeFileSync(join(directory, 'package.json'), '{"dependencies":{"three":"0.185.0"}}');
+  writeGlb(join(directory, 'hero.glb'));
+  writeFileSync(join(directory, 'scene.js'), `
+    import * as THREE from 'three';
+    /* loader.load('missing-doc.glb'); draco.setDecoderPath('/missing-doc-draco/'); */
+    const note = 'literal // text stays intact'; // loader.load('also-missing.gltf');
+    const model = './hero.glb';
+  `);
+  const report = preflight3d(directory);
+  assert.ok(report.models.some(model => model.file.endsWith('hero.glb')));
+  assert.equal(report.checks.some(check => /missing-doc|also-missing/.test(check.detail)), false);
+});
+
+test('commented decoder examples cannot satisfy a required Draco configuration', t => {
+  const directory = fixture(t);
+  writeFileSync(join(directory, 'package.json'), '{"dependencies":{"three":"0.185.0"}}');
+  writeGlb(join(directory, 'hero.glb'), ['KHR_draco_mesh_compression']);
+  writeFileSync(join(directory, 'scene.js'), `
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    const loader = new GLTFLoader();
+    loader.load('./hero.glb');
+    // DRACOLoader; loader.setDRACOLoader(draco); draco.setDecoderPath('/draco/');
+  `);
+  const report = preflight3d(directory);
+  assert.equal(report.ok, false);
+  assert.equal(report.checks.find(check => check.name === 'decoder:draco').ok, false);
+});
+
+test('HTML prose apostrophes cannot expose commented decoder examples', t => {
+  const directory = fixture(t);
+  writeFileSync(join(directory, 'package.json'), '{"dependencies":{"three":"0.185.0"}}');
+  writeGlb(join(directory, 'hero.glb'), ['KHR_draco_mesh_compression']);
+  writeFileSync(join(directory, 'index.html'), `
+    <p>it's ready</p>
+    <!-- DRACOLoader; loader.setDRACOLoader(draco); draco.setDecoderPath('/draco/'); -->
+    <script type="module" src="./scene.js"></script>
+  `);
+  writeFileSync(join(directory, 'scene.js'), `
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    new GLTFLoader().load('./hero.glb');
+  `);
+  const report = preflight3d(directory);
+  assert.equal(report.ok, false);
+  assert.equal(report.checks.find(check => check.name === 'decoder:draco').ok, false);
+});
+
+test('JSX prose apostrophes cannot expose commented decoder examples', t => {
+  const directory = fixture(t);
+  writeFileSync(join(directory, 'package.json'), '{"dependencies":{"three":"0.185.0"}}');
+  writeGlb(join(directory, 'hero.glb'), ['KHR_draco_mesh_compression']);
+  writeFileSync(join(directory, 'scene.tsx'), `
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    new GLTFLoader().load('./hero.glb');
+    const View = () => <p>it's ready</p>;
+    // DRACOLoader; loader.setDRACOLoader(draco); draco.setDecoderPath(runtimePath);
+  `);
+  const report = preflight3d(directory);
+  assert.equal(report.ok, false);
+  assert.equal(report.checks.find(check => check.name === 'decoder:draco').ok, false);
+});
+
 test('rejects invalid CLI arguments', () => {
   assert.throws(() => parseArgs([]));
   assert.throws(() => parseArgs(['project', '--model']));
@@ -114,6 +180,56 @@ test('an HTML target follows its local module graph before checking 3D', t => {
   const report = preflight3d(join(directory, 'index.html'));
   assert.equal(report.detected, true);
   assert.equal(report.checks.find(check => check.name === 'decoder:draco').ok, false);
+});
+
+test('an HTML target follows a browser-relative script src without dot slash', t => {
+  const directory = fixture(t);
+  writeFileSync(join(directory, 'package.json'), '{"dependencies":{"three":"0.185.0"}}');
+  writeGlb(join(directory, 'hero.glb'), ['KHR_draco_mesh_compression']);
+  writeFileSync(join(directory, 'index.html'), '<script type="module" src="scene.js"></script>');
+  writeFileSync(join(directory, 'scene.js'), `
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    new GLTFLoader().load('./hero.glb');
+  `);
+  const report = preflight3d(join(directory, 'index.html'));
+  assert.equal(report.detected, true);
+  assert.equal(report.checks.find(check => check.name === 'decoder:draco').ok, false);
+});
+
+test('fails when a local module imports a named export its dependency does not provide', t => {
+  const directory = fixture(t);
+  writeGlb(join(directory, 'hero.glb'));
+  writeFileSync(join(directory, 'index.html'), '<script type="module" src="three.module.js"></script>');
+  writeFileSync(join(directory, 'three.module.js'), `
+    import { Present, Missing } from './three.core.js';
+    export { Present, Missing };
+  `);
+  writeFileSync(join(directory, 'three.core.js'), 'export const Present = true;');
+  const report = preflight3d(join(directory, 'index.html'));
+  assert.equal(report.ok, false);
+  assert.match(report.checks.find(check => check.name === 'module-exports' && !check.ok).detail, /Missing/);
+});
+
+test('named-export compatibility check stays conservative outside split Three.js builds', t => {
+  const directory = fixture(t);
+  writeGlb(join(directory, 'hero.glb'));
+  writeFileSync(join(directory, 'index.html'), '<model-viewer src="hero.glb"></model-viewer><script type="module" src="scene.js"></script>');
+  writeFileSync(join(directory, 'scene.js'), `
+    import { second } from './dep.js';
+    import type { Shape } from './types.ts';
+  `);
+  writeFileSync(join(directory, 'dep.js'), 'export const first = 1, second = 2;');
+  writeFileSync(join(directory, 'types.ts'), 'export interface Shape {}');
+  const report = preflight3d(join(directory, 'index.html'));
+  assert.equal(report.checks.some(check => check.name === 'module-exports' && !check.ok), false);
+});
+
+test('protocol-relative script sources are not treated as local files', t => {
+  const directory = fixture(t);
+  writeFileSync(join(directory, 'index.html'), '<model-viewer></model-viewer><script src="//cdn.example/main.js"></script>');
+  const report = preflight3d(join(directory, 'index.html'));
+  assert.equal(report.checks.some(check => check.name === 'module-request' && /cdn\.example/.test(check.detail)), false);
 });
 
 test('local import-map targets are resolved and their transitive core imports are followed', t => {

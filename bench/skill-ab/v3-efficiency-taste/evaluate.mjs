@@ -3,7 +3,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { chromium } from "playwright-core";
-import { EXPERIMENT, REPO, loadConfig, normalizeText, readJson, serveDirectory, writeJson } from "./lib.mjs";
+import { EXPERIMENT, REPO, isolateBrowserContext, loadConfig, normalizeText, readJson, serveDirectory, writeJson } from "./lib.mjs";
 
 const CHROME = process.env.CHROME_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const GL_ARGS = ["--enable-unsafe-swiftshader", "--use-angle=swiftshader"];
@@ -38,11 +38,20 @@ export function countVisualStateChanges(opening, ending) {
   }, 0);
 }
 
+export function isUsableImageEvidence(image) {
+  return Boolean(image?.complete && Number(image.naturalWidth) > 0 && Number(image.naturalHeight) > 0);
+}
+
+export function isIgnorableConsoleError(text, locationUrl = '') {
+  return /failed to load resource/i.test(String(text)) && /\/favicon\.ico(?:[?#]|$)/i.test(String(locationUrl));
+}
+
 export function passesModelProof(profile, failureModes, observedAssets, noJs) {
   return profile.visibleCanvas && profile.webglContexts.length > 0 && profile.modelState === "ready"
     && profile.modelProof?.statesDiffer && profile.modelProof?.nonDominantRatio >= .01 && profile.modelProof?.changedRatio >= .005
     && observedAssets.has("axis-24.glb") && noJs.posterVisible
-    && Object.values(failureModes).every((mode) => mode.uncaught.length === 0 && mode.posterVisible && mode.modelState === "fallback" && mode.missingCopy.length === 0);
+    && Object.values(failureModes).every((mode) => mode.uncaught.length === 0 && (mode.externalRequests || []).length === 0
+      && mode.posterVisible && mode.modelState === "fallback" && mode.missingCopy.length === 0);
 }
 
 const hasEveryAsset = (profile, names) => names.every((name) => profile.renderedAssets?.includes(name));
@@ -98,7 +107,8 @@ async function inspectPage(browser, url, brief, copy, kit) {
   for (const profile of profiles) {
     const context = await browser.newContext(profile);
     const page = await context.newPage();
-    const uncaught = [], consoleErrors = [], failedRequests = [], responses = [], contexts = [];
+    const uncaught = [], consoleErrors = [], failedRequests = [], externalRequests = [], responses = [];
+    await isolateBrowserContext(context, url, externalRequests);
     await page.addInitScript(() => {
       window.__BENCH_WEBGL__ = [];
       const original = HTMLCanvasElement.prototype.getContext;
@@ -109,7 +119,9 @@ async function inspectPage(browser, url, brief, copy, kit) {
       };
     });
     page.on("pageerror", (error) => uncaught.push(error.message));
-    page.on("console", (message) => { if (message.type() === "error") consoleErrors.push(message.text()); });
+    page.on("console", (message) => {
+      if (message.type() === "error" && !isIgnorableConsoleError(message.text(), message.location().url)) consoleErrors.push(message.text());
+    });
     page.on("requestfailed", (request) => failedRequests.push({ url: request.url(), error: request.failure()?.errorText }));
     page.on("response", (response) => responses.push({ url: response.url(), status: response.status() }));
     await page.goto(`${url}/index.html`, { waitUntil: "load", timeout: 30000 });
@@ -124,7 +136,8 @@ async function inspectPage(browser, url, brief, copy, kit) {
       const elements = (0, eval)(leafExpression);
       const visiblePoster = [...document.images].some((image) => {
         const r = image.getBoundingClientRect(); const s = getComputedStyle(image);
-        return /axis-poster\.svg/i.test(image.currentSrc || image.src) && r.width > 10 && r.height > 10 && s.display !== "none" && s.visibility !== "hidden" && Number(s.opacity) > 0;
+        return /axis-poster\.svg/i.test(image.currentSrc || image.src) && image.complete && image.naturalWidth > 0 && image.naturalHeight > 0
+          && r.width > 10 && r.height > 10 && s.display !== "none" && s.visibility !== "hidden" && Number(s.opacity) > 0;
       });
       return {
         text: document.body.innerText,
@@ -155,7 +168,7 @@ async function inspectPage(browser, url, brief, copy, kit) {
       endState: undefined,
       changedNodes,
       copy: null,
-      errors: { uncaught, consoleErrors, failedRequests },
+      errors: { uncaught, consoleErrors, failedRequests, externalRequests },
       requestedAssets: kit.requiredUsage.filter((name) => responses.some((response) => response.status < 400 && response.url.includes(name)))
     };
     // analyzeCopy accepts a string for normalization and the elements for claim review.
@@ -192,27 +205,30 @@ async function inspectPage(browser, url, brief, copy, kit) {
 async function failureMode(browser, url, copy, abortPattern) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
-  const uncaught = [];
+  const uncaught = [], externalRequests = [];
+  await isolateBrowserContext(context, url, externalRequests);
   page.on("pageerror", (error) => uncaught.push(error.message));
   await page.route(abortPattern, (route) => route.abort("failed"));
   await page.goto(`${url}/index.html`, { waitUntil: "load", timeout: 30000 });
   await page.waitForTimeout(5000);
   const state = await page.evaluate(() => ({
     text: document.body.innerText,
-    poster: [...document.images].some((image) => { const r=image.getBoundingClientRect(); const s=getComputedStyle(image); return /axis-poster\.svg/i.test(image.currentSrc||image.src)&&r.width>10&&r.height>10&&s.display!=="none"&&s.visibility!=="hidden"&&Number(s.opacity)>0; }),
+    poster: [...document.images].some((image) => { const r=image.getBoundingClientRect(); const s=getComputedStyle(image); return /axis-poster\.svg/i.test(image.currentSrc||image.src)&&image.complete&&image.naturalWidth>0&&image.naturalHeight>0&&r.width>10&&r.height>10&&s.display!=="none"&&s.visibility!=="hidden"&&Number(s.opacity)>0; }),
     modelState: document.documentElement.dataset.modelState || null
   }));
   await context.close();
-  return { uncaught, posterVisible: state.poster, modelState: state.modelState, missingCopy: copy.required.filter((phrase) => !normalizeText(state.text).includes(normalizeText(phrase))) };
+  return { uncaught, externalRequests, posterVisible: state.poster, modelState: state.modelState, missingCopy: copy.required.filter((phrase) => !normalizeText(state.text).includes(normalizeText(phrase))) };
 }
 
 async function noJavaScript(browser, url, copy, briefId, kit) {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false });
   const page = await context.newPage();
+  const externalRequests = [];
+  await isolateBrowserContext(context, url, externalRequests);
   await page.goto(`${url}/index.html`, { waitUntil: "load", timeout: 30000 });
-  const state = await page.evaluate((names) => ({ text: document.body.innerText, poster: [...document.images].some((image) => { const r=image.getBoundingClientRect(); return /axis-poster\.svg/i.test(image.currentSrc||image.src)&&r.width>10&&r.height>10; }), renderedAssets: names.filter((name) => [...document.querySelectorAll('body *')].some((element) => { const s=getComputedStyle(element),request=[element.currentSrc,element.src,element.data,element.getAttribute('src'),s.backgroundImage].filter(Boolean).join(' '); const r=element.getBoundingClientRect(); return request.includes(name)&&r.width>4&&r.height>4&&s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)>0; })) }), kit.requiredUsage);
+  const state = await page.evaluate((names) => ({ text: document.body.innerText, poster: [...document.images].some((image) => { const r=image.getBoundingClientRect(); return /axis-poster\.svg/i.test(image.currentSrc||image.src)&&image.complete&&image.naturalWidth>0&&image.naturalHeight>0&&r.width>10&&r.height>10; }), renderedAssets: names.filter((name) => [...document.querySelectorAll('body *')].some((element) => { const s=getComputedStyle(element),request=[element.currentSrc,element.src,element.data,element.getAttribute('src'),s.backgroundImage].filter(Boolean).join(' '); const r=element.getBoundingClientRect(); return request.includes(name)&&r.width>4&&r.height>4&&s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)>0; })) }), kit.requiredUsage);
   await context.close();
-  return { missingCopy: copy.required.filter((phrase) => !normalizeText(state.text).includes(normalizeText(phrase))), posterVisible: briefId !== "three-d" || state.poster, renderedAssets: state.renderedAssets };
+  return { externalRequests, missingCopy: copy.required.filter((phrase) => !normalizeText(state.text).includes(normalizeText(phrase))), posterVisible: briefId !== "three-d" || state.poster, renderedAssets: state.renderedAssets };
 }
 
 export async function evaluateRun(runDirectory, brief) {
@@ -243,8 +259,10 @@ export async function evaluateRun(runDirectory, brief) {
     const everyProfile = Object.values(profiles);
     const requiredAssets = new Set(kit.requiredUsage);
     const observedAssets = new Set(everyProfile.flatMap((profile) => profile.requestedAssets));
-    const commonPass = everyProfile.every((profile) => profile.copy.missingCount === 0 && profile.overflowX <= 2 && profile.h1Count === 1 && profile.errors.uncaught.length === 0 && profile.errors.consoleErrors.length === 0)
-      && noJs.missingCopy.length === 0;
+    const commonPass = everyProfile.every((profile) => profile.copy.missingCount === 0 && profile.overflowX <= 2 && profile.h1Count === 1
+      && profile.errors.uncaught.length === 0 && profile.errors.consoleErrors.length === 0
+      && profile.errors.failedRequests.length === 0 && profile.errors.externalRequests.length === 0)
+      && noJs.missingCopy.length === 0 && noJs.externalRequests.length === 0;
     const assetsPass = [...requiredAssets].every((asset) => observedAssets.has(asset) || (asset === "axis-poster.svg" && noJs.posterVisible));
     const motionPass = profiles.desktop.docHeight >= profiles.desktop.viewportHeight * 2.5 && profiles.desktop.changedNodes > 0;
     const signaturePass = passesSignatureProof(brief.id, profiles, noJs, kit.requiredUsage);

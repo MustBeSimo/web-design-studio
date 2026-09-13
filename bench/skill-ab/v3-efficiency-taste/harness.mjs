@@ -65,7 +65,7 @@ function protocolHashes() {
   return Object.fromEntries(protocolFiles().map((file) => [file, sha256File(join(EXPERIMENT, file))]));
 }
 
-function assertFrozenIntegrity(lock) {
+export function assertFrozenIntegrity(lock) {
   const current = protocolHashes();
   const changed = Object.keys(lock.protocolHashes).filter((file) => current[file] !== lock.protocolHashes[file]);
   const added = Object.keys(current).filter((file) => !lock.protocolHashes[file]);
@@ -74,6 +74,26 @@ function assertFrozenIntegrity(lock) {
     const actual = snapshotHashes(join(WORK, "snapshots", condition));
     if (JSON.stringify(actual) !== JSON.stringify(lock.skillPayloadHashes[condition])) throw new Error(`frozen ${condition} skill payload changed`);
   }
+}
+
+export function assertFrozenEvidenceIntegrity() {
+  if (!existsSync(statePath("lock.json"))) throw new Error("experiment is not frozen");
+  const lock = readJson(statePath("lock.json"));
+  assertFrozenIntegrity(lock);
+  const preflight = join(WORK, "preflight.json");
+  if (!existsSync(preflight) || sha256File(preflight) !== lock.preflightSha256) throw new Error("frozen preflight is absent or changed");
+  const plan = readJson(statePath("run-plan.json"));
+  const planShape = plan.map(({ id, briefId, conditionId, attempt, order }) => ({ id, briefId, conditionId, attempt, order }));
+  if (JSON.stringify(planShape) !== JSON.stringify(lock.runPlanShape)) throw new Error("frozen run plan identity or order changed");
+  const archiveHashPath = statePath("run-output-hashes.json");
+  if (!existsSync(archiveHashPath)) throw new Error("archived run hashes are missing");
+  const archiveHashes = readJson(archiveHashPath);
+  for (const run of plan.filter((item) => item.status === "complete")) {
+    if (!archiveHashes[run.id]) throw new Error(`archived hashes missing for ${run.id}`);
+    const actual = snapshotHashes(join(WORK, "runs", run.id));
+    if (JSON.stringify(actual) !== JSON.stringify(archiveHashes[run.id])) throw new Error(`archived output changed for ${run.id}`);
+  }
+  return { lock, plan };
 }
 
 export function prepareSnapshot(ref, destination) {
@@ -144,6 +164,7 @@ async function freeze() {
     skillPayloadPaths: SKILL_PAYLOAD_PATHS,
     skillPayloadHashes: { B: snapshotHashes(join(WORK, "snapshots", "B")), C: snapshotHashes(join(WORK, "snapshots", "C")) },
     runInputHashes: Object.fromEntries(plan.map((run) => [run.id, snapshotHashes(join(isolatedRoot, "runs", run.id))])),
+    runPlanShape: plan.map(({ id, briefId, conditionId, attempt, order }) => ({ id, briefId, conditionId, attempt, order })),
     protocolHashes: protocolHashes(),
     preflightSha256: sha256File(join(WORK, "preflight.json"))
   };
@@ -151,6 +172,7 @@ async function freeze() {
   writeJson(statePath("run-plan.json"), plan);
   writeJson(statePath("budget.json"), { overallUsd: config.budget.overallUsd, developmentSpentUsd, evaluationCapUsd: config.budget.evaluationUsd, evaluationSpentUsd: 0, reserveUsd: config.budget.reserveUsd, completedRuns: 0 });
   writeJson(statePath("invalidations.json"), { groups: [] });
+  writeJson(statePath("run-output-hashes.json"), {});
   console.log(`✓ frozen ${plan.length} runs; candidate ${candidateRef.slice(0, 12)}; model ${model}; seed ${seed}`);
 }
 
@@ -251,6 +273,9 @@ async function runNext() {
   const archived = join(WORK, "runs", run.id);
   if (existsSync(archived)) fail(`archived run already exists: ${archived}`);
   cpSync(directory, archived, { recursive: true });
+  const archiveHashes = readJson(statePath("run-output-hashes.json"));
+  archiveHashes[run.id] = snapshotHashes(archived);
+  writeJson(statePath("run-output-hashes.json"), archiveHashes);
   console.log(JSON.stringify({ run: run.id, metrics, evaluation: { status: evaluation.status, functionalComplete: evaluation.functionalComplete }, budget }, null, 2));
 }
 

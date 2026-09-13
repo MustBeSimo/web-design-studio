@@ -3,9 +3,9 @@ import { existsSync, mkdirSync, mkdtempSync, readdirSync, symlinkSync, writeFile
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { analyzeCopy, countVisualStateChanges, passesModelProof, passesSignatureProof } from "./evaluate.mjs";
+import { analyzeCopy, countVisualStateChanges, isIgnorableConsoleError, isUsableImageEvidence, passesModelProof, passesSignatureProof } from "./evaluate.mjs";
 import { SKILL_PAYLOAD_PATHS, parseResult, prepareSnapshot, validateProtocol } from "./harness.mjs";
-import { loadConfig, serveDirectory } from "./lib.mjs";
+import { isAllowedBrowserRequest, loadConfig, serveDirectory } from "./lib.mjs";
 import { runPreflight } from "./preflight.mjs";
 import { buildPublicReviewManifest, makeBlindMap, stageBlindBuild } from "./review.mjs";
 
@@ -29,6 +29,28 @@ test("normal document scrolling does not count as visual motion", () => {
   const opening = [{ key: "P:0:copy", x: 0, documentY: 500, w: 300, h: 40, opacity: "1", transform: "none", clipPath: "none", backgroundColor: "rgba(0, 0, 0, 0)" }];
   assert.equal(countVisualStateChanges(opening, [{ ...opening[0] }]), 0);
   assert.equal(countVisualStateChanges(opening, [{ ...opening[0], transform: "matrix(1, 0, 0, 1, 30, 0)" }]), 1);
+});
+
+test("browser request policy permits only the served origin and inert URL schemes", () => {
+  const local = "http://127.0.0.1:43210";
+  assert.equal(isAllowedBrowserRequest(`${local}/index.html`, local), true);
+  assert.equal(isAllowedBrowserRequest("data:image/svg+xml,%3Csvg/%3E", local), true);
+  assert.equal(isAllowedBrowserRequest("blob:http://127.0.0.1:43210/id", local), true);
+  assert.equal(isAllowedBrowserRequest("about:blank", local), true);
+  assert.equal(isAllowedBrowserRequest("https://fonts.example/font.woff2", local), false);
+  assert.equal(isAllowedBrowserRequest("http://127.0.0.1:43211/tracker", local), false);
+});
+
+test("poster evidence rejects a broken image that only has CSS geometry", () => {
+  assert.equal(isUsableImageEvidence({ complete: true, naturalWidth: 800, naturalHeight: 600 }), true);
+  assert.equal(isUsableImageEvidence({ complete: true, naturalWidth: 0, naturalHeight: 0, width: 800, height: 600 }), false);
+  assert.equal(isUsableImageEvidence({ complete: false, naturalWidth: 800, naturalHeight: 600 }), false);
+});
+
+test("only the browser's missing default favicon noise is ignored", () => {
+  assert.equal(isIgnorableConsoleError("Failed to load resource: 404", "http://127.0.0.1:4000/favicon.ico"), true);
+  assert.equal(isIgnorableConsoleError("Failed to load resource: 404", "http://127.0.0.1:4000/app.js"), false);
+  assert.equal(isIgnorableConsoleError("Uncaught TypeError", "http://127.0.0.1:4000/favicon.ico"), false);
 });
 
 test("editorial and product gates require real signature states and complete static assets", () => {

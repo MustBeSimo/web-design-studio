@@ -3,7 +3,8 @@ import { cpSync, existsSync, lstatSync, mkdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
-import { EXPERIMENT, WORK, hashOrder, loadConfig, readJson, serveDirectory, writeJson } from "./lib.mjs";
+import { EXPERIMENT, WORK, hashOrder, isolateBrowserContext, loadConfig, readJson, serveDirectory, writeJson } from "./lib.mjs";
+import { assertFrozenEvidenceIntegrity } from "./harness.mjs";
 
 const argv = process.argv.slice(2);
 const command = argv[0] || "help";
@@ -57,6 +58,7 @@ async function captureAll(manifest, reviewDirectory) {
       for (const viewport of [{ id: "desktop", width: 1440, height: 900 }, { id: "mobile", width: 390, height: 844 }]) {
         const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height }, isMobile: viewport.id === "mobile", hasTouch: viewport.id === "mobile" });
         const page = await context.newPage();
+        await isolateBrowserContext(context, server.url);
         await page.goto(`${server.url}/${candidate.url}`, { waitUntil: "load", timeout: 30000 });
         await page.waitForTimeout(2200);
         for (let i = 0; i < group.captureFractions.length; i++) {
@@ -77,6 +79,7 @@ async function captureAll(manifest, reviewDirectory) {
 }
 
 async function prepare() {
+  assertFrozenEvidenceIntegrity();
   const config = loadConfig();
   const lockPath = join(WORK, "state", "lock.json");
   const planPath = join(WORK, "state", "run-plan.json");
@@ -115,6 +118,7 @@ const median = (values) => {
 };
 
 function reveal() {
+  assertFrozenEvidenceIntegrity();
   const ratingsPath = option("ratings");
   if (!ratingsPath || !existsSync(ratingsPath)) throw new Error("reveal requires --ratings <exported-ratings.json>");
   const ratings = readJson(ratingsPath);

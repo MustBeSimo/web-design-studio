@@ -29,6 +29,22 @@ export function loadConfig() {
   return readJson(CONFIG_PATH);
 }
 
+export function isAllowedBrowserRequest(requestUrl, localUrl) {
+  if (/^(?:about:|blob:|data:)/i.test(requestUrl)) return true;
+  try { return new URL(requestUrl).origin === new URL(localUrl).origin; }
+  catch { return false; }
+}
+
+export async function isolateBrowserContext(context, localUrl, blockedRequests = []) {
+  await context.route("**/*", async (route) => {
+    const request = route.request();
+    if (isAllowedBrowserRequest(request.url(), localUrl)) return route.continue();
+    blockedRequests.push({ url: request.url(), method: request.method(), resourceType: request.resourceType() });
+    return route.abort("blockedbyclient");
+  });
+  return blockedRequests;
+}
+
 export function runId(briefId, conditionId, attempt) {
   return `${briefId}--${conditionId}--${attempt}`;
 }
