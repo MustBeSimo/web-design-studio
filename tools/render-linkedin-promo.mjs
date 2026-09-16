@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import {mkdtempSync, writeFileSync} from "node:fs";
+import {mkdtempSync, readFileSync, writeFileSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {dirname, join, resolve} from "node:path";
 import {fileURLToPath} from "node:url";
@@ -36,6 +36,13 @@ function text(value, options = {}) {
   return `drawtext=fontfile='${font}':text='${escapeText(value)}':fontsize=${size}:fontcolor=${color}@${alpha}:x=${x}:y=${y}:line_spacing=16:shadowcolor=black@0.45:shadowx=0:shadowy=3`;
 }
 
+// Text files preserve source-code punctuation through FFmpeg's filter parser.
+function sourceLine(value, index, y) {
+  const path = join(work, `aether-code-${index}.txt`);
+  writeFileSync(path, value);
+  return `drawtext=fontfile='/System/Library/Fonts/Menlo.ttc':textfile='${path}':expansion=none:fontsize=30:fontcolor=${paper}:x=148:y=${y}`;
+}
+
 function baseFilter({dark = 0.18, fade = true} = {}) {
   const filters = [
     "scale=1920:1080:force_original_aspect_ratio=increase",
@@ -59,7 +66,9 @@ function segment({source, start = 0, duration, filters}) {
     .replaceAll("DURATION-0.22", String(duration - 0.22))
     .replaceAll("DURATION", String(duration)));
   run([
-    "-y", "-ss", String(start), "-t", String(duration), "-i", resolve(repo, source),
+    "-y", ...(source
+      ? ["-ss", String(start), "-t", String(duration), "-i", resolve(repo, source)]
+      : ["-f", "lavfi", "-i", `color=c=${ink}:s=1920x1080:r=30:d=${duration}`]),
     "-an", "-vf", resolvedFilters.join(","),
     "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p",
     "-r", "30", "-movflags", "+faststart", file,
@@ -83,21 +92,56 @@ segment({
 });
 
 segment({
-  source: "assets/demo-loop.mp4",
-  start: 0,
-  duration: 4.5,
+  duration: 4,
   filters: [
-    ...baseFilter({dark: 0.24}),
-    "drawbox=x=76:y=68:w=720:h=230:color=#10110D@0.82:t=fill",
-    "drawbox=x=76:y=68:w=8:h=230:color=#D8FF45@1:t=fill",
-    text("01 / DIRECTION", {size: 24, color: accent, x: 112, y: 96}),
-    text("Start with the brief.", {font: serif, size: 72, x: 112, y: 142}),
-    text("Subject / audience / action / visual grammar", {size: 26, x: 112, y: 238}),
+    ...baseFilter({dark: 0}),
+    text("01 / AETHER / PROMPT", {size: 28, color: accent, x: 120, y: 120}),
+    text("Start with a specific vision.", {font: serif, size: 86, x: 120, y: 192}),
+    "drawbox=x=120:y=380:w=1680:h=420:color=#F1ECE2@0.06:t=fill",
+    "drawbox=x=120:y=380:w=6:h=420:color=#D8FF45:t=fill",
+    text("Use cinematic-scroll to build Aether:", {size: 52, x: 164, y: 435}),
+    text("a cinematic 3D site with an object, a hall,", {size: 52, x: 164, y: 525}),
+    text("a shader field and a figure. Link the camera to scroll.", {size: 48, x: 164, y: 615}),
+    text("PROMPT  /  CODE  /  PREVIEW", {size: 26, color: accent, x: 120, y: 906}),
+  ],
+});
+
+const aetherSource = readFileSync(resolve(repo, "examples/flagship/main.js"), "utf8");
+const codeLines = [
+  "const f = t * span;",
+  "const i = clamp(Math.floor(f), 0, span - 1);",
+  "const local = f - i;",
+  "camTarget.copy(anchors[i]).lerp(anchors[i + 1], smooth(0, 1, local));",
+  "camera.lookAt(lookTarget);",
+  "renderer.render(scene, camera);",
+];
+for (const line of codeLines) {
+  if (!aetherSource.includes(line)) throw new Error(`Aether source excerpt changed: ${line}`);
+}
+segment({
+  duration: 3,
+  filters: [
+    ...baseFilter({dark: 0}),
+    text("01 / AETHER / CODE", {size: 28, color: accent, x: 120, y: 120}),
+    text("Give the camera a path.", {font: serif, size: 86, x: 120, y: 192}),
+    text("examples/flagship/main.js / selected source lines", {size: 28, color: accent, x: 148, y: 350}),
+    ...codeLines.map((line, i) => sourceLine(line, i, 440 + i * 64)),
+    text("PROMPT  /  CODE  /  PREVIEW", {size: 26, color: accent, x: 120, y: 906}),
+  ],
+});
+segment({
+  source: "assets/previews/flagship.mp4",
+  start: 0.3,
+  duration: 4,
+  filters: [
+    ...baseFilter({dark: 0.04}),
+    "drawbox=x=72:y=840:w=1150:h=150:color=#10110D@0.88:t=fill",
+    text("01 / AETHER / PREVIEW", {size: 25, color: accent, x: 108, y: 870}),
+    text("One scroll. Four 3D movements.", {font: serif, size: 62, x: 108, y: 917}),
   ],
 });
 
 for (const [source, start, title] of [
-  ["assets/previews/botanical-editorial.mp4", 0.5, "Editorial systems"],
   ["assets/previews/liquid-chrome.mp4", 1.1, "Product stories"],
   ["assets/previews/brutalist-kinetic.mp4", 1.0, "Brand worlds"],
 ]) {

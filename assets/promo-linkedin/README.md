@@ -5,6 +5,11 @@ the skill's workflow and real outputs: direction from a brief, distinct visual
 systems, real-time 3D, resilience states, and browser evidence. It is designed to
 remain understandable with sound muted.
 
+The 46-second edit opens with an illustrative Aether brief, selected verbatim
+lines from `examples/flagship/main.js`, and the actual Aether capture at
+`assets/previews/flagship.mp4`. This is a prompt-to-source-to-preview explanation,
+not a recording of a new agent build. The remaining scenes retain the previous edit.
+
 Render it from the repository root:
 
 ```bash

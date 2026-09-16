@@ -111,7 +111,7 @@ responsive and fallback states alongside it.
 
 [![Watch the Web Design Studio skill and examples film](assets/promo-linkedin/web-design-studio-linkedin-poster.jpg)](assets/promo-linkedin/web-design-studio-linkedin.mp4)
 
-**[Watch the 43-second skill and examples film →](assets/promo-linkedin/web-design-studio-linkedin.mp4)** — brief, visual systems, real-time 3D, resilience states, and browser evidence.
+**[Watch the 46-second skill and examples film →](assets/promo-linkedin/web-design-studio-linkedin.mp4)** — Aether prompt, source code, preview, visual systems, real-time 3D, resilience states, and browser evidence.
 
 ### Seven Real 3D flagships
 
