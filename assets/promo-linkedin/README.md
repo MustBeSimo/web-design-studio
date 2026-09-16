@@ -7,17 +7,22 @@ remain understandable with sound muted.
 
 The 46-second edit opens with an illustrative Aether brief, selected verbatim
 lines from `examples/flagship/main.js`, and the actual Aether capture at
-`assets/previews/flagship.mp4`. This is a prompt-to-source-to-preview explanation,
-not a recording of a new agent build. The remaining scenes retain the previous edit.
+`assets/promo-linkedin/captures/flagship.mp4`. This is a prompt-to-source-to-preview
+explanation, not a recording of a new agent build. Typography enters with staggered
+fade-and-slide animation. Website shots use fresh 1920×1080 captures, fitted into
+a 1600×900 frame without cropping, with captions below the sites.
 
 Render it from the repository root:
 
 ```bash
+node tools/capture-promo-examples.mjs # refresh website footage when examples change
 node tools/render-linkedin-promo.mjs
 ```
 
-The renderer uses FFmpeg plus existing tracked footage. It creates the final MP4
-and poster without changing the source clips.
+Capture requires Playwright and Google Chrome on macOS. The capture manifest records
+source routes, viewport, frame rate, and scroll range. The renderer uses FFmpeg plus
+tracked footage and macOS fonts. It creates the final MP4 and poster without changing
+the source clips.
 
 ## Caption
 

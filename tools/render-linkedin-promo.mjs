@@ -31,16 +31,28 @@ function escapeText(value) {
 function text(value, options = {}) {
   const {
     font = sans, size = 48, color = paper, x = "100", y = "100",
-    spacing = 0, alpha = 1,
+    spacing = 0, alpha = 1, delay = 0.12,
   } = options;
-  return `drawtext=fontfile='${font}':text='${escapeText(value)}':fontsize=${size}:fontcolor=${color}@${alpha}:x=${x}:y=${y}:line_spacing=16:shadowcolor=black@0.45:shadowx=0:shadowy=3`;
+  const d = delay + Math.min(Number(y) || 0, 800) / 2400;
+  return `drawtext=fontfile='${font}':text='${escapeText(value)}':fontsize=${size}:fontcolor=${color}@${alpha}:alpha='clip((t-${d})/0.35,0,1)':x=${x}:y='${y}+24*pow(1-clip((t-${d})/0.55,0,1),3)':line_spacing=16:shadowcolor=black@0.45:shadowx=0:shadowy=3`;
 }
 
 // Text files preserve source-code punctuation through FFmpeg's filter parser.
 function sourceLine(value, index, y) {
   const path = join(work, `aether-code-${index}.txt`);
   writeFileSync(path, value);
-  return `drawtext=fontfile='/System/Library/Fonts/Menlo.ttc':textfile='${path}':expansion=none:fontsize=30:fontcolor=${paper}:x=148:y=${y}`;
+  const d = .22 + index * .16;
+  return `drawtext=fontfile='/System/Library/Fonts/Menlo.ttc':textfile='${path}':expansion=none:fontsize=30:fontcolor=${paper}:alpha='clip((t-${d})/.3,0,1)':x='148+24*(1-clip((t-${d})/.4,0,1))':y=${y}`;
+}
+
+function exampleFrame(label, title, subtitle='') {
+  return [
+    'scale=1600:900:force_original_aspect_ratio=decrease',
+    `pad=1920:1080:(ow-iw)/2:24:color=${ink}`, 'setsar=1','fps=30','format=yuv420p',
+    text(label,{size:22,color:accent,x:160,y:949}),
+    text(title,{font:serif,size:44,x:160,y:994}),
+    ...(subtitle ? [text(subtitle,{size:24,x:'w-text_w-160',y:1008})] : []),
+  ];
 }
 
 function baseFilter({dark = 0.18, fade = true} = {}) {
@@ -52,7 +64,7 @@ function baseFilter({dark = 0.18, fade = true} = {}) {
     "format=yuv420p",
   ];
   if (dark > 0) filters.push(`drawbox=x=0:y=0:w=iw:h=ih:color=black@${dark}:t=fill`);
-  if (fade) filters.push("fade=t=in:st=0:d=0.22", "fade=t=out:st=DURATION-0.22:d=0.22");
+  // Whole-frame fades are applied after typography so every layer moves together.
   return filters;
 }
 
@@ -69,7 +81,7 @@ function segment({source, start = 0, duration, filters}) {
     "-y", ...(source
       ? ["-ss", String(start), "-t", String(duration), "-i", resolve(repo, source)]
       : ["-f", "lavfi", "-i", `color=c=${ink}:s=1920x1080:r=30:d=${duration}`]),
-    "-an", "-vf", resolvedFilters.join(","),
+    "-an", "-vf", [...resolvedFilters,'setpts=PTS-STARTPTS','tpad=stop_mode=clone:stop_duration=0.1',`trim=duration=${duration}`,'fade=t=in:st=0:d=0.12',`fade=t=out:st=${duration-.12}:d=0.12`].join(","),
     "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p",
     "-r", "30", "-movflags", "+faststart", file,
   ], `segment ${index}`);
@@ -130,57 +142,43 @@ segment({
   ],
 });
 segment({
-  source: "assets/previews/flagship.mp4",
+  source: "assets/promo-linkedin/captures/flagship.mp4",
   start: 0.3,
   duration: 4,
   filters: [
-    ...baseFilter({dark: 0.04}),
-    "drawbox=x=72:y=840:w=1150:h=150:color=#10110D@0.88:t=fill",
-    text("01 / AETHER / PREVIEW", {size: 25, color: accent, x: 108, y: 870}),
-    text("One scroll. Four 3D movements.", {font: serif, size: 62, x: 108, y: 917}),
+    ...exampleFrame('01 / AETHER / PREVIEW','One scroll. Four 3D movements.'),
   ],
 });
 
 for (const [source, start, title] of [
-  ["assets/previews/liquid-chrome.mp4", 1.1, "Product stories"],
-  ["assets/previews/brutalist-kinetic.mp4", 1.0, "Brand worlds"],
+  ["assets/promo-linkedin/captures/liquid-chrome.mp4", 0.2, "Product stories"],
+  ["assets/promo-linkedin/captures/brutalist-kinetic.mp4", 0.2, "Brand worlds"],
 ]) {
   segment({
     source,
     start,
     duration: 3.5,
     filters: [
-      ...baseFilter({dark: 0.04}),
-      "drawbox=x=58:y=54:w=590:h=90:color=#10110D@0.82:t=fill",
-      text("02 / REAL BUILDS", {size: 21, color: accent, x: 86, y: 76}),
-      text(title, {font: serif, size: 42, x: 86, y: 104}),
+      ...exampleFrame('02 / REAL BUILDS',title),
     ],
   });
 }
 
 segment({
-  source: "assets/previews/jungle-flythrough.mp4",
+  source: "assets/promo-linkedin/captures/jungle-flythrough.mp4",
   start: 1.0,
   duration: 4.2,
   filters: [
-    ...baseFilter({dark: 0.14}),
-    "drawbox=x=72:y=714:w=960:h=250:color=#10110D@0.80:t=fill",
-    text("03 / REAL-TIME 3D", {size: 23, color: accent, x: 108, y: 748}),
-    text("Move through real geometry.", {font: serif, size: 68, x: 108, y: 796}),
-    text("Camera, light and story share one scroll progress.", {size: 27, x: 108, y: 895}),
+    ...exampleFrame('03 / REAL-TIME 3D','Move through real geometry.','Camera, light and story share one scroll progress.'),
   ],
 });
 
 segment({
-  source: "assets/video/aureus-preview.mp4",
+  source: "assets/promo-linkedin/captures/aureus-flythrough.mp4",
   start: 2.2,
   duration: 4.2,
   filters: [
-    ...baseFilter({dark: 0.12}),
-    "drawbox=x=888:y=100:w=950:h=250:color=#10110D@0.80:t=fill",
-    text("03 / INTERACTION", {size: 23, color: accent, x: 928, y: 136}),
-    text("Motion explains the subject.", {font: serif, size: 62, x: 928, y: 182}),
-    text("Scroll-linked camera / material / composition", {size: 25, x: 928, y: 278}),
+    ...exampleFrame('03 / INTERACTION','Motion explains the subject.','Scroll-linked camera / material / composition'),
   ],
 });
 
@@ -199,20 +197,11 @@ segment({
 });
 
 segment({
-  source: "assets/previews/clinical-noir.mp4",
+  source: "assets/promo-linkedin/captures/clinical-noir.mp4",
   start: 0.4,
   duration: 5.2,
   filters: [
-    ...baseFilter({dark: 0.58}),
-    "drawbox=x=98:y=142:w=8:h=660:color=#D8FF45@1:t=fill",
-    text("05 / BROWSER EVIDENCE", {size: 24, color: accent, x: 146, y: 164}),
-    text("Inspect the result.", {font: serif, size: 92, x: 146, y: 224}),
-    text("DESKTOP", {size: 28, x: 150, y: 390}),
-    text("MOBILE", {size: 28, x: 150, y: 460}),
-    text("REDUCED MOTION", {size: 28, x: 150, y: 530}),
-    text("NO JAVASCRIPT", {size: 28, x: 150, y: 600}),
-    text("RENDERER FAILURE", {size: 28, x: 150, y: 670}),
-    text("Working states, visible copy and real interaction.", {font: serif, size: 40, x: 146, y: 770}),
+    ...exampleFrame('05 / BROWSER EVIDENCE','Inspect the result.','Desktop / mobile / reduced motion / no JS / failure'),
   ],
 });
 

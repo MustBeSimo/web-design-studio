@@ -1,0 +1,68 @@
+[
+  {
+    "name": "flagship",
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "frames": 210,
+    "fps": 30,
+    "scrollEnd": 3403.4,
+    "source": "examples/flagship/"
+  },
+  {
+    "name": "liquid-chrome",
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "frames": 210,
+    "fps": 30,
+    "scrollEnd": 1514.0200000000002,
+    "source": "examples/liquid-chrome/"
+  },
+  {
+    "name": "brutalist-kinetic",
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "frames": 210,
+    "fps": 30,
+    "scrollEnd": 1514.0200000000002,
+    "source": "examples/brutalist-kinetic/"
+  },
+  {
+    "name": "jungle-flythrough",
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "frames": 210,
+    "fps": 30,
+    "scrollEnd": 1526.94,
+    "source": "examples/jungle-flythrough/"
+  },
+  {
+    "name": "aureus-flythrough",
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "frames": 210,
+    "fps": 30,
+    "scrollEnd": 1526.94,
+    "source": "examples/aureus-flythrough/"
+  },
+  {
+    "name": "clinical-noir",
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "frames": 210,
+    "fps": 30,
+    "scrollEnd": 1392.64,
+    "source": "examples/clinical-noir/"
+  }
+]
