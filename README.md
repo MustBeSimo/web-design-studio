@@ -109,6 +109,10 @@ responsive and fallback states alongside it.
 
 ## See the proof
 
+[![Watch the Web Design Studio skill and examples film](assets/promo-linkedin/web-design-studio-linkedin-poster.jpg)](assets/promo-linkedin/web-design-studio-linkedin.mp4)
+
+**[Watch the 43-second skill and examples film →](assets/promo-linkedin/web-design-studio-linkedin.mp4)** — brief, visual systems, real-time 3D, resilience states, and browser evidence.
+
 ### Seven Real 3D flagships
 
 Seven live websites, seven different reasons to use depth. Every flagship is scrollable, source-visible, bounded by a performance budget, and backed by a designed fallback.
