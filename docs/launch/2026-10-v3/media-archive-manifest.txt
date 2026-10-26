@@ -44,3 +44,9 @@ assets/video/reel3-hero.mp4	https://github.com/MustBeSimo/web-design-studio/rele
 assets/video/reel3-hero.poster.jpg	https://github.com/MustBeSimo/web-design-studio/releases/download/media-2026-10/video__reel3-hero.poster.jpg
 assets/web-design-studio-vs-plain-llm.png	https://github.com/MustBeSimo/web-design-studio/releases/download/media-2026-10/web-design-studio-vs-plain-llm.png
 assets/web-design-studio-vs-plain-llm.svg	https://github.com/MustBeSimo/web-design-studio/releases/download/media-2026-10/web-design-studio-vs-plain-llm.svg
+# Uploaded directly to the release on 2026-10-27 (never tracked in git; owner revisions of the LinkedIn film).
+assets/promo-linkedin/revised-section-11-22.mp4	https://github.com/MustBeSimo/web-design-studio/releases/download/media-2026-10/promo-linkedin__revised-section-11-22.mp4
+assets/promo-linkedin/web-design-studio-launch-simone-variety.mp4	https://github.com/MustBeSimo/web-design-studio/releases/download/media-2026-10/promo-linkedin__web-design-studio-launch-simone-variety.mp4
+assets/promo-linkedin/web-design-studio-linkedin-revised.mp4	https://github.com/MustBeSimo/web-design-studio/releases/download/media-2026-10/promo-linkedin__web-design-studio-linkedin-revised.mp4
+assets/promo-linkedin/revision-contact-sheet.jpg	https://github.com/MustBeSimo/web-design-studio/releases/download/media-2026-10/promo-linkedin__revision-contact-sheet.jpg
+assets/promo-linkedin/revision-verification.json	https://github.com/MustBeSimo/web-design-studio/releases/download/media-2026-10/promo-linkedin__revision-verification.json
