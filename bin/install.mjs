@@ -14,7 +14,7 @@
  * same folders and can target any supported agent; this installer is the
  * no-questions fallback.
  */
-import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, rmSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -39,7 +39,7 @@ export function discoverSkills(pkgRoot = PKG_ROOT) {
 /**
  * Copy the selected skills into skillsDir/<name>, replacing any previous copy.
  * @param {{pkgRoot?: string, skillsDir: string, only?: string[]}} options
- * @returns {Array<{name: string, target: string}>}
+ * @returns {Array<{name: string, target: string, replaced: boolean}>} `replaced` is true when a folder of that name already existed and was overwritten
  */
 export function installSkills({ pkgRoot = PKG_ROOT, skillsDir, only }) {
   const available = discoverSkills(pkgRoot);
@@ -52,9 +52,10 @@ export function installSkills({ pkgRoot = PKG_ROOT, skillsDir, only }) {
   return wanted.map((name) => {
     const source = available.find((skill) => skill.name === name).dir;
     const target = join(skillsDir, name);
+    const replaced = existsSync(target);
     rmSync(target, { recursive: true, force: true });
     cpSync(source, target, { recursive: true });
-    return { name, target };
+    return { name, target, replaced };
   });
 }
 
@@ -102,11 +103,20 @@ Skills: ${discoverSkills().map((skill) => skill.name).join(', ')}
     console.error(error.message);
     return 1;
   }
-  for (const { name, target } of installed) console.log(`✓ ${name} → ${target}`);
+  for (const { name, target, replaced } of installed) {
+    console.log(replaced ? `↻ replaced existing ${name} → ${target}` : `✓ ${name} → ${target}`);
+  }
   console.log('\nNext: open a new agent session and ask, for example,\n  "Use cinematic-scroll to build a one-page story for my product."');
   return 0;
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  process.exit(main(process.argv.slice(2)));
+/** True when this file is the entry point, including through npm's bin symlink. */
+function isMain() {
+  try {
+    return process.argv[1] !== undefined && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
 }
+
+if (isMain()) process.exit(main(process.argv.slice(2)));

@@ -49,8 +49,10 @@ jobs:
         run: node tools/check-skills.mjs --forbid-root-skill
       - name: Tracked media size (5 MB gate)
         run: node tools/check-media-size.mjs
+      - name: Landing-page links resolve (Pages serves main at /)
+        run: node tools/check-site-links.mjs
       - name: Installer, payload, validator and media-tool tests
-        run: node --test bin/install.test.mjs tools/check-package.test.mjs tools/check-skills.test.mjs tools/check-media-size.test.mjs tools/media-archive.test.mjs
+        run: node --test bin/install.test.mjs tools/check-package.test.mjs tools/check-skills.test.mjs tools/check-media-size.test.mjs tools/media-archive.test.mjs tools/check-site-links.test.mjs
       - name: Component library (doctor ≥80 each)
         run: for f in components/mode-a/*.html; do node tools/cinematic-doctor/cli.mjs "$f" --min 80 --quiet || exit 1; done
       - name: Evals (golden fixtures + trigger-set shape)
@@ -76,7 +78,7 @@ jobs:
       - name: List skills with the real installer
         run: |
           # strip ANSI colour codes: the CLI prints "Found \e[32m3\e[39m skills"
-          npx -y skills add "$GITHUB_WORKSPACE" --list 2>&1 | sed 's/\x1b\[[0-9;?]*[A-Za-z]//g' | tee /tmp/skills.txt
+          npx -y skills@1.7.4 add "$GITHUB_WORKSPACE" --list 2>&1 | sed 's/\x1b\[[0-9;?]*[A-Za-z]//g' | tee /tmp/skills.txt
           grep -q 'Found 3 skills' /tmp/skills.txt
           for s in cinematic-scroll scroll-audit launch-page-strategy; do grep -q "$s" /tmp/skills.txt; done
 

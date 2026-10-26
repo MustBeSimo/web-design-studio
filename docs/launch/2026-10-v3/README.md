@@ -15,8 +15,9 @@ seconds. The new path selects a roughly 30 KB skill folder. Measured on 27 Octob
 2026 from one home connection against the release branch: `npx skills add` listed
 all three skills in 55 seconds. Quote that measurement, or re-measure from main
 after the release, rather than a round number. The remaining time is the shallow
-clone of the showcase media that the live site still serves from main; the next
-release moves that media to a Pages build. Do not interpret installation speed as
+clone of what still lives on main: mostly showcase media the live site serves,
+plus the Next.js template's public assets and benchmark captures; the next
+release moves the site media to a Pages build. Do not interpret installation speed as
 evidence of better generated websites.
 
 After the release is ready, the owner runs these commands from the release checkout:

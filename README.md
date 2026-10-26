@@ -23,7 +23,7 @@ Formerly **Cinematic Scroll**; the `cinematic-scroll` identifier, npm package an
 npx skills add MustBeSimo/web-design-studio
 ```
 
-Pick one skill or all three. The command works with Claude Code, Cursor, Codex, Hermes, Kimi Code, Gemini CLI, OpenClaw and the other agents the [skills CLI](https://github.com/vercel-labs/skills#supported-agents) supports. Each skill is a text-only folder, about 100 KB for all three, with no account, key or paid service required.
+Pick one skill or all three. The command works with Claude Code, Cursor, Codex, Hermes, Kimi Code, Gemini CLI, OpenClaw and the other agents the [skills CLI](https://github.com/vercel-labs/skills#supported-agents) supports. Each skill is a text-only folder, under 100 KB for all three, with no account, key or paid service required.
 
 Then ask:
 

@@ -238,3 +238,6 @@ assets/video/studio-scroll-demo.poster.jpg
 
 # Claude Code native worktrees (session-local checkouts)
 .claude/worktrees/
+
+# left behind by `npx skills add <path> --list` smoke tests
+skills-lock.json

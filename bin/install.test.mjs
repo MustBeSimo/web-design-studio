@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, existsSync } from 'node:fs';
+import { mkdtempSync, existsSync, symlinkSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -38,6 +38,25 @@ test('an unknown skill name exits 1 and names the available skills', () => {
     () => execFileSync(process.execPath, [join(pkgRoot, 'bin/install.mjs'), '--dir', dir, '--skill', 'nope'], { stdio: 'pipe' }),
     (error) => error.status === 1 && /Unknown skill "nope"\. Available: cinematic-scroll, launch-page-strategy, scroll-audit/.test(String(error.stderr)),
   );
+});
+
+test('runs when invoked through a symlink, as npm installs its bin shims', () => {
+  const shimDir = mkdtempSync(join(tmpdir(), 'shim-'));
+  const shim = join(shimDir, 'cinematic-scroll-skill');
+  symlinkSync(join(pkgRoot, 'bin/install.mjs'), shim);
+  const out = execFileSync(process.execPath, [shim, '--list'], { cwd: tmpdir(), encoding: 'utf8' });
+  assert.match(out, /cinematic-scroll —/);
+  assert.match(out, /scroll-audit —/);
+});
+
+test('announces when it replaces an existing folder of the same name', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'skills-'));
+  mkdirSync(join(dir, 'scroll-audit'));
+  writeFileSync(join(dir, 'scroll-audit', 'stray.txt'), 'old');
+  const out = execFileSync(process.execPath, [join(pkgRoot, 'bin/install.mjs'), '--dir', dir, '--skill', 'scroll-audit'], { encoding: 'utf8' });
+  assert.match(out, /replac/i);
+  assert.ok(!existsSync(join(dir, 'scroll-audit', 'stray.txt')));
+  assert.ok(existsSync(join(dir, 'scroll-audit', 'SKILL.md')));
 });
 
 test('parses flags', () => {

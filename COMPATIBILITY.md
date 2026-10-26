@@ -11,9 +11,9 @@ This document provides documented installation paths for each platform, with evi
 | Platform | Status | Install Method | Notes |
 |----------|--------|-----------------|-------|
 | Claude Desktop | ✅ Verified | Upload skill folder | Settings → Capabilities → Skills → Upload |
-| Cursor | ✅ Verified | Drop into `.cursor/skills/` | Auto-discovery, no reload required |
-| Hermes Agent | ✅ Verified | `git clone` to `~/.hermes/skills/` | Fully compatible; tested June 1, 2026 |
-| OpenClaw | ✅ Verified | [ClawHub](https://clawhub.ai): `clawhub install cinematic-scroll` (or `git clone` to `~/.openclaw/workspace/skills/`) | Fully compatible; tested June 1, 2026 |
+| Cursor | ✅ Verified | `npx skills add MustBeSimo/web-design-studio --agent cursor` | Auto-discovery, no reload required |
+| Hermes Agent | ✅ Verified | `npx skills add MustBeSimo/web-design-studio --agent hermes-agent` | Fully compatible; tested June 1, 2026 (clone route retired in 3.0.0) |
+| OpenClaw | ✅ Verified | [ClawHub](https://clawhub.ai): `clawhub install cinematic-scroll` | Fully compatible; tested June 1, 2026 |
 | skills.sh | 🚀 Target | Registry submission | Primary distribution channel |
 
 ---
@@ -58,7 +58,9 @@ You should get back a multi-phase response (audit → storyboard → spec → bu
    # On Windows:
    %APPDATA%\Cursor\skills\
    ```
-3. Copy the entire `cinematic-scroll-skill` folder into `.cursor/skills/`
+3. Run `npx skills add MustBeSimo/web-design-studio --agent cursor` in the project
+   (or `npx cinematic-scroll-skill --dir .cursor/skills`). Since 3.0.0 the skill is
+   the `skills/cinematic-scroll/` folder, not the repository.
 4. Restart Cursor (or reload with Cmd+Shift+P → Reload Window)
 
 **Verification:**
@@ -78,10 +80,11 @@ Cursor will auto-discover the skill and activate it.
 **Prerequisites:** Hermes Agent CLI (v0.15.1+)  
 **Install Hermes:** See [hermes-agent.nousresearch.com](https://hermes-agent.nousresearch.com)
 
-**Installation (correct method):**
+**Installation (3.0.0):**
 ```bash
-# Clone the full repository into Hermes skills directory
-git clone https://github.com/MustBeSimo/web-design-studio ~/.hermes/skills/cinematic-scroll
+npx skills add MustBeSimo/web-design-studio --agent hermes-agent
+# or the dependency-free installer into Hermes' skills directory
+npx cinematic-scroll-skill --dir ~/.hermes/skills
 ```
 
 **Verify installation:**
@@ -98,7 +101,7 @@ hermes chat
 ```
 
 **Key findings:**
-- ✅ Full repository installs correctly via git clone
+- ✅ Skill folders install through the skills CLI (3.0.0; the repository root is no longer a skill)
 - ✅ Skill manifest (SKILL.md) matches Hermes frontmatter spec
 - ✅ Skill is discoverable and enabled in skill list
 - ✅ Invocation via slash commands (`/cinematic-scroll`) per Hermes spec
@@ -158,9 +161,9 @@ clawhub sync --dry-run
 CLI reference: [github.com/openclaw/clawhub → docs/cli.md](https://github.com/openclaw/clawhub/blob/main/docs/cli.md).
 
 **Key findings:**
-- ✅ Full repository installs correctly via git clone
-- ✅ SKILL.md (42KB) properly structured for OpenClaw agent contract
-- ✅ All reference files and examples included (43 commits)
+- ✅ Skill folders install through the skills CLI (3.0.0; the repository root is no longer a skill)
+- ✅ SKILL.md (7 KB, in skills/cinematic-scroll/) properly structured for OpenClaw agent contract
+- ✅ Skill references ship inside each skill folder; examples stay in the repository
 - ✅ MIT license verified
 - ✅ Skill discoverable and ready for invocation
 
