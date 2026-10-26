@@ -74,7 +74,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22  # the skills CLI (1.7.x) requires Node >= 22.20
       - name: List skills with the real installer
         run: |
           # strip ANSI colour codes: the CLI prints "Found \e[32m3\e[39m skills"
