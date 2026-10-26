@@ -112,6 +112,20 @@ current bundled model/adapter instructions and specify the desired assets and bu
 > A static doctor score or a comment in source is not performance proof. Report
 > missing checks honestly and honor any required brand judge threshold.
 
+## Companion skills
+
+Two smaller skills ship beside `cinematic-scroll`. Use them before and after a build.
+
+> Use launch-page-strategy to write the story brief for [PAGE] before any design.
+> Read [SUPPLIED COPY AND PROOF], choose one primary action, map the top three
+> objections to the sections that answer them, place each proof item beside its
+> claim, and record what is still missing. Do not invent facts or promises.
+
+> Use scroll-audit on [URL I OWN] and write remediation-plan.md. Score pacing,
+> performance, accessibility and emotional arc, list the taste violations with
+> evidence, and put the single highest-impact fix first. Say which checks could
+> not run.
+
 ## Outside the skill's scope
 
 Ordinary dashboards, unrelated button animations, and generic theme generation do

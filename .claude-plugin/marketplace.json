@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "mustbesimo",
-  "description": "Agent Skills by Simone Leonelli (W230).",
+  "description": "Three free agent skills by Simone Leonelli (W230): cinematic-scroll builds distinctive scroll, 3D and motion websites; scroll-audit scores any page; launch-page-strategy decides what the page must say.",
   "owner": {
     "name": "Simone Leonelli",
     "email": "simone@w230.net"
@@ -10,7 +10,7 @@
     {
       "name": "cinematic-scroll",
       "source": "./",
-      "description": "Build cinematic, scroll-driven websites — pinned chapters, multi-depth parallax, 3D tilt, environment-morphing backgrounds, and full release pages. Five live worlds prove the range; the motion is the constant, the look is yours."
+      "description": "Web Design Studio: cinematic-scroll builds cinematic, scroll-driven websites (pinned chapters, parallax, real-time 3D, full release pages) in your brand; scroll-audit scores an existing page; launch-page-strategy writes the story brief first. 28 live examples prove the range; the motion is the constant, the look is yours."
     }
   ]
 }
