@@ -1,9 +1,12 @@
-# Cinematic Scroll — quality gate in CI.
+# Web Design Studio — quality gate in CI.
 #
 # The whole pitch is that cinematic taste is a number you can block on. This
 # workflow proves it: every push and PR runs `cinematic-doctor` over the bundled
 # examples and builds the React Three Fiber / WebXR flagship (Mode B). A red X
-# here means a build dropped below the craft bar or stopped compiling.
+# here means a build dropped below the craft bar or stopped compiling. Since
+# 3.0.0 it also guards the install surface: every skills/* folder stays
+# text-only and self-contained, no root SKILL.md may reappear, no tracked file
+# may exceed 5 MB, and the real skills installer must list exactly three skills.
 name: CI
 
 on:
@@ -42,6 +45,12 @@ jobs:
         run: npm run learn:selftest
       - name: Skill pointer stubs in sync (.codex / .cursor)
         run: node tools/skill-sync.mjs --check
+      - name: Skill folders (text-only, self-contained, version-synced, no root SKILL.md)
+        run: node tools/check-skills.mjs --forbid-root-skill
+      - name: Tracked media size (5 MB gate)
+        run: node tools/check-media-size.mjs
+      - name: Installer, payload, validator and media-tool tests
+        run: node --test bin/install.test.mjs tools/check-package.test.mjs tools/check-skills.test.mjs tools/check-media-size.test.mjs tools/media-archive.test.mjs
       - name: Component library (doctor ≥80 each)
         run: for f in components/mode-a/*.html; do node tools/cinematic-doctor/cli.mjs "$f" --min 80 --quiet || exit 1; done
       - name: Evals (golden fixtures + trigger-set shape)
@@ -52,6 +61,23 @@ jobs:
       # threshold is 80; a build under the bar exits non-zero and blocks merge.
       - name: Score all web builds
         run: node tools/cinematic-doctor/cli.mjs .
+
+  # What users actually receive: the real skills CLI against this checkout must
+  # discover exactly the three skill folders. If a root SKILL.md ever returns, the
+  # CLI would report one skill and ship the whole repository as its payload.
+  install-surface:
+    name: install surface (npx skills add lists 3 skills)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: List skills with the real installer
+        run: |
+          npx -y skills add "$GITHUB_WORKSPACE" --list 2>&1 | tee /tmp/skills.txt
+          grep -q 'Found 3 skills' /tmp/skills.txt
+          for s in cinematic-scroll scroll-audit launch-page-strategy; do grep -q "$s" /tmp/skills.txt; done
 
   flagship-build:
     name: flagship Mode B (R3F + WebXR build)
@@ -122,5 +148,9 @@ jobs:
         run: npm run clawhub:validate
       - name: Install pinned NVIDIA SkillSpector
         run: python -m pip install "git+https://github.com/NVIDIA/skillspector.git@88eedca754c74260dfae4e6d6cfb293a0053c908"
-      - name: Scan ClawHub bundle without suppressions
-        run: skillspector scan skills/cinematic-scroll --no-llm --format json --output /tmp/skillspector-report.json
+      - name: Scan every skill folder without suppressions
+        run: |
+          for s in skills/*/; do
+            echo "== $s"
+            skillspector scan "$s" --no-llm --format json --output "/tmp/skillspector-$(basename "$s").json"
+          done
