@@ -1,6 +1,6 @@
 {
   "name": "cinematic-scroll",
-  "version": "2.7.6",
+  "version": "3.0.0",
   "interactionRuntime": {
     "license": "MIT",
     "reference": "references/interaction-runtime.md",
@@ -49,7 +49,7 @@
     "claude": ">=3.5",
     "agentskills.io": "1.x"
   },
-  "entry": "SKILL.md",
+  "entry": "skills/cinematic-scroll/SKILL.md",
   "activation": {
     "invokeWhen": [
       "User asks to BUILD a cinematic/scroll-driven/parallax/3D-tilt/environment-morphing website, launch or release page, product story, or editorial microsite",

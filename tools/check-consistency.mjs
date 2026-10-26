@@ -2,14 +2,14 @@
 /**
  * check-consistency.mjs — Phase 12 invariant: catch drift that the per-phase gates don't.
  *
- *   1. VERSION SYNC      package.json === manifest.json === SKILL.md frontmatter === .claude-plugin/plugin.json
+ *   1. VERSION SYNC      package.json === manifest.json === every skills/<name>/SKILL.md frontmatter === .claude-plugin/plugin.json === index.html release label; no root SKILL.md
  *   2. SECRET SCAN       no tracked *.env.local (only *.example may be tracked)
  *   3. KEY PATHS         the foundation files the docs promise actually exist
  *   4. TOKEN DETERMINISM committed tokens/build/variables.css matches a fresh build
  *
  * Exit 0 = consistent. Zero npm deps (uses git + node only). Wired into `npm test` + CI.
  */
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -28,11 +28,17 @@ const repository = pkg.repository.url.replace(/^git\+/, "").replace(/\.git$/, ""
 if (!release || release[1] !== pkg.version || release[2] !== `${repository}/releases/tag/v${pkg.version}` || !release[3].startsWith(`v${pkg.version} ·`)) {
   errors.push("index.html release label/link must match package.json version and repository");
 }
-const skillFm = readFileSync(join(ROOT, "SKILL.md"), "utf8").split(/^---\s*$/m)[1] || "";
-// Standard skill frontmatter carries custom fields under metadata.
-const skillVer = (skillFm.match(/^  version:\s*(.+?)\s*$/m) || skillFm.match(/^version:\s*(.+?)\s*$/m) || [])[1];
-if (!skillVer) errors.push("SKILL.md frontmatter has no metadata.version field");
-else if (skillVer !== pkg.version) errors.push(`version drift: SKILL.md frontmatter ${skillVer} ≠ package.json ${pkg.version}`);
+// Every installable skill folder carries metadata.version; all must equal package.json.
+// A root SKILL.md must never exist: the skills installer would treat the whole repository as the skill.
+if (existsSync(join(ROOT, "SKILL.md"))) errors.push("root SKILL.md must not exist (installer would ship the whole repository as one skill)");
+const skillDirs = readdirSync(join(ROOT, "skills"), { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name).sort();
+if (skillDirs.length === 0) errors.push("skills/ has no skill folders");
+for (const name of skillDirs) {
+  const skillFm = readFileSync(join(ROOT, "skills", name, "SKILL.md"), "utf8").split(/^---\s*$/m)[1] || "";
+  const skillVer = (skillFm.match(/^  version:\s*(.+?)\s*$/m) || [])[1];
+  if (!skillVer) errors.push(`skills/${name}/SKILL.md frontmatter has no metadata.version field`);
+  else if (skillVer !== pkg.version) errors.push(`version drift: skills/${name}/SKILL.md ${skillVer} ≠ package.json ${pkg.version}`);
+}
 // the Claude Code plugin manifest is a 4th install surface — keep it in the triad (now a quad)
 const PLUGIN = join(ROOT, ".claude-plugin/plugin.json");
 if (existsSync(PLUGIN)) {
@@ -62,18 +68,6 @@ for (const p of ["design.md", "tokens/core.tokens.json", "tokens/motion.tokens.j
   if (!existsSync(join(ROOT, p))) errors.push(`promised path missing: ${p}`);
 }
 
-// 3b. installer payload must ship the design system — npx install would otherwise
-//     deliver a skill missing the v2.4.0 surfaces SKILL.md routes to.
-const installer = readFileSync(join(ROOT, "bin/install.mjs"), "utf8");
-// Every top-level surface SKILL.md routes to must be in the npx PAYLOAD — incl. tools/
-// (the cinematic-doctor quality gate) and the 3D/film hand-offs. A miss = an install whose
-// SKILL.md references files that aren't there.
-for (const surface of ["design.md", "tokens", "themes", "components", "references", "templates",
-                       "examples", "tools", "ASSETS-3D.md", "MODELS.md", "learn-mode.md", "bench-mode.md"]) {
-  if (!new RegExp(`['"]${surface.replace(".", "\\.")}['"]`).test(installer)) {
-    errors.push(`installer (bin/install.mjs) PAYLOAD is missing '${surface}' — npx install would ship an incomplete skill (SKILL.md routes to it)`);
-  }
-}
 
 // 4. token build determinism — committed output must equal a fresh build
 const before = existsSync(join(ROOT, "tokens/build/variables.css")) ? readFileSync(join(ROOT, "tokens/build/variables.css"), "utf8") : null;
@@ -99,5 +93,5 @@ if (errors.length) {
   for (const e of errors) console.error(`  - ${e}`);
   process.exit(1);
 }
-console.log(`✓ check-consistency: version ${pkg.version} in sync (package.json · manifest.json · SKILL.md · plugin.json), no tracked secrets, foundation paths present, token build deterministic, learned-shelf integrity verified (IR schema · pointer↔shelf · manifest sync).`);
+console.log(`✓ check-consistency: version ${pkg.version} in sync (package.json · manifest.json · skills/*/SKILL.md · plugin.json · index.html), no tracked secrets, foundation paths present, token build deterministic, learned-shelf integrity verified (IR schema · pointer↔shelf · manifest sync).`);
 process.exit(0);

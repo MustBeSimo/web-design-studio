@@ -1,48 +1,62 @@
 # AGENTS.md
 
-This repo ships **Web Design Studio** under the established agent-skill identifier
-**`cinematic-scroll`**. Keep human-facing product copy on the new name and preserve
-the identifier in install commands, paths, URLs and compatibility interfaces.
+This repo ships **Web Design Studio**: three agent skills for websites people
+remember. The established agent-skill identifier **`cinematic-scroll`** stays in
+install commands, paths, URLs and compatibility interfaces; human-facing product
+copy uses the product name.
 
 ## What it is
 
-A *craft skill* that gives any coding agent the taste to build cinematic,
-scroll-driven websites — pinned chapter reveals, hero parallax, multi-depth
-figures, hover-tilt cards, environment-morphing backgrounds, and full
-release/launch pages. The motion grammar is the constant; the aesthetic is
-always the user's (brutalist, quiet-luxury, neon pop, sci-fi noir, Renaissance
-editorial, or your brand). It scales from a single self-contained `.html` scroll
-section (Mode A) to a full Next.js release site with optional AI-generated
-visuals (Mode B), and runs through an optional 5-phase pipeline (cinematic audit
-→ motion storyboard → technical spec → build → polish).
+A small collection of *craft skills* for coding agents:
+
+| Skill | Job |
+|---|---|
+| [`skills/cinematic-scroll/`](./skills/cinematic-scroll/SKILL.md) | Build a distinctive scroll-driven, 3D or motion website whose motion explains the subject, with mobile, reduced-motion, no-JS and renderer-failure states you can prove. |
+| [`skills/scroll-audit/`](./skills/scroll-audit/SKILL.md) | Score any live page's scroll experience on pacing, performance, accessibility and emotional arc; output a remediation plan. |
+| [`skills/launch-page-strategy/`](./skills/launch-page-strategy/SKILL.md) | Decide what a launch or landing page must say and prove before design or motion; hand a story brief to `cinematic-scroll`. |
+
+The motion grammar is the constant; the aesthetic is always the user's. The rest
+of this repository is the **toolkit** around those skills: the live showcase, 28
+examples, the design-token contract, the verifier, the doctor, the benchmark and
+the Next.js template.
 
 ## When to use it
 
-Reach for `cinematic-scroll` when the user asks for any of: a scroll-driven or
-"cinematic" website, pinned/sticky chapter sections, hero or multi-depth
-parallax, scroll-linked 3D tilt or camera moves, environment/background-morphing
-layouts, a product story page, an editorial commerce microsite, or a
-release/launch/drop page.
+Reach for `cinematic-scroll` when the user asks for a scroll-driven or
+"cinematic" website, pinned chapters, parallax, scroll-linked 3D or camera moves,
+an environment-morphing layout, a product story page, an editorial microsite, or
+a release/launch page. Reach for `scroll-audit` when they want an existing page
+reviewed or scored. Reach for `launch-page-strategy` when the question is what a
+page should say, prove or ask the visitor to do.
 
-## Canonical contract
+## Canonical contracts
 
-**`SKILL.md` (repo root) is the single source of truth.** Read it in full before
-building — it is the machine-readable agent contract for both Mode A and Mode B.
-Do not duplicate or paraphrase it; point to it.
+**Each `skills/<name>/SKILL.md` is the single source of truth for that skill.**
+Read the relevant one in full before building. The folders are text-only and
+self-contained: every relative link resolves inside the folder, and
+`node tools/check-skills.mjs --forbid-root-skill` enforces that along with the
+version sync to `package.json`.
 
-Deep references live in [`references/`](./references/):
+**Never add a skill file (SKILL.md) at the repository root.** The skills installer
+(`npx skills add`) stops at a root skill and treats the whole repository as the
+install payload. Removing it in 3.0.0 is what made installs take seconds.
 
-- [`references/scroll-patterns.md`](./references/scroll-patterns.md) — 12 proven scroll patterns
-- [`references/film-archetypes.md`](./references/film-archetypes.md) — 11 visual systems / film archetypes
-- [`references/story-design.md`](./references/story-design.md) — first-preview workflow and content-led beats
-- [`references/build-recipes.md`](./references/build-recipes.md) — integration and lifecycle contracts
-- [`references/tastehq.md`](./references/tastehq.md) — optional upstream brand query and score
-- [`references/editions.md`](./references/editions.md) — normal versus Studio boundaries
-- [`references/performance-budget.md`](./references/performance-budget.md) — transform/opacity budget + 11-point pre-launch checklist
-- [`references/mobile-motion.md`](./references/mobile-motion.md) — mobile motion + reduced-motion degradation
+Toolkit references for maintainers and full-repository clones live in
+[`references/`](./references/) (deep guidance such as
+[`references/scroll-patterns.md`](./references/scroll-patterns.md),
+[`references/film-archetypes.md`](./references/film-archetypes.md),
+[`references/performance-budget.md`](./references/performance-budget.md),
+[`references/mobile-motion.md`](./references/mobile-motion.md)) and in
+[`taste-guardrails.md`](./taste-guardrails.md). They are not part of any
+installed skill; do not link to them from inside `skills/`.
 
-Taste rules: [`taste-guardrails.md`](./taste-guardrails.md). Human quickstart:
-[`README.md`](./README.md).
+## Media rule
+
+No tracked file may exceed 5 MB (`node tools/check-media-size.mjs`, allowlist in
+the script). Promo films, reels and stills go to a `media-*` GitHub Release via
+`node tools/media-archive.mjs --plan` then `--apply`; the manifest in
+`docs/launch/` maps former paths to download URLs. Media the live site plays
+stays in the tree.
 
 ## Maintaining the public showcase
 
@@ -62,5 +76,9 @@ example worlds. Their distinct identities remain useful references.
 ## Trigger usage
 
 > Use **cinematic-scroll** to build a self-contained HTML pinned hero chapter for [YOUR BRAND].
+
+> Use **scroll-audit** on https://example.com and give me the remediation plan.
+
+> Use **launch-page-strategy** to write the story brief for our waitlist page before we design it.
 
 More copy-paste triggers across aesthetic worlds: [`examples/PROMPTS.md`](./examples/PROMPTS.md).

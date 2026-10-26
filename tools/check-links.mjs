@@ -16,11 +16,13 @@ import { dirname, join } from "node:path";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SCAN = [
-  "SKILL.md", "design.md", "references/recipe-catalog.md",
+  "design.md", "references/recipe-catalog.md",
   "references/recipes/editorial-story.md", "references/recipes/product-reveal.md", "references/recipes/real-time-3d.md",
   "skills/cinematic-scroll/SKILL.md", "skills/cinematic-scroll/references/recipe-catalog.md",
   "skills/cinematic-scroll/references/editorial-story.md", "skills/cinematic-scroll/references/product-reveal.md",
   "skills/cinematic-scroll/references/real-time-3d.md",
+  "skills/scroll-audit/SKILL.md", "skills/launch-page-strategy/SKILL.md",
+  "AGENTS.md", "INTEGRATIONS.md", ".claude/commands/cinematic-scroll.md",
 ];
 const REPO_DIRS = ["references/", "templates/", "examples/", "tokens/", "themes/", "components/", "evals/", "tools/", "bin/", "docs/", "launch/", "video/", "assets/"];
 const ROOT_FILE = /^[A-Za-z0-9_][A-Za-z0-9_.-]*\.(md|json|mjs|js|ts)$/;
@@ -38,6 +40,10 @@ const DENY = [
   ["7 visual systems", "stale system count (now 11)"],
   ["templates/nextjs/README", "dead link (use FLAGSHIP.md)"],
   ["(v2.1.0)", "stale version label"],
+  ["mustbesimo.github.io/cinematic-scroll-skill", "old Pages URL (now /web-design-studio/)"],
+  ["github.com/MustBeSimo/cinematic-scroll-skill", "old repository URL (now /web-design-studio)"],
+  ["Five live worlds", "stale example count (now 28 examples)"],
+  ["(repo root) is the single source of truth", "root SKILL.md was removed in 3.0.0"],
 ];
 
 const errors = [];

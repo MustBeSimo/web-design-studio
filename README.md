@@ -296,7 +296,7 @@ tools/tastehq/             optional brand query and score adapter
 evals/                     triggering and workflow behavior checks
 ```
 
-The main contract is [`SKILL.md`](./SKILL.md). It routes to detailed references only when the build needs them, keeping agent context smaller and decisions clearer.
+The main contract is [`skills/cinematic-scroll/SKILL.md`](./skills/cinematic-scroll/SKILL.md). It routes to detailed references only when the build needs them, keeping agent context smaller and decisions clearer.
 
 ### One choreography, two media
 

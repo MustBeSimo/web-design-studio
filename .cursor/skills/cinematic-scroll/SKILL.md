@@ -13,22 +13,20 @@ optional AI-generated visuals (Mode B). Reach for it whenever the user asks for 
 scroll-driven or cinematic site, pinned/sticky sections, parallax, a product
 story page, an editorial microsite, or a release/launch/drop page.
 
-**Canonical instructions: [`../../../SKILL.md`](../../../SKILL.md)** — the single
-source of truth. Read it in full before building. This file is only a pointer; do
-not duplicate SKILL.md content.
+**Canonical instructions: [`../../../skills/cinematic-scroll/SKILL.md`](../../../skills/cinematic-scroll/SKILL.md)**
+— the skill contract. Read it in full before building. This file is only a
+pointer; do not duplicate its content. Companion skills live beside it:
+`../../../skills/scroll-audit/` and `../../../skills/launch-page-strategy/`.
 
-Use the project's existing design system or adapt the bundled token contract:
-[`../../../design.md`](../../../design.md) + [`../../../tokens/`](../../../tokens/);
-11 visual systems as machine themes in [`../../../themes/`](../../../themes/).
+Skill references (`../../../skills/cinematic-scroll/references/`):
 
-Deep references (`../../../references/`):
+- [`recipe-catalog.md`](../../../skills/cinematic-scroll/references/recipe-catalog.md) — choose one recipe
+- [`editorial-story.md`](../../../skills/cinematic-scroll/references/editorial-story.md), [`product-reveal.md`](../../../skills/cinematic-scroll/references/product-reveal.md), [`real-time-3d.md`](../../../skills/cinematic-scroll/references/real-time-3d.md) — the three recipes
+- [`motion-toolkit.md`](../../../skills/cinematic-scroll/references/motion-toolkit.md) — interaction patterns
+- [`verification.md`](../../../skills/cinematic-scroll/references/verification.md) — proof checklist
 
-- [`scroll-patterns.md`](../../../references/scroll-patterns.md) — 12 proven scroll patterns
-- [`film-archetypes.md`](../../../references/film-archetypes.md) — 11 visual systems / film archetypes
-- [`component-grammar.md`](../../../references/component-grammar.md) — named, token-driven components (Mode A + Mode B)
-- [`design-tokens.md`](../../../references/design-tokens.md) — the DTCG token reference
-- [`performance-budget.md`](../../../references/performance-budget.md) — transform/opacity budget + pre-launch checklist
-- [`mobile-motion.md`](../../../references/mobile-motion.md) — mobile motion + reduced-motion degradation
-
-Taste rules: [`../../../taste-guardrails.md`](../../../taste-guardrails.md).
-Trigger prompts: [`../../../examples/PROMPTS.md`](../../../examples/PROMPTS.md).
+Toolkit (this repository only): the token contract in [`../../../design.md`](../../../design.md)
++ [`../../../tokens/`](../../../tokens/), 11 visual systems in [`../../../themes/`](../../../themes/),
+deep references in [`../../../references/`](../../../references/), taste rules in
+[`../../../taste-guardrails.md`](../../../taste-guardrails.md), and prompts in
+[`../../../examples/PROMPTS.md`](../../../examples/PROMPTS.md).

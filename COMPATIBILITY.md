@@ -81,7 +81,7 @@ Cursor will auto-discover the skill and activate it.
 **Installation (correct method):**
 ```bash
 # Clone the full repository into Hermes skills directory
-git clone https://github.com/MustBeSimo/cinematic-scroll-skill ~/.hermes/skills/cinematic-scroll
+git clone https://github.com/MustBeSimo/web-design-studio ~/.hermes/skills/cinematic-scroll
 ```
 
 **Verify installation:**
@@ -206,13 +206,13 @@ CLI reference: [github.com/openclaw/clawhub → docs/cli.md](https://github.com/
 hermes skills clear-cache
 
 # Reinstall
-hermes skills install https://github.com/MustBeSimo/cinematic-scroll-skill
+hermes skills install https://github.com/MustBeSimo/web-design-studio
 ```
 
 **OpenClaw:**
 ```bash
 # Check Git connectivity
-git clone https://github.com/MustBeSimo/cinematic-scroll-skill /tmp/test-clone
+git clone https://github.com/MustBeSimo/web-design-studio /tmp/test-clone
 
 # Then reinstall
 openclaw skills install git:MustBeSimo/cinematic-scroll-skill@main
@@ -255,7 +255,8 @@ This is normal if you haven't provided an `fal.ai` API key. The system falls bac
 
 | Skill version | Release | Notes |
 |---|---|---|
-| **v2.6.1 (current)** | 2026-06 | Craft hygiene (from a full-app QA audit): a new advisory `cinematic-doctor` **hygiene** check (weight 0 — never affects the score) flagging dead CSS classes, dead JS attribute-branches, and the `file://` hazard of external local `<script src>`; plus taste-guardrails **1.12** (no dead code) & **1.13** (single-file must be self-contained & `file://`-safe). No score/behaviour change to existing builds. |
+| **v3.0.0 (current)** | 2026-10-27 | Three-skill collection (`cinematic-scroll`, `scroll-audit`, `launch-page-strategy`). The root `SKILL.md` is removed so `npx skills add` installs the 30 KB `skills/cinematic-scroll/` folder instead of the whole repository; promo media moved to the `media-2026-10` GitHub Release; the npm package is a dependency-free installer. Breaking: a git clone into `~/.claude/skills/cinematic-scroll` no longer acts as a skill. |
+| **v2.6.1** | 2026-06 | Craft hygiene (from a full-app QA audit): a new advisory `cinematic-doctor` **hygiene** check (weight 0 — never affects the score) flagging dead CSS classes, dead JS attribute-branches, and the `file://` hazard of external local `<script src>`; plus taste-guardrails **1.12** (no dead code) & **1.13** (single-file must be self-contained & `file://`-safe). No score/behaviour change to existing builds. |
 | **v2.6.0** | 2026-06 | **Learn mode — the Pattern Compiler (Phase 1).** `Learn [URL]` distills sites you own/are authorized to study into original, IR-validated recipes on a pointer-first learned shelf (`references/learned/`), behind an enforced originality firewall. Ships the compiler core: the Pattern-IR gate (`references/pattern-ir.md`), four zero-dep tools (`tools/learn/`: validate-ir · sync-manifest · check-pointers · surface-dedup), four canon pointer hosts (incl. new `references/visual-systems.md`), a shared `references/detection-pipeline.md` extracted from audit mode, and learned-shelf integrity in CI. Tag/keyword dedup only (no embeddings); reuse telemetry + semantic scoring land in Phases 2–4. |
 | **v2.5.5** | 2026-06 | Version realignment (2.5.1 → 2.5.5) across the version quad (`package.json` · `manifest.json` · `SKILL.md` · `plugin.json`) and the clawhub export. No shipped skill-content changes; promo-video tooling fixes (Remotion footage anchored to scene starts; aspect-aware 16:9/9:16 showcase) live in `video/`, which is not packaged. |
 | **v2.5.1** | 2026-06 | Distribution fixes: `npx` install now ships `tools/` (the cinematic-doctor quality gate), `ASSETS-3D.md`, `FRAME.md` & `REVIEW.md` (were missing → SKILL.md referenced absent files); Claude Code `plugin.json` version realigned (was stale at 2.1.0); version sync widened to a quad (+ `plugin.json`) with an installer-payload completeness guard. Live demo rebuilt as a circular WebGL flythrough (gyroscope-steerable, glassmorphic). |
@@ -279,4 +280,4 @@ After installation, see:
 - **`references/film-archetypes.md`** for visual system deep-dives
 - **`SKILL.md`** for the full agent contract (if you're integrating programmatically)
 
-For help, open an issue on [GitHub](https://github.com/MustBeSimo/cinematic-scroll-skill).
+For help, open an issue on [GitHub](https://github.com/MustBeSimo/web-design-studio).

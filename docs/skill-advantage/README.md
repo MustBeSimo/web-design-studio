@@ -6,7 +6,7 @@ cinematic websites: your brand and subject determine the look, while the skill
 supplies a process for building and inspecting it.
 
 [Download the five-page illustrated guide](web-design-studio-visual-evidence.docx)
-· [Read the skill contract](../../SKILL.md)
+· [Read the skill contract](../../skills/cinematic-scroll/SKILL.md)
 
 ## Reusable craft
 

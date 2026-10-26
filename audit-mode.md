@@ -1,5 +1,8 @@
 # Audit Mode: Cinematic Scroll Analysis
 
+> Installable form: [`skills/scroll-audit/`](skills/scroll-audit/SKILL.md) (added in 3.0.0).
+> This document is the toolkit reference; the skill folder is what agents install.
+
 > The most valuable skills solve existing problems, not just create new things.
 > The Cinematic Scroll Audit ingests any URL, detects all scroll-driven interactions,
 > and scores them on four dimensions. It outputs a `remediation-plan.md` with specific,

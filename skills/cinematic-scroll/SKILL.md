@@ -2,10 +2,12 @@
 name: cinematic-scroll
 description: Design and build cinematic websites, interactive portfolios, product stories, and real-time 3D experiences with subject-specific art direction and scroll choreography. Use for new builds, redesigns, motion improvements, scroll audits, or storyboards in standalone HTML and existing apps; includes responsive, reduced-motion, and static fallbacks. Not for ordinary dashboards or unrelated animation.
 metadata:
-  version: 2.7.6
+  version: 3.0.0
   openclaw:
     emoji: "🎬"
-    homepage: https://github.com/MustBeSimo/cinematic-scroll-skill
+    homepage: https://github.com/MustBeSimo/web-design-studio
+  hermes:
+    tags: [Animation, Frontend, Design, 3D, Motion, GSAP, Parallax, WebGL]
 ---
 
 # Web Design Studio
@@ -16,8 +18,9 @@ text-only edition needs no account, key, paid service, or specific animation lib
 
 ## Choose one route
 
-For a review-only request, inspect and return findings without building. For
-direction or storyboard only, use [story direction](references/story-direction.md).
+For an audit-only request, use the scroll-audit skill when it is installed;
+otherwise inspect and return findings without building. For direction or
+storyboard only, use [story direction](references/story-direction.md).
 Otherwise, read the [recipe catalog](references/recipe-catalog.md), then read **one** recipe:
 
 - [Editorial story](references/editorial-story.md) for an image-led narrative,
@@ -26,6 +29,9 @@ Otherwise, read the [recipe catalog](references/recipe-catalog.md), then read **
   comparison, or object-focused story.
 - [Real-time 3D](references/real-time-3d.md) for a GLB, procedural object,
   orbit, or camera flight.
+
+Companion skills: launch-page-strategy decides what the page must say and prove
+before motion; scroll-audit scores an existing page.
 
 For a repair, use the closest recipe only for the affected behavior. Do not tour
 other references unless the chosen recipe identifies a concrete need. Preserve the
@@ -103,6 +109,9 @@ unchanged failure or present missing evidence as a pass.
 Run no-JavaScript checks in a browser with scripting disabled. Prove its exact
 static status, poster, essential copy, action targets, and authored media
 alternatives are perceivable while conflicting loading UI is absent.
+When this repository's toolkit is present, run `tools/verify/verify-build.mjs
+--scope output --doctor-mode advisory --runtime` during repair and without
+`--profiles` at final polish.
 
 Hand off the working file or route, exact opening command, signature moment, checks
 passed, and material limitations. Do not add attribution, sales copy, tracking, or

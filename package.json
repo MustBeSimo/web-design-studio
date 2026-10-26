@@ -1,6 +1,6 @@
 {
   "name": "cinematic-scroll-skill",
-  "version": "2.7.6",
+  "version": "3.0.0",
   "description": "Installer for Web Design Studio, the cinematic-scroll Agent Skill for distinctive websites, interactive 3D, scroll choreography, motion and production-ready fallbacks.",
   "type": "module",
   "bin": {
@@ -90,14 +90,14 @@
     "skill:sync:check": "node tools/skill-sync.mjs --check",
     "bench": "node tools/bench/cli.mjs",
     "bench:selftest": "node tools/bench/score.mjs --selftest && node tools/bench/cli.mjs --selftest && node bench/build-leaderboard.mjs --selftest",
-    "test": "npm run runtime:check && npm run test:runtime && npm run tokens:check && npm run themes:check && npm run links:check && npm run consistency:check && npm run learn:selftest && npm run skill:sync:check && npm run components:doctor && npm run doctor:selftest && npm run evals:run && npm run bench:selftest && npm run test:workflow && npm run media:check",
+    "test": "npm run runtime:check && npm run test:runtime && npm run tokens:check && npm run themes:check && npm run links:check && npm run consistency:check && npm run learn:selftest && npm run skill:sync:check && npm run components:doctor && npm run doctor:selftest && npm run evals:run && npm run bench:selftest && npm run test:workflow && npm run media:check && npm run skills:check",
     "build:tokens": "node tools/build-tokens/build.mjs",
     "build:themes": "for f in themes/*.theme.json; do node tools/build-tokens/build.mjs --theme \"$f\"; done",
     "prepack": "npm run runtime:check && npm run check:lab && npm run check:flagship",
     "proof": "node tools/page-proof/proof.mjs",
     "proof:components": "node tools/page-proof/proof-components.mjs",
-    "skills:check": "node tools/check-skills.mjs",
-    "clawhub:validate": "node tools/check-skills.mjs",
+    "skills:check": "node tools/check-skills.mjs --forbid-root-skill",
+    "clawhub:validate": "node tools/check-skills.mjs --forbid-root-skill",
     "clawhub:scan": "npm run clawhub:validate && skillspector scan skills/cinematic-scroll --no-llm",
     "test:scenes": "node --test tools/page-proof/scenes.browser.test.mjs",
     "build:gallery": "esbuild assets/gallery-motion.mjs --bundle --format=iife --target=es2020 --outfile=assets/gallery-motion.js"
