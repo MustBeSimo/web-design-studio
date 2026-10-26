@@ -1,6 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { oversized } from './check-media-size.mjs';
+import { oversized, ALLOW } from './check-media-size.mjs';
+
+test('the allowlist names only media the live site plays', () => {
+  assert.deepEqual(ALLOW, ['examples/kern-calibration/assets/kern-color.mp4', 'assets/brand/renaissance-h3-15s.mp4']);
+});
 
 test('returns files over the limit, largest first, excluding the allowlist', () => {
   const entries = [

@@ -90,7 +90,7 @@ Shared prefix: `UI screenshot of a cinematic scroll-driven website, full desktop
 
 ## C. README banners (2 images) · 2.37:1 · 2370 × 1000
 
-`assets/banner-dark_v2.png` and `assets/banner-light_v2.png` — full-width GitHub README header.
+`https://github.com/MustBeSimo/web-design-studio/releases/download/media-2026-10/banner-dark_v2.png` and `https://github.com/MustBeSimo/web-design-studio/releases/download/media-2026-10/banner-light_v2.png` — full-width GitHub README header.
 
 - **banner-dark** — petroleum/charcoal cinematic website hero spanning full width, large
   "Cinematic Scroll" editorial wordmark, scroll-driven composition, a faint filmstrip of

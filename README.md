@@ -109,9 +109,9 @@ responsive and fallback states alongside it.
 
 ## See the proof
 
-[![Watch the Web Design Studio skill and examples film](assets/promo-linkedin/web-design-studio-linkedin-poster.jpg)](assets/promo-linkedin/web-design-studio-linkedin.mp4)
+[![Watch the Web Design Studio skill and examples film](assets/promo-linkedin/web-design-studio-linkedin-poster.jpg)](https://github.com/MustBeSimo/web-design-studio/releases/download/media-2026-10/promo-linkedin__web-design-studio-linkedin.mp4)
 
-**[Watch the 46-second skill and examples film →](assets/promo-linkedin/web-design-studio-linkedin.mp4)** — Aether prompt, source code, preview, visual systems, real-time 3D, resilience states, and browser evidence.
+**[Watch the 46-second skill and examples film →](https://github.com/MustBeSimo/web-design-studio/releases/download/media-2026-10/promo-linkedin__web-design-studio-linkedin.mp4)** — Aether prompt, source code, preview, visual systems, real-time 3D, resilience states, and browser evidence.
 
 ### Seven Real 3D flagships
 

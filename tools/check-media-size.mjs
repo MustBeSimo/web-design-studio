@@ -16,8 +16,8 @@ import { fileURLToPath } from 'node:url';
 
 export const LIMIT = 5_000_000;
 
-/** Tracked files allowed above the limit because a live example needs them. */
-export const ALLOW = ['examples/kern-calibration/assets/kern-color.mp4'];
+/** Tracked files allowed above the limit because the live site plays them. */
+export const ALLOW = ['examples/kern-calibration/assets/kern-color.mp4', 'assets/brand/renaissance-h3-15s.mp4'];
 
 /**
  * @param {Array<{path: string, size: number}>} entries
