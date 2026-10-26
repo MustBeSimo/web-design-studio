@@ -10,10 +10,13 @@ API key. Your coding agent and its tools remain separate prerequisites.
 - **Three skills.** `launch-page-strategy` prepares the message, proof and story
   brief. `cinematic-scroll` builds the website in the project's own visual language.
   `scroll-audit` reviews an authorised page and writes a scored remediation plan.
-- **Five-second install target.** The default path selects a roughly 30 KB skill
-  folder instead of treating the full 393 MB tree as the skill. The previous
-  installer was still cloning after 150 seconds. Five seconds is a quick-start
-  target, not a timing guarantee across connections and environments.
+- **A far lighter install.** The default path selects a roughly 30 KB skill
+  folder instead of treating the full 393 MB tree as the skill. Measured on
+  27 October 2026 from one home connection: the previous installer was still
+  cloning after 150 seconds; the 3.0.0 path listed all three skills from GitHub
+  in 55 seconds. The remaining time is the shallow clone of the showcase media
+  the live site still serves from main (about 106 MB tracked); moving that media
+  to a Pages build is the next step.
 - **Media archived to a release.** Launch media moves to the `media-2026-10`
   release assets, including the [showcase film](https://github.com/MustBeSimo/web-design-studio/releases/download/media-2026-10/promo-linkedin__web-design-studio-linkedin.mp4).
   Media needed by the live site remains available to its pages.
