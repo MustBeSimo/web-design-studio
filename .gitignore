@@ -235,3 +235,6 @@ assets/video/studio-scroll-demo.poster.jpg
 
 # SDD scratch (subagent-driven-development ledger/handoffs)
 .superpowers/
+
+# Claude Code native worktrees (session-local checkouts)
+.claude/worktrees/
