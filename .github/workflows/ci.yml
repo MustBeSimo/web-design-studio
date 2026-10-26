@@ -75,7 +75,8 @@ jobs:
           node-version: 20
       - name: List skills with the real installer
         run: |
-          npx -y skills add "$GITHUB_WORKSPACE" --list 2>&1 | tee /tmp/skills.txt
+          # strip ANSI colour codes: the CLI prints "Found \e[32m3\e[39m skills"
+          npx -y skills add "$GITHUB_WORKSPACE" --list 2>&1 | sed 's/\x1b\[[0-9;?]*[A-Za-z]//g' | tee /tmp/skills.txt
           grep -q 'Found 3 skills' /tmp/skills.txt
           for s in cinematic-scroll scroll-audit launch-page-strategy; do grep -q "$s" /tmp/skills.txt; done
 

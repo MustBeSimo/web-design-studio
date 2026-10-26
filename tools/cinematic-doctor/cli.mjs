@@ -56,11 +56,13 @@ function scoreFile(file) {
 }
 
 /** Directories that never contain gradeable web builds: dependency trees,
- *  build output, and the doctor's own test fixtures (which include an
- *  intentionally failing bad.html). Hidden dirs are skipped separately. */
+ *  build output, the doctor's own test fixtures (which include an
+ *  intentionally failing bad.html), and the benchmark's internal review apps
+ *  (bench/skill-ab: blind-comparison and review tooling for maintainers, not
+ *  websites the skill produced). Hidden dirs are skipped separately. */
 const SKIP_DIRS = new Set([
   'node_modules', '.git', '.next', 'dist', 'build', 'out',
-  'coverage', '.thumbnails', 'fixtures',
+  'coverage', '.thumbnails', 'fixtures', 'skill-ab',
 ]);
 
 /** Collect *.html files from a path. A file resolves to itself; a directory
