@@ -67,7 +67,7 @@
     "test:runtime:assets": "node --test runtime/assets.browser.test.mjs",
     "test:runtime:field": "node --test runtime/field.browser.test.mjs examples/v3-flagship/interaction.test.mjs",
     "test:presentation": "node --test runtime/presentation.browser.test.mjs",
-    "test:workflow": "node --test tools/verify/verify.test.mjs tools/verify/preflight-3d.test.mjs tools/tastehq/tastehq.test.mjs tools/page-proof/matrix.test.mjs tools/page-proof/request-failure.test.mjs tools/check-package.test.mjs tools/choreography.test.mjs tools/cinematic-doctor/stylesheets.test.mjs tools/media-archive.test.mjs tools/check-media-size.test.mjs",
+    "test:workflow": "node --test tools/verify/verify.test.mjs tools/verify/preflight-3d.test.mjs tools/tastehq/tastehq.test.mjs tools/page-proof/matrix.test.mjs tools/page-proof/request-failure.test.mjs tools/check-package.test.mjs tools/choreography.test.mjs tools/cinematic-doctor/stylesheets.test.mjs tools/media-archive.test.mjs tools/check-media-size.test.mjs tools/check-skills.test.mjs",
     "media:check": "node tools/check-media-size.mjs",
     "media:archive": "node tools/media-archive.mjs",
     "test:home": "node --test tools/page-proof/home.browser.test.mjs",
@@ -96,7 +96,8 @@
     "prepack": "npm run runtime:check && npm run check:lab && npm run check:flagship",
     "proof": "node tools/page-proof/proof.mjs",
     "proof:components": "node tools/page-proof/proof-components.mjs",
-    "clawhub:validate": "node tools/check-clawhub.mjs",
+    "skills:check": "node tools/check-skills.mjs",
+    "clawhub:validate": "node tools/check-skills.mjs",
     "clawhub:scan": "npm run clawhub:validate && skillspector scan skills/cinematic-scroll --no-llm",
     "test:scenes": "node --test tools/page-proof/scenes.browser.test.mjs",
     "build:gallery": "esbuild assets/gallery-motion.mjs --bundle --format=iife --target=es2020 --outfile=assets/gallery-motion.js"
