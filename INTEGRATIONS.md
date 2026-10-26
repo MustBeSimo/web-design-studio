@@ -1,8 +1,10 @@
 # Use Web Design Studio with your agent
 
-The same skill works across coding agents. Pick your tool below, run the command
-in your project directory, then open a new agent session. The installer may ask
-which skill and installation method to use; select `cinematic-scroll`.
+The same skills work across coding agents. Pick your tool below, run the command
+in your project directory, then open a new agent session. The installer lists
+three skills: `cinematic-scroll` builds the site, `scroll-audit` reviews an
+existing page, `launch-page-strategy` decides what the page must say. Install
+one or all three.
 
 | Agent | Install in this project |
 |---|---|
@@ -32,13 +34,22 @@ npx clawhub install @mustbesimo/cinematic-scroll
 [Browse the existing ClawHub package](https://clawhub.ai/mustbesimo/skills/cinematic-scroll).
 The established repository and install name remain unchanged after the rebrand.
 
-## Manual setup
+## npm installer
 
-Download or clone the full repository into a `cinematic-scroll` directory within
-your agent's supported skills location. Keep `SKILL.md`, `references/`, `runtime/`
-and supporting files together; copying only the Markdown entry point omits its
-dependencies. For example, Hermes supports `~/.hermes/skills/`; Kimi supports the
-shared `.agents/skills/` project directory.
+```sh
+npx cinematic-scroll-skill                                        # all three skills into ~/.claude/skills
+npx cinematic-scroll-skill --skill cinematic-scroll --dir .cursor/skills
+npx cinematic-scroll-skill --list
+```
+
+The package has no dependencies; it copies the skill folders from `skills/` and
+nothing else. For other agents pass their skills directory with `--dir`, for
+example `~/.hermes/skills/` for Hermes or the shared `.agents/skills/` project
+directory for Kimi.
+
+Do not clone the whole repository into a skills directory. Since 3.0.0 the
+repository root has no skill file, so a clone is a toolkit checkout, not a skill.
+Each `skills/<name>/` folder is complete on its own.
 
 See the official [Hermes skill guide](https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/features/skills.md),
 [Kimi skill guide](https://moonshotai.github.io/kimi-code/en/customization/skills),

@@ -2,111 +2,111 @@
 /**
  * cinematic-scroll-skill installer
  * ---------------------------------
- * Copies the skill payload into ~/.claude/skills/cinematic-scroll/ so Claude Code
- * (or any Agent-Skill-compatible client that reads ~/.claude/skills) can load it.
+ * Copies the Web Design Studio skill folders (skills/*) into an agent's skills
+ * directory. No dependencies, no network.
  *
- *   npx cinematic-scroll-skill            → install / update
- *   npx cinematic-scroll-skill --dir DIR  → install into a custom skills directory
- *   npx cinematic-scroll-skill --help
+ *   npx cinematic-scroll-skill                       → all skills into ~/.claude/skills
+ *   npx cinematic-scroll-skill --skill cinematic-scroll
+ *   npx cinematic-scroll-skill --dir .cursor/skills  → project-level install for another agent
+ *   npx cinematic-scroll-skill --list
  *
- * This is a convenience layer. The native channels are the Claude Code plugin
- * marketplace (/plugin marketplace add MustBeSimo/web-design-studio) and a
- * plain `git clone` into ~/.claude/skills/ — see the repo README.
+ * The registry route (`npx skills add MustBeSimo/web-design-studio`) installs the
+ * same folders and can target any supported agent; this installer is the
+ * no-questions fallback.
  */
-import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const PKG_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const SKILL_NAME = 'cinematic-scroll';
 
-/* The skill payload — everything the agent needs at runtime. The marketing
-   landing page (index.html) and its assets/ are intentionally excluded. */
-const PAYLOAD = [
-  'package.json',      // npm verification commands and the optional browser dependency
-  'bin',              // package bin entries remain valid after installation
-  'SKILL.md',
-  'AGENTS.md',
-  '.codex/skills/cinematic-scroll',
-  '.cursor/skills/cinematic-scroll',
-  'skills/cinematic-scroll',
-  // The v2.6.1 design system — SKILL.md routes to these, so the install is
-  // incomplete without them. Must stay in sync with package.json "files".
-  'design.md',
-  'tokens',
-  'themes',
-  'components',
-  'runtime',           // shared vanilla/React/Three motion foundation
-  'evals',
-  'manifest.json',
-  'manifest.md',
-  'taste-guardrails.md',
-  'audit-mode.md',
-  'learn-mode.md',
-  'bench-mode.md',
-  'bench',
-  'troubleshooting.md',
-  'decision-log.md',
-  'scroll-choreography.json',
-  'scroll-choreography-compilation.md',
-  'compile-choreography.mjs',
-  'MODELS.md',
-  'COMPATIBILITY.md',
-  'ASSETS-3D.md',      // SKILL.md routes here (3D asset hand-off)
-  'REVIEW.md',         // adversarial self-review referenced by the docs
-  'references',
-  'tools',             // cinematic-doctor (Taste Engine gate), verify, page-proof, learn (teaser)
-  'templates',
-  'examples',
-  'LICENSE',
-  'README.md',
-];
-
-const args = process.argv.slice(2);
-if (args.includes('--help') || args.includes('-h')) {
-  console.log(`Web Design Studio — install the cinematic-scroll skill into your Claude skills directory
-
-Usage:
-  npx cinematic-scroll-skill [--dir <skills-dir>]
-
-Default target: ~/.claude/skills/${SKILL_NAME}
-`);
-  process.exit(0);
+/** @returns {Array<{name: string, dir: string, description: string}>} skills shipped in this package */
+export function discoverSkills(pkgRoot = PKG_ROOT) {
+  const skillsDir = join(pkgRoot, 'skills');
+  if (!existsSync(skillsDir)) return [];
+  return readdirSync(skillsDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && existsSync(join(skillsDir, entry.name, 'SKILL.md')))
+    .map((entry) => {
+      const dir = join(skillsDir, entry.name);
+      const text = readFileSync(join(dir, 'SKILL.md'), 'utf8');
+      const description = text.match(/^description:\s*(.+)$/m)?.[1]?.trim() ?? '';
+      return { name: entry.name, dir, description };
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
-const dirFlag = args.indexOf('--dir');
-const skillsDir = dirFlag !== -1 && args[dirFlag + 1]
-  ? resolve(args[dirFlag + 1])
-  : join(homedir(), '.claude', 'skills');
-
-const dest = join(skillsDir, SKILL_NAME);
-
-try {
-  if (existsSync(dest)) {
-    console.log(`↻ Updating existing skill at ${dest}`);
-    rmSync(dest, { recursive: true, force: true });
+/**
+ * Copy the selected skills into skillsDir/<name>, replacing any previous copy.
+ * @param {{pkgRoot?: string, skillsDir: string, only?: string[]}} options
+ * @returns {Array<{name: string, target: string}>}
+ */
+export function installSkills({ pkgRoot = PKG_ROOT, skillsDir, only }) {
+  const available = discoverSkills(pkgRoot);
+  const names = available.map((skill) => skill.name);
+  const wanted = only?.length ? only : names;
+  for (const name of wanted) {
+    if (!names.includes(name)) throw new Error(`Unknown skill "${name}". Available: ${names.join(', ')}`);
   }
-  mkdirSync(dest, { recursive: true });
+  mkdirSync(skillsDir, { recursive: true });
+  return wanted.map((name) => {
+    const source = available.find((skill) => skill.name === name).dir;
+    const target = join(skillsDir, name);
+    rmSync(target, { recursive: true, force: true });
+    cpSync(source, target, { recursive: true });
+    return { name, target };
+  });
+}
 
-  let copied = 0;
-  for (const item of PAYLOAD) {
-    const src = join(PKG_ROOT, item);
-    if (!existsSync(src)) continue; // tolerate a trimmed npm tarball
-    cpSync(src, join(dest, item), { recursive: true, filter: source => !['node_modules','.next','.verify','.git'].includes(source.split(/[\\/]/).pop()) });
-    copied++;
+/** @returns {{dir?: string, only?: string[], list: boolean, help: boolean}} */
+export function parseArgs(argv) {
+  const parsed = { dir: undefined, only: undefined, list: false, help: false };
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === '--dir') parsed.dir = argv[++i];
+    else if (arg === '--skill') {
+      const names = (argv[++i] ?? '').split(',').map((s) => s.trim()).filter(Boolean);
+      parsed.only = [...(parsed.only ?? []), ...names];
+    } else if (arg === '--list' || arg === '-l') parsed.list = true;
+    else if (arg === '--help' || arg === '-h') parsed.help = true;
   }
+  return parsed;
+}
 
-  if (copied === 0) {
-    console.error('✗ No skill files were found to copy. This package may be corrupted — try reinstalling.');
-    process.exit(1);
+function expandHome(path) {
+  return path.startsWith('~') ? join(homedir(), path.slice(1)) : resolve(path);
+}
+
+function main(argv) {
+  const args = parseArgs(argv);
+  if (args.help) {
+    console.log(`Web Design Studio — install the skill folders into your agent's skills directory
+
+Usage:
+  npx cinematic-scroll-skill [--skill <name>[,<name>]] [--dir <skills-dir>] [--list]
+
+Default target: ~/.claude/skills (one folder per skill)
+Skills: ${discoverSkills().map((skill) => skill.name).join(', ')}
+`);
+    return 0;
   }
+  if (args.list) {
+    for (const skill of discoverSkills()) console.log(`${skill.name} — ${skill.description}`);
+    return 0;
+  }
+  const skillsDir = args.dir ? expandHome(args.dir) : join(homedir(), '.claude', 'skills');
+  let installed;
+  try {
+    installed = installSkills({ skillsDir, only: args.only });
+  } catch (error) {
+    console.error(error.message);
+    return 1;
+  }
+  for (const { name, target } of installed) console.log(`✓ ${name} → ${target}`);
+  console.log('\nNext: open a new agent session and ask, for example,\n  "Use cinematic-scroll to build a one-page story for my product."');
+  return 0;
+}
 
-  console.log(`\n✓ Installed Web Design Studio (${copied} items) →\n  ${dest}\n`);
-  console.log('Compatibility identifier: cinematic-scroll');
-  console.log('Next: restart Claude Code (or your client), then invoke the skill in chat.');
-  console.log('Docs & live examples: https://mustbesimo.github.io/web-design-studio/');
-} catch (err) {
-  console.error(`✗ Install failed: ${err.message}`);
-  process.exit(1);
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  process.exit(main(process.argv.slice(2)));
 }

@@ -118,16 +118,15 @@ hermes chat
 openclaw skills install cinematic-scroll
 ```
 
-**Or install the full repository:**
-```bash
-openclaw skills install git:MustBeSimo/cinematic-scroll-skill@v2.7.5
-```
-
 **Verify installation:**
 ```bash
-ls -la ~/.openclaw/workspace/skills/cinematic-scroll-skill/
-# Should show: SKILL.md, examples/, templates/, references/, .git/
+ls -la ~/.openclaw/workspace/skills/cinematic-scroll/
+# Should show: SKILL.md, references/, .clawhubignore
 ```
+
+Since 3.0.0 the repository root carries no skill file, so a `git:` install of the
+whole repository is no longer a skill install; use the ClawHub package above or
+`npx skills add MustBeSimo/web-design-studio --agent openclaw`.
 
 **Usage:**
 OpenClaw automatically discovers the skill from the workspace directory.
@@ -206,28 +205,23 @@ CLI reference: [github.com/openclaw/clawhub → docs/cli.md](https://github.com/
 hermes skills clear-cache
 
 # Reinstall
-hermes skills install https://github.com/MustBeSimo/web-design-studio
+npx skills add MustBeSimo/web-design-studio --agent hermes-agent
 ```
 
 **OpenClaw:**
 ```bash
-# Check Git connectivity
-git clone https://github.com/MustBeSimo/web-design-studio /tmp/test-clone
-
-# Then reinstall
-openclaw skills install git:MustBeSimo/cinematic-scroll-skill@main
+# Check registry connectivity, then reinstall
+openclaw skills install cinematic-scroll
 ```
 
 ### "SKILL.md not found" error
 
-Ensure the skill folder includes all of these files:
-- `SKILL.md` ← main contract
-- `manifest.json` ← platform metadata
-- `README.md` ← user documentation
-- `references/` ← visual system library
-- `examples/` ← 10 live demo sites
-
-If any are missing, the platform will reject the skill.
+Each installable folder is `skills/<name>/` in the repository (`cinematic-scroll`,
+`scroll-audit`, `launch-page-strategy`). Each contains its own `SKILL.md` and
+`references/` and nothing else is required. The repository root intentionally has
+no skill file: installing or cloning the root into a skills directory produces a
+toolkit checkout, not a skill. Reinstall with `npx skills add MustBeSimo/web-design-studio`
+or `npx cinematic-scroll-skill`.
 
 ### Agent produces broken HTML
 
