@@ -11,10 +11,11 @@
  *
  * Exit 0 = all deterministic assertions pass. Zero npm deps.
  */
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { validateTriggerCases } from "./trigger-schema.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const argv = process.argv.slice(2);
@@ -61,10 +62,13 @@ if (target) {
 }
 
 // --- trigger set shape + summary ---
+const skills = readdirSync(join(ROOT, "skills"), { withFileTypes: true })
+  .filter((entry) => entry.isDirectory() && existsSync(join(ROOT, "skills", entry.name, "SKILL.md")))
+  .map((entry) => entry.name).sort();
+const badShape = validateTriggerCases(trigger.cases, skills);
+if (badShape.length) { console.error(`✗ trigger.json:\n  ${badShape.join("\n  ")}`); process.exit(1); }
 const pos = trigger.cases.filter((c) => c.should_trigger).length;
 const neg = trigger.cases.length - pos;
-const badShape = trigger.cases.filter((c) => typeof c.query !== "string" || typeof c.should_trigger !== "boolean");
-if (badShape.length) { console.error(`✗ trigger.json: ${badShape.length} malformed case(s)`); process.exit(1); }
 
 // --- golden fixtures (deterministic) ---
 let failed = 0;
@@ -76,6 +80,11 @@ for (const f of golden.goldenFixtures) {
 }
 
 console.log(`\nTrigger set: ${trigger.cases.length} cases (${pos} should-fire, ${neg} near-miss negatives) — run with an LLM judge; targets recall ${trigger.metric.recall_target}, precision ${trigger.metric.precision_target}.`);
+for (const skill of skills) {
+  const cases = trigger.cases.filter((c) => c.skill === skill);
+  const positives = cases.filter((c) => c.should_trigger).length;
+  console.log(`  ${skill}: ${cases.length} cases (${positives} should-fire, ${cases.length - positives} near-miss negatives)`);
+}
 console.log(`Build specs: ${golden.buildSpecs.length} (run via an agent, score with --target/--spec).`);
 
 if (failed) { console.error(`\n✗ evals: ${failed} golden fixture(s) failed.`); process.exit(1); }

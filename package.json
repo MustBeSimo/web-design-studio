@@ -45,7 +45,7 @@
     "learn:pointers": "node tools/learn/check-pointers.mjs",
     "learn:manifest:check": "node tools/learn/sync-manifest.mjs --check",
     "learn:selftest": "node tools/learn/lib/frontmatter.mjs --selftest && node tools/learn/validate-ir.mjs --selftest && node tools/learn/sync-manifest.mjs --selftest && node tools/learn/check-pointers.mjs --selftest && node tools/learn/surface-dedup-candidates.mjs --selftest",
-    "evals:run": "node evals/run.mjs",
+    "evals:run": "node --test evals/trigger-schema.test.mjs && node evals/run.mjs",
     "skill:sync": "node tools/skill-sync.mjs",
     "skill:sync:check": "node tools/skill-sync.mjs --check",
     "bench": "node tools/bench/cli.mjs",
