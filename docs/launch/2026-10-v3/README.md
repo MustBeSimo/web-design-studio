@@ -61,16 +61,16 @@ before posting. These drafts are optional, not an instruction to post everywhere
 
 ## Launch checklist
 
-- [ ] Release changes are merged and the required checks have passed.
-- [ ] GitHub release `v3.0.0` uses the reviewed release notes.
-- [ ] The install command lists `cinematic-scroll`, `scroll-audit` and `launch-page-strategy`.
-- [ ] A fresh install is timed, with conditions recorded and timing copy checked.
-- [ ] Installed skill folders contain text and resolve their own relative links.
-- [ ] npm serves 3.0.0 and its installer has no runtime dependencies.
+- [x] Release changes are merged and the required checks have passed.
+- [x] GitHub release `v3.0.0` uses the reviewed release notes.
+- [x] The install command lists `cinematic-scroll`, `scroll-audit` and `launch-page-strategy`.
+- [x] A fresh install is timed, with conditions recorded and timing copy checked.
+- [x] Installed skill folders contain text and resolve their own relative links.
+- [x] npm serves 3.0.0 and its installer has no runtime dependencies.
 - [ ] ClawHub serves `cinematic-scroll` 3.0.0 after the owner's publish command.
-- [ ] The live site, example destinations and archived film links work.
-- [ ] Breaking installation and removed npm-bin changes are visible in the release.
-- [ ] Evidence copy preserves the no-correctness-advantage finding.
+- [x] The live site, example destinations and archived film links work.
+- [x] Breaking installation and removed npm-bin changes are visible in the release.
+- [x] Evidence copy preserves the no-correctness-advantage finding.
 - [ ] X thread and LinkedIn post are published by the owner on day 1.
 - [ ] Show HN is submitted by the owner on day 2.
 - [ ] Relevant directory updates are submitted on day 3.
