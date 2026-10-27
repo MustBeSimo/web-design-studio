@@ -52,7 +52,7 @@ jobs:
       - name: Landing-page links resolve (Pages serves main at /)
         run: node tools/check-site-links.mjs
       - name: Installer, payload, validator and media-tool tests
-        run: node --test bin/install.test.mjs tools/check-package.test.mjs tools/check-skills.test.mjs tools/check-media-size.test.mjs tools/media-archive.test.mjs tools/check-site-links.test.mjs
+        run: node --test bin/install.test.mjs tools/check-package.test.mjs tools/check-skills.test.mjs tools/check-media-size.test.mjs tools/media-archive.test.mjs tools/media-branch.test.mjs tools/check-site-links.test.mjs
       - name: Component library (doctor ≥80 each)
         run: for f in components/mode-a/*.html; do node tools/cinematic-doctor/cli.mjs "$f" --min 80 --quiet || exit 1; done
       - name: Evals (golden fixtures + trigger-set shape)

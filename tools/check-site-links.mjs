@@ -9,8 +9,9 @@
  *
  *   node tools/check-site-links.mjs            # index.html + the other landing surfaces
  *   node tools/check-site-links.mjs <page>...  # specific pages
+ *   node tools/check-site-links.mjs --root <dir> [<page>...]  # assembled Pages tree
  */
-import { existsSync, readFileSync, realpathSync } from 'node:fs';
+import { existsSync, readFileSync, realpathSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -40,13 +41,35 @@ export function missingRefs(root, pagePath) {
 }
 
 function main(argv) {
-  const pages = (argv.length ? argv : DEFAULT_PAGES).filter((page) => existsSync(join(ROOT, page)));
+  let root = ROOT;
+  const requested = [];
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === '--root') {
+      if (!argv[i + 1] || argv[i + 1].startsWith('--')) {
+        console.error('check-site-links: --root requires a directory');
+        return 2;
+      }
+      root = resolve(argv[++i]);
+    } else if (argv[i].startsWith('--')) {
+      console.error(`check-site-links: unknown option ${argv[i]}`);
+      return 2;
+    } else requested.push(argv[i]);
+  }
+  if (!existsSync(root) || !statSync(root).isDirectory()) {
+    console.error(`check-site-links: root directory does not exist: ${root}`);
+    return 2;
+  }
+  const pages = requested.length ? requested : DEFAULT_PAGES;
   const problems = [];
   let checked = 0;
   for (const page of pages) {
-    const refs = extractLocalRefs(readFileSync(join(ROOT, page), 'utf8'));
+    if (!existsSync(join(root, page)) || !statSync(join(root, page)).isFile()) {
+      problems.push(`${page}: page is missing from ${root}`);
+      continue;
+    }
+    const refs = extractLocalRefs(readFileSync(join(root, page), 'utf8'));
     checked += refs.length;
-    for (const ref of missingRefs(ROOT, page)) problems.push(`${page}: dead link ${ref}`);
+    for (const ref of missingRefs(root, page)) problems.push(`${page}: dead link ${ref}`);
   }
   if (problems.length) {
     console.error(`✗ check-site-links: ${problems.length} dead local link(s):\n  ${problems.join('\n  ')}`);

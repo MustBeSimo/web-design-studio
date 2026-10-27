@@ -1,0 +1,61 @@
+name: Assemble Pages with media overlay
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-overlay
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: site-source
+          persist-credentials: false
+      - name: Check out the media overlay
+        uses: actions/checkout@v4
+        with:
+          ref: media
+          path: media-overlay
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Assemble the site, with media taking precedence
+        run: |
+          mkdir -p "$RUNNER_TEMP/pages-site"
+          rsync -a --exclude='.git' --exclude='node_modules' --exclude='.superpowers' --exclude='.claude' \
+            "$GITHUB_WORKSPACE/site-source/" "$RUNNER_TEMP/pages-site/"
+          rsync -a --exclude='.git' --exclude='node_modules' --exclude='.superpowers' --exclude='.claude' \
+            "$GITHUB_WORKSPACE/media-overlay/" "$RUNNER_TEMP/pages-site/"
+      - name: Check links in the assembled tree
+        run: node site-source/tools/check-site-links.mjs --root "$RUNNER_TEMP/pages-site"
+      - name: Upload the assembled site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ runner.temp }}/pages-site
+
+  deploy:
+    if: ${{ vars.PAGES_DEPLOY_ENABLED == 'true' }}
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy the assembled site
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -49,3 +49,20 @@ test('runs the site checker through a bin symlink', (t) => {
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /local links resolve/);
 });
+
+test('--root checks the assembled tree, including custom page paths and missing roots', (t) => {
+  const root = mkdtempSync(join(tmpdir(), 'assembled site '));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  mkdirSync(join(root, 'nested'));
+  writeFileSync(join(root, 'nested/page.html'), '<img src="../missing.jpg">');
+  const tool = fileURLToPath(new URL('./check-site-links.mjs', import.meta.url));
+  const run = (...args) => spawnSync(process.execPath, [tool, ...args], { encoding: 'utf8' });
+  assert.equal(run('--root', root, 'nested/page.html').status, 1);
+  writeFileSync(join(root, 'missing.jpg'), 'image');
+  const pass = run('nested/page.html', '--root', root);
+  assert.equal(pass.status, 0, pass.stderr);
+  assert.match(pass.stdout, /1 local links resolve across 1 page/);
+  assert.notEqual(run('--root', join(root, 'absent')).status, 0);
+  assert.notEqual(run('--root', root).status, 0, 'missing default pages cannot silently pass');
+  assert.equal(run('--root').status, 2);
+});
