@@ -118,6 +118,8 @@ primary action, offer, traffic context, objections, adjacent proof, risk reversa
 page shape, indexing decision, hero message and reading-order beats. Record exact
 copy and brand constraints that the builder must preserve.
 
+See the [fictional waitlist story brief](references/example-story-brief.md) for a completed example with explicit evidence gaps.
+
 Return the brief's location, the chosen page shape and any unresolved facts.
 The deliverable is the story brief, handed to `cinematic-scroll` for design and
 motion if that skill is installed and implementation is requested. Otherwise,

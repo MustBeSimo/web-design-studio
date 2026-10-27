@@ -79,6 +79,8 @@ Distinguish measured results from rubric judgments and projected improvements.
 Do not invent timings, source filenames or before/after scores. Record unavailable
 checks explicitly. Write in the user's requested output directory.
 
+See the [fictional remediation plan](references/example-remediation-plan.md) for a completed example with a deduction ledger and unavailable checks.
+
 ### 5. Present and offer fixes
 
 Summarise the overall score and grade, or explain why either is unavailable.
