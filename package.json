@@ -58,7 +58,7 @@
     "proof:components": "node tools/page-proof/proof-components.mjs",
     "skills:check": "node tools/check-skills.mjs --forbid-root-skill",
     "clawhub:validate": "node tools/check-skills.mjs --forbid-root-skill",
-    "clawhub:scan": "npm run clawhub:validate && skillspector scan skills/cinematic-scroll --no-llm",
+    "clawhub:scan": "npm run clawhub:validate && for s in skills/*/; do skillspector scan \"$s\" --no-llm || exit 1; done",
     "test:scenes": "node --test tools/page-proof/scenes.browser.test.mjs",
     "build:gallery": "esbuild assets/gallery-motion.mjs --bundle --format=iife --target=es2020 --outfile=assets/gallery-motion.js"
   },

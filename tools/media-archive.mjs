@@ -11,10 +11,12 @@
  * isReferrer). Markdown, JSON and everything under assets/brand/ is always kept.
  */
 import { execFileSync, spawnSync } from 'node:child_process';
-import { copyFileSync, existsSync, linkSync, mkdirSync, mkdtempSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, linkSync, mkdirSync, mkdtempSync, readFileSync, statSync, writeFileSync, realpathSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, normalize, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+export const KEEP_PATHS = ['assets/promo-linkedin/web-design-studio-linkedin-poster.jpg'];
 
 export const RELEASE = {
   repo: 'MustBeSimo/web-design-studio',
@@ -102,7 +104,7 @@ export function classifyAssets({ assets, referrerTexts }) {
   const keep = [];
   const move = [];
   for (const { path } of assets) {
-    if (ALWAYS_KEEP.some((re) => re.test(path)) || referenced.has(path)) keep.push(path);
+    if (KEEP_PATHS.includes(path) || ALWAYS_KEEP.some((re) => re.test(path)) || referenced.has(path)) keep.push(path);
     else move.push(path);
   }
   return { keep, move };
@@ -255,7 +257,16 @@ function main(argv) {
   return 2;
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+/** True when invoked directly or through a bin symlink. */
+function isMain() {
+  try {
+    return process.argv[1] !== undefined && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (isMain()) {
   try {
     process.exit(main(process.argv.slice(2)));
   } catch (error) {

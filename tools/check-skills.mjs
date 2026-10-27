@@ -13,7 +13,7 @@
  *   node tools/check-skills.mjs                      # validate skills/*
  *   node tools/check-skills.mjs --forbid-root-skill  # also fail when a root SKILL.md exists
  */
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync, realpathSync } from 'node:fs';
 import { basename, dirname, extname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -36,6 +36,20 @@ function frontmatterOf(text) {
   return text.match(/^---\n([\s\S]*?)\n---/u)?.[1] ?? '';
 }
 
+/** Read only the direct version child of the top-level metadata block. */
+function metadataVersion(frontmatter) {
+  const lines = frontmatter.split('\n');
+  const start = lines.findIndex((line) => /^metadata:[ \t]*(?:#.*)?$/.test(line));
+  if (start === -1) return undefined;
+  for (const line of lines.slice(start + 1)) {
+    if (!line.trim() || line.trimStart().startsWith('#')) continue;
+    if (/^\S/.test(line)) break;
+    const match = line.match(/^ {2}version:[ \t]*([^\n]+)$/);
+    if (match) return match[1].trim();
+  }
+  return undefined;
+}
+
 /**
  * @param {string} dir absolute path of one skill folder
  * @param {{version: string}} options
@@ -51,7 +65,7 @@ export function validateSkillDir(dir, { version }) {
   const name = frontmatter.match(/^name:\s*([^\n]+)$/mu)?.[1]?.trim();
   if (name !== folder) errors.push(`frontmatter name ${JSON.stringify(name)} must match folder ${folder}`);
   if (!/^description:\s*\S+/mu.test(frontmatter)) errors.push('frontmatter description is required');
-  const found = frontmatter.match(/^\s{2}version:\s*([^\n]+)$/mu)?.[1]?.trim();
+  const found = metadataVersion(frontmatter);
   if (found !== version) errors.push(`frontmatter metadata.version ${JSON.stringify(found)} must match package.json ${version}`);
   if (/^license:/mu.test(frontmatter)) errors.push('remove the license: frontmatter key (ClawHub assigns MIT-0; the repository LICENSE governs)');
 
@@ -116,6 +130,15 @@ function main(argv) {
   return 0;
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+/** True when invoked directly or through a bin symlink. */
+function isMain() {
+  try {
+    return process.argv[1] !== undefined && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (isMain()) {
   process.exit(main(process.argv.slice(2)));
 }
