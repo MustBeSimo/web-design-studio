@@ -56,7 +56,7 @@ jobs:
       - name: Component library (doctor ≥80 each)
         run: for f in components/mode-a/*.html; do node tools/cinematic-doctor/cli.mjs "$f" --min 80 --quiet || exit 1; done
       - name: Evals (golden fixtures + trigger-set shape)
-        run: node evals/run.mjs
+        run: npm run evals:run
 
       # Sweep every web build in the repo (landing pages + examples). Video
       # compositions and test fixtures are skipped automatically. Default

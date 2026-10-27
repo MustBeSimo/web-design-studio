@@ -1,30 +1,284 @@
 {
-  "$description": "Triggering eval set for the cinematic-scroll skill. Each case is a user query and whether the skill SHOULD activate. Run with an LLM judge (e.g. skill-creator run_loop) against the frontmatter description: recall = positives that fire; precision = near-miss negatives that correctly DON'T. Negatives are deliberate look-alikes that share keywords (scroll, 3D, page) but are out of scope.",
-  "metric": { "recall_target": 0.9, "precision_target": 0.9 },
+  "$description": "Per-skill triggering eval set for Web Design Studio. Each query is labelled for one named skill; should_trigger applies only to that skill. Use an LLM judge against its frontmatter description to assess routing accuracy. Near-miss negatives include requests that belong to a sibling skill. Deterministic validation checks shape, not accuracy.",
+  "metric": {
+    "recall_target": 0.9,
+    "precision_target": 0.9
+  },
   "cases": [
-    { "query": "Build me a scroll-driven product launch page with pinned chapters", "should_trigger": true },
-    { "query": "I want a cinematic hero with multi-layer parallax as you scroll", "should_trigger": true },
-    { "query": "Make a Shopify-Editions-style release site for our new product", "should_trigger": true },
-    { "query": "An editorial microsite where the background morphs between scenes on scroll", "should_trigger": true },
-    { "query": "Add 3D tilt cards that react to the cursor", "should_trigger": true },
-    { "query": "A scroll-scrubbed video hero like the Apple AirPods page", "should_trigger": true },
-    { "query": "Kinetic headline that reveals word-by-word as it enters view", "should_trigger": true },
-    { "query": "Give me an awwwards-tier scroll experience for our brand story", "should_trigger": true },
-    { "query": "A depth-parallax storytelling page with chaptered reveals", "should_trigger": true },
-    { "query": "Audit and score the scroll experience of my own landing page at this URL", "should_trigger": true },
-    { "query": "Plan a cinematic scroll storyboard for our new camera, no code yet", "should_trigger": true },
-    { "query": "Improve the parallax hero in my existing Astro site; keep the current stack", "should_trigger": true },
-    { "query": "Build a cinematic product page with restrained motion and no API keys", "should_trigger": true },
-
-    { "query": "Build a hover dropdown navigation menu", "should_trigger": false },
-    { "query": "Write a print stylesheet for our invoices", "should_trigger": false },
-    { "query": "Make a multiplayer Three.js browser game", "should_trigger": false },
-    { "query": "Set up a static markdown blog", "should_trigger": false },
-    { "query": "Build a CRUD admin dashboard with tables and filters", "should_trigger": false },
-    { "query": "Add a contact form with validation and email sending", "should_trigger": false },
-    { "query": "Create a REST API endpoint for user signup", "should_trigger": false },
-    { "query": "Style a sortable data table", "should_trigger": false },
-    { "query": "Audit competitor example.com (a site I don't own) and scrape its layout", "should_trigger": false },
-    { "query": "Implement an e-commerce checkout flow with Stripe", "should_trigger": false }
+    {
+      "skill": "cinematic-scroll",
+      "query": "Build me a scroll-driven product launch page with pinned chapters",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "I want a cinematic hero with multi-layer parallax as you scroll",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Make a Shopify-Editions-style release site for our new product",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "An editorial microsite where the background morphs between scenes on scroll",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Add 3D tilt cards that react to the cursor",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "A scroll-scrubbed video hero like the Apple AirPods page",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Kinetic headline that reveals word-by-word as it enters view",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Give me an awwwards-tier scroll experience for our brand story",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "A depth-parallax storytelling page with chaptered reveals",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Audit and score the scroll experience of my own landing page at this URL",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Plan a cinematic scroll storyboard for our new camera, no code yet",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Improve the parallax hero in my existing Astro site; keep the current stack",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Build a cinematic product page with restrained motion and no API keys",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Build a hover dropdown navigation menu",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Write a print stylesheet for our invoices",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Make a multiplayer Three.js browser game",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Set up a static markdown blog",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Build a CRUD admin dashboard with tables and filters",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Add a contact form with validation and email sending",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Create a REST API endpoint for user signup",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Style a sortable data table",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Audit competitor example.com (a site I don't own) and scrape its layout",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Implement an e-commerce checkout flow with Stripe",
+      "should_trigger": false
+    },
+    {
+      "skill": "scroll-audit",
+      "query": "why does my site feel so janky when i scroll? tell me what to fix first",
+      "should_trigger": true
+    },
+    {
+      "skill": "scroll-audit",
+      "query": "review the pinned sections on our product page and give me a repair plan",
+      "should_trigger": true
+    },
+    {
+      "skill": "scroll-audit",
+      "query": "can you score the scrolling on this page we own, desktop and mobile?",
+      "should_trigger": true
+    },
+    {
+      "skill": "scroll-audit",
+      "query": "our page keeps pulling me back when i scroll up. diagnose it before changing anything",
+      "should_trigger": true
+    },
+    {
+      "skill": "scroll-audit",
+      "query": "check whether the motion on our homepage respects reduced motion",
+      "should_trigger": true
+    },
+    {
+      "skill": "scroll-audit",
+      "query": "the parallax makes our text hard to follow. audit what is going wrong",
+      "should_trigger": true
+    },
+    {
+      "skill": "scroll-audit",
+      "query": "review the pacing of my story page; the middle feels like it never ends",
+      "should_trigger": true
+    },
+    {
+      "skill": "scroll-audit",
+      "query": "look through this supplied local HTML and report motion accessibility problems without editing it",
+      "should_trigger": true
+    },
+    {
+      "skill": "scroll-audit",
+      "query": "audit my landing page copy and tell me which objections we forgot",
+      "should_trigger": false
+    },
+    {
+      "skill": "scroll-audit",
+      "query": "what should our waitlist page say before we start designing it?",
+      "should_trigger": false
+    },
+    {
+      "skill": "scroll-audit",
+      "query": "make the hero parallax smoother in our existing site",
+      "should_trigger": false
+    },
+    {
+      "skill": "scroll-audit",
+      "query": "build me a new page with sticky chapters for this camera launch",
+      "should_trigger": false
+    },
+    {
+      "skill": "scroll-audit",
+      "query": "audit our homepage title tags and sitemap for SEO",
+      "should_trigger": false
+    },
+    {
+      "skill": "scroll-audit",
+      "query": "the customer table scrolls sideways; fix its column widths",
+      "should_trigger": false
+    },
+    {
+      "skill": "scroll-audit",
+      "query": "check this invoice PDF for accessibility",
+      "should_trigger": false
+    },
+    {
+      "skill": "scroll-audit",
+      "query": "measure how long our signup API takes to respond",
+      "should_trigger": false
+    },
+    {
+      "skill": "launch-page-strategy",
+      "query": "what should our waitlist page actually say?",
+      "should_trigger": true
+    },
+    {
+      "skill": "launch-page-strategy",
+      "query": "people land here from our launch email. help me work out the story and next step",
+      "should_trigger": true
+    },
+    {
+      "skill": "launch-page-strategy",
+      "query": "our headline is vague; rewrite it using only the facts in this brief",
+      "should_trigger": true
+    },
+    {
+      "skill": "launch-page-strategy",
+      "query": "we have three buttons asking for different things. help choose the main action",
+      "should_trigger": true
+    },
+    {
+      "skill": "launch-page-strategy",
+      "query": "plan the argument for our product launch before anyone starts designing",
+      "should_trigger": true
+    },
+    {
+      "skill": "launch-page-strategy",
+      "query": "review our pricing page copy and the questions it leaves unanswered",
+      "should_trigger": true
+    },
+    {
+      "skill": "launch-page-strategy",
+      "query": "we have no customer quotes yet. what can our landing page honestly use as proof?",
+      "should_trigger": true
+    },
+    {
+      "skill": "launch-page-strategy",
+      "query": "turn these product notes into a page brief with objections, proof and section order",
+      "should_trigger": true
+    },
+    {
+      "skill": "launch-page-strategy",
+      "query": "make the hero parallax smoother",
+      "should_trigger": false
+    },
+    {
+      "skill": "launch-page-strategy",
+      "query": "build the pinned product reveal from this approved copy; keep every word",
+      "should_trigger": false
+    },
+    {
+      "skill": "launch-page-strategy",
+      "query": "score the scrolling on our homepage and give us a remediation plan",
+      "should_trigger": false
+    },
+    {
+      "skill": "launch-page-strategy",
+      "query": "check why our sticky sections trap keyboard focus",
+      "should_trigger": false
+    },
+    {
+      "skill": "launch-page-strategy",
+      "query": "draft a launch announcement email for our existing customers",
+      "should_trigger": false
+    },
+    {
+      "skill": "launch-page-strategy",
+      "query": "set up the waitlist database and email verification endpoint",
+      "should_trigger": false
+    },
+    {
+      "skill": "launch-page-strategy",
+      "query": "make the pricing cards line up; the copy is already approved",
+      "should_trigger": false
+    },
+    {
+      "skill": "launch-page-strategy",
+      "query": "debug why our site returns a 404 on the pricing route",
+      "should_trigger": false
+    }
   ]
 }
