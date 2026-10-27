@@ -24,7 +24,7 @@ const SCAN = [
   "skills/scroll-audit/SKILL.md", "skills/launch-page-strategy/SKILL.md",
   "AGENTS.md", "INTEGRATIONS.md", ".claude/commands/cinematic-scroll.md",
 ];
-const REPO_DIRS = ["references/", "templates/", "examples/", "tokens/", "themes/", "components/", "evals/", "tools/", "bin/", "docs/", "launch/", "video/", "assets/"];
+const REPO_DIRS = ["skills/", "references/", "templates/", "examples/", "tokens/", "themes/", "components/", "evals/", "tools/", "bin/", "docs/", "launch/", "video/", "assets/"];
 const ROOT_FILE = /^[A-Za-z0-9_][A-Za-z0-9_.-]*\.(md|json|mjs|js|ts)$/;
 // Filenames the 5-phase pipeline / audit mode EMIT at build time — documented outputs, not repo files.
 const ARTIFACTS = new Set([

@@ -1,3 +1,8 @@
+import { spawnSync } from 'node:child_process';
+import { mkdtempSync, rmSync, symlinkSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { classifyAssets, assetName, downloadUrl, isReferrer, referencedAssetPaths, resolveReference } from './media-archive.mjs';
@@ -72,4 +77,20 @@ test('paths inside site scripts and stylesheets resolve from the document root a
   assert.deepEqual(classifyAssets({ assets, referrerTexts }).keep, ['assets/video/tunnel.mp4', 'assets/studio-tunnel.mjs']);
   assert.deepEqual(resolveReference('assets/gallery-motion.mjs', 'assets/video/tunnel.mp4'), ['assets/assets/video/tunnel.mp4', 'assets/video/tunnel.mp4']);
   assert.deepEqual(resolveReference('index.html', 'assets/video/tunnel.mp4'), ['assets/video/tunnel.mp4']);
+});
+
+test('keeps the LinkedIn poster even when no referrer embeds it', () => {
+  const poster = 'assets/promo-linkedin/web-design-studio-linkedin-poster.jpg';
+  const result = classifyAssets({ assets: [{ path: poster, size: 1 }, { path: `${poster}.backup`, size: 1 }], referrerTexts: [] });
+  assert.deepEqual(result, { keep: [poster], move: [`${poster}.backup`] });
+});
+
+test('runs the archive CLI through a bin symlink without performing any action', (t) => {
+  const root = mkdtempSync(join(tmpdir(), 'archive-bin-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const entry = join(root, 'media-archive');
+  symlinkSync(fileURLToPath(new URL('./media-archive.mjs', import.meta.url)), entry);
+  const result = spawnSync(process.execPath, [entry], { encoding: 'utf8' });
+  assert.equal(result.status, 2);
+  assert.match(result.stderr, /usage: media-archive/);
 });

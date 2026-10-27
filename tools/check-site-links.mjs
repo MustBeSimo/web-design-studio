@@ -10,7 +10,7 @@
  *   node tools/check-site-links.mjs            # index.html + the other landing surfaces
  *   node tools/check-site-links.mjs <page>...  # specific pages
  */
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, realpathSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -56,6 +56,15 @@ function main(argv) {
   return 0;
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+/** True when invoked directly or through a bin symlink. */
+function isMain() {
+  try {
+    return process.argv[1] !== undefined && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (isMain()) {
   process.exit(main(process.argv.slice(2)));
 }

@@ -1,6 +1,8 @@
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { extractLocalRefs, missingRefs } from './check-site-links.mjs';
@@ -36,4 +38,14 @@ test('reports targets that do not exist relative to the page, treating a trailin
   writeFileSync(join(root, 'assets', 'brand', 'p.jpg'), '');
   writeFileSync(join(root, 'index.html'), html);
   assert.deepEqual(missingRefs(root, 'index.html').sort(), ['SKILL.md', 'assets/studio-brand.css']);
+});
+
+test('runs the site checker through a bin symlink', (t) => {
+  const root = mkdtempSync(join(tmpdir(), 'site-bin-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const entry = join(root, 'check-site-links');
+  symlinkSync(fileURLToPath(new URL('./check-site-links.mjs', import.meta.url)), entry);
+  const result = spawnSync(process.execPath, [entry], { encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /local links resolve/);
 });

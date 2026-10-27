@@ -10,7 +10,7 @@
  *   node tools/check-media-size.mjs --limit N  # custom limit in bytes
  */
 import { spawnSync } from 'node:child_process';
-import { statSync } from 'node:fs';
+import { statSync, realpathSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -65,6 +65,15 @@ function main(argv) {
   return 0;
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+/** True when invoked directly or through a bin symlink. */
+function isMain() {
+  try {
+    return process.argv[1] !== undefined && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (isMain()) {
   process.exit(main(process.argv.slice(2)));
 }

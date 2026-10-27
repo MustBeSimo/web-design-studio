@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Media described here now lives in GitHub Release media-2026-10, mapped in docs/launch/2026-10-v3/media-archive-manifest.txt.
 
 import {mkdtempSync, readFileSync, writeFileSync} from "node:fs";
 import {tmpdir} from "node:os";

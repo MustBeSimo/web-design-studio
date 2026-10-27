@@ -1,5 +1,7 @@
 # Promo assets — v2.4.0 "Eleven Worlds"
 
+Media described here now lives in GitHub Release `media-2026-10`, mapped in [docs/launch/2026-10-v3/media-archive-manifest.txt](../../docs/launch/2026-10-v3/media-archive-manifest.txt).
+
 Launch reel for the cinematic-scroll v2.4.0 design system, rendered with the repo's **Remotion**
 pipeline (same engine + music as `reel3`). 40s, scored: Hook → the portable skill → the **Wall of
 Eleven Worlds** → the doctor gate → CTA. The wall shows the eleven themes as **eleven real,

@@ -1,5 +1,7 @@
 # Captions — "Eleven Worlds" v2.4.0 reel
 
+Media described here now lives in GitHub Release `media-2026-10`, mapped in [docs/launch/2026-10-v3/media-archive-manifest.txt](../../docs/launch/2026-10-v3/media-archive-manifest.txt).
+
 Paste-ready (no markdown rendering on these platforms — clean • and →). **Framing: eleven is a
 glimpse, not a ceiling** — one engine, any aesthetic you describe, infinite worlds. 16:9 →
 LinkedIn/X/ClawHub, 9:16 → IG Reels/Stories, 1:1 → IG feed.

@@ -1,5 +1,7 @@
 # Examples showreel — v2.4.0
 
+Media described here now lives in GitHub Release `media-2026-10`, mapped in [docs/launch/2026-10-v3/media-archive-manifest.txt](../../docs/launch/2026-10-v3/media-archive-manifest.txt).
+
 A cinematic **showreel of the real sites the skill builds, scrolling**. Each shot is an actual
 captured scroll-through of an example site, full-frame, with a slow camera push-in, cinematic
 letterbox, kinetic brand text, and crossfades — so a viewer *sees* the range of what the skill
