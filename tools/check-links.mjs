@@ -16,6 +16,7 @@ import { dirname, join } from "node:path";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SCAN = [
+  "README.md", "docs/releasing.md",
   "design.md", "references/recipe-catalog.md",
   "references/recipes/editorial-story.md", "references/recipes/product-reveal.md", "references/recipes/real-time-3d.md",
   "skills/cinematic-scroll/SKILL.md", "skills/cinematic-scroll/references/recipe-catalog.md",
