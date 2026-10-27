@@ -189,6 +189,8 @@ Web Design Studio Pro adds the **Motif Engine**: retrieve patterns by intent, bu
 
 ## Develop and verify this repo
 
+Follow [the release guide](docs/releasing.md) for version updates, trusted npm publishing and the separate ClawHub release.
+
 ```bash
 npm install
 npm test
