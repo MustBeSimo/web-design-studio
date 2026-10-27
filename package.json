@@ -25,7 +25,7 @@
     "test:runtime:assets": "node --test runtime/assets.browser.test.mjs",
     "test:runtime:field": "node --test runtime/field.browser.test.mjs examples/v3-flagship/interaction.test.mjs",
     "test:presentation": "node --test runtime/presentation.browser.test.mjs",
-    "test:workflow": "node --test tools/verify/verify.test.mjs tools/verify/preflight-3d.test.mjs tools/tastehq/tastehq.test.mjs tools/page-proof/matrix.test.mjs tools/page-proof/request-failure.test.mjs tools/check-package.test.mjs tools/choreography.test.mjs tools/cinematic-doctor/stylesheets.test.mjs tools/media-archive.test.mjs tools/check-media-size.test.mjs tools/check-skills.test.mjs tools/check-site-links.test.mjs",
+    "test:workflow": "node --test tools/verify/verify.test.mjs tools/verify/preflight-3d.test.mjs tools/tastehq/tastehq.test.mjs tools/page-proof/matrix.test.mjs tools/page-proof/request-failure.test.mjs tools/check-package.test.mjs tools/choreography.test.mjs tools/cinematic-doctor/stylesheets.test.mjs tools/media-archive.test.mjs tools/check-media-size.test.mjs tools/check-skills.test.mjs tools/check-site-links.test.mjs tools/media-branch.test.mjs",
     "media:check": "node tools/check-media-size.mjs",
     "site:check": "node tools/check-site-links.mjs",
     "test:install": "node --test bin/install.test.mjs",
