@@ -1,0 +1,98 @@
+# Weekly watch — gathers public adoption and health numbers and posts them as a
+# comment on the open issue labelled `watch` (created on first run). The claude.ai
+# routine "Web Design Studio weekly watch" reads that comment through the GitHub
+# API, because its sandbox cannot reach skills.sh, clawhub.ai, api.npmjs.org or
+# the Pages site directly. Runs Sunday 21:00 UTC, an hour before the routine.
+name: Weekly watch
+
+on:
+  schedule:
+    - cron: '0 21 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: MustBeSimo/web-design-studio
+      SITE: https://mustbesimo.github.io/web-design-studio
+    steps:
+      - uses: actions/checkout@v4
+      - name: Collect metrics
+        run: |
+          set -uo pipefail
+          meta=$(gh api "repos/$REPO")
+          stars=$(jq -r .stargazers_count <<<"$meta")
+          forks=$(jq -r .forks_count <<<"$meta")
+          issues=$(jq -r .open_issues_count <<<"$meta")
+          pushed=$(jq -r .pushed_at <<<"$meta")
+          run_line() { gh api "repos/$REPO/actions/workflows/$1/runs?per_page=1${2:-}" --jq '.workflow_runs[0] | "\(.conclusion // .status) \(.created_at) \(.html_url)"' 2>/dev/null || echo "unavailable"; }
+          ci=$(run_line ci.yml '&branch=main')
+          pages=$(run_line pages.yml '&branch=main')
+          publish=$(run_line publish-npm.yml)
+          pkg=$(jq -r .version package.json)
+          npm_latest=$(curl -s https://registry.npmjs.org/cinematic-scroll-skill | jq -r '."dist-tags".latest' 2>/dev/null || echo unavailable)
+          npm_week=$(curl -s https://api.npmjs.org/downloads/point/last-week/cinematic-scroll-skill | jq -r .downloads 2>/dev/null || echo unavailable)
+          skills_text=$(curl -sL -A 'Mozilla/5.0' https://skills.sh/mustbesimo/web-design-studio | sed -e 's/<script[^>]*>.*<\/script>//g' -e 's/<[^>]*>/ /g' | tr -s ' \n' ' ')
+          skills_total=$(grep -oE '[0-9][0-9.,]*K? total installs' <<<"$skills_text" | head -1); skills_total=${skills_total:-unavailable}
+          per_skill=$(grep -oE '(cinematic-scroll|scroll-audit|launch-page-strategy) [0-9][0-9.,]*K?' <<<"$skills_text" | sort -u | tr '\n' ';'); per_skill=${per_skill:-unavailable}
+          clawhub=$(curl -sL -A 'Mozilla/5.0' https://clawhub.ai/mustbesimo/skills/cinematic-scroll | grep -oE 'version=[0-9]+\.[0-9]+\.[0-9]+' | head -1 | cut -d= -f2); clawhub=${clawhub:-unavailable}
+          site_label=$(curl -s "$SITE/" | grep -oE 'data-release-version="[^"]+"' | head -1 | cut -d'"' -f2); site_label=${site_label:-unavailable}
+          statuses=""; bad_urls=0
+          for p in / /sitemap.xml /skills/cinematic-scroll/SKILL.md /examples/aureus-flythrough/ /examples/renaissance/ /assets/previews/flagship.mp4 /examples/studio/assets/0-hero.jpg; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$SITE$p"); statuses="$statuses $code $p;"
+            [ "$code" = "200" ] || bad_urls=$((bad_urls + 1))
+          done
+          flags=""
+          for pair in "CI on main:$ci" "Pages workflow:$pages" "npm publish workflow:$publish"; do
+            case "${pair#*:}" in success*) ;; *) flags="$flags- ${pair%%:*} is not green: ${pair#*:}\n";; esac
+          done
+          [ "$bad_urls" = "0" ] || flags="$flags- $bad_urls live-site URL(s) did not return 200\n"
+          for v in "$npm_latest" "$clawhub" "$site_label"; do
+            [ "$v" = "$pkg" ] || flags="$flags- version mismatch: package.json $pkg vs $v\n"
+          done
+          [ -n "$flags" ] || flags="none"
+          {
+            echo "## Weekly watch, $(date -u +%Y-%m-%d) UTC"
+            echo
+            echo "| Metric | Value |"
+            echo "|---|---|"
+            echo "| Stars | $stars |"
+            echo "| Forks | $forks |"
+            echo "| Open issues (incl. this one and PRs) | $issues |"
+            echo "| Last push | $pushed |"
+            echo "| skills.sh total installs | $skills_total |"
+            echo "| skills.sh per skill | $per_skill |"
+            echo "| npm downloads, last 7 days | $npm_week |"
+            echo "| npm latest | $npm_latest |"
+            echo "| ClawHub latest | $clawhub |"
+            echo "| package.json on main | $pkg |"
+            echo "| Live site release label | $site_label |"
+            echo
+            echo "**Health**"
+            echo "- CI on main: $ci"
+            echo "- Pages workflow: $pages"
+            echo "- npm publish workflow: $publish"
+            echo "- Live site:$statuses"
+            echo
+            echo "**Flags**"
+            printf '%b\n' "$flags"
+          } > report.md
+          cat report.md >> "$GITHUB_STEP_SUMMARY"
+          cat report.md
+      - name: Post the report on the watch issue
+        run: |
+          set -euo pipefail
+          gh label create watch --repo "$REPO" --color 0E8A16 --description "Automated weekly adoption and health report" 2>/dev/null || true
+          num=$(gh issue list --repo "$REPO" --label watch --state open --limit 1 --json number --jq '.[0].number // empty')
+          if [ -z "$num" ]; then
+            num=$(gh issue create --repo "$REPO" --title "Weekly watch: adoption and health" --label watch --body "Automated. One comment per weekly run of .github/workflows/watch.yml; the claude.ai routine reads the latest comment. Close this issue to stop the comments; the workflow will open a new one on its next run." | grep -oE '[0-9]+$')
+          fi
+          gh issue comment "$num" --repo "$REPO" --body-file report.md
+          echo "posted to issue #$num"
