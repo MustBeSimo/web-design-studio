@@ -2,7 +2,7 @@
 name: launch-page-strategy
 description: Decide what a launch, landing or product page must say and prove before any design or motion work. Use for a landing page, launch page, waitlist, pricing page copy or conversion brief, including requests about a headline, call to action, objections, proof or "what should the page say". Establish the audience, offer, traffic context and credible evidence, then deliver a story brief for cinematic-scroll. Use for new pages or message revisions, without prescribing a visual style or inventing business facts.
 metadata:
-  version: 3.0.0
+  version: 3.0.1
   openclaw:
     emoji: "📝"
     homepage: https://github.com/MustBeSimo/web-design-studio

@@ -1,6 +1,6 @@
 {
   "name": "cinematic-scroll-skill",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Installer for Web Design Studio: three free agent skills (cinematic-scroll, scroll-audit, launch-page-strategy) for websites people remember.",
   "type": "module",
   "bin": {

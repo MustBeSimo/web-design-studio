@@ -2,7 +2,7 @@
 name: cinematic-scroll
 description: Design and build cinematic websites, interactive portfolios, product stories, and real-time 3D experiences with subject-specific art direction and scroll choreography. Use for new builds, redesigns, motion improvements, scroll audits, or storyboards in standalone HTML and existing apps; includes responsive, reduced-motion, and static fallbacks. Not for ordinary dashboards or unrelated animation.
 metadata:
-  version: 3.0.0
+  version: 3.0.1
   openclaw:
     emoji: "🎬"
     homepage: https://github.com/MustBeSimo/web-design-studio

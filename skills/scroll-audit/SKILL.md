@@ -2,7 +2,7 @@
 name: scroll-audit
 description: Audit a live website's or local page's scroll experience and return a scored remediation plan. Use for an audit, review, score or benchmark request about scroll performance, parallax, pinned sections, scroll-jacking, reduced motion or motion accessibility, including "why does this page feel janky". Inspect authorised targets, separate observed behavior from unavailable evidence, and prioritise repairs across pacing, performance, accessibility and emotional arc. This skill diagnoses existing pages; it does not build or publish them.
 metadata:
-  version: 3.0.0
+  version: 3.0.1
   openclaw:
     emoji: "🔎"
     homepage: https://github.com/MustBeSimo/web-design-studio
