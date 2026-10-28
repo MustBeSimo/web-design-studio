@@ -1,7 +1,11 @@
 # Pages media branch design
 
-Date: 27 October 2026. Status: groundwork only; no Pages source change and no
-media removal from main in this PR.
+Date: 27 October 2026. Status: cutover performed on 28 October 2026. Pages now
+builds from `.github/workflows/pages.yml` (repository variable
+`PAGES_DEPLOY_ENABLED=true`); the first Actions deployment served all fourteen
+baseline URLs byte-identically to the branch build. The 103 media files that are
+not README embeds or helpers were then removed from `main` by
+`node tools/media-branch.mjs --remove-from-main`.
 
 ## Branch and artifact model
 

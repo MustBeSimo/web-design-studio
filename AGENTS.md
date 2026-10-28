@@ -55,8 +55,23 @@ installed skill; do not link to them from inside `skills/`.
 No tracked file may exceed 5 MB (`node tools/check-media-size.mjs`, allowlist in
 the script). Promo films, reels and stills go to a `media-*` GitHub Release via
 `node tools/media-archive.mjs --plan` then `--apply`; the manifest in
-`docs/launch/` maps former paths to download URLs. Media the live site plays
-stays in the tree.
+`docs/launch/` maps former paths to download URLs.
+
+Since 2026-10-28 the media the live site plays (example photos and videos,
+previews, brand films) lives on the orphan `media` branch, not on `main`.
+GitHub Pages is built by `.github/workflows/pages.yml`, which overlays that
+branch on `main`; URLs are unchanged. Consequences:
+
+- A plain clone of `main` shows example pages without their images. To preview
+  locally, overlay the branch without staging it:
+  `git fetch origin media && git restore --source=origin/media --worktree -- examples assets`
+  (the files appear untracked; do not commit them).
+- To add or change site media, commit to the `media` branch (for example in a
+  worktree: `git worktree add ../wds-media origin/media`), push it, then dispatch
+  the Pages workflow. Never run `node tools/media-branch.mjs --write-branch`
+  after the cutover; it refuses, because `main` no longer holds the media.
+- `node tools/check-site-links.mjs` counts a path committed on `origin/media`
+  as served; CI fetches that ref before running it.
 
 ## Maintaining the public showcase
 

@@ -38,8 +38,9 @@ skill identifiers in commands, paths and compatibility interfaces.
 Promo films, reels and stills belong in a `media-*` GitHub Release, with their URLs
 recorded in the release's archive manifest under `docs/launch/`; do not commit them
 to the source tree. No tracked file may exceed 5 MB unless explicitly allowlisted.
-Existing live-site media has a separate, coordinated migration: do not remove it
-as part of an unrelated contribution. See [AGENTS.md](AGENTS.md) for the media rule.
+The photos and videos the live site plays live on the `media` branch, which the
+Pages workflow overlays on `main`; add or change site media there, not on `main`.
+See [AGENTS.md](AGENTS.md) for the media rule and the local preview command.
 
 ## Propose a new skill
 
