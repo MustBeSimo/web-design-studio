@@ -69,7 +69,6 @@ export function buildPlan(root = ROOT) {
 export function writeBranch(root = ROOT) {
   git(root, ['fetch', 'origin', 'refs/heads/main:refs/remotes/origin/main']);
   const plan = buildPlan(root);
-  if (!plan.candidates.length) throw new Error('No site media candidates; refusing to publish an empty overlay');
   const remote = runGit(root, ['ls-remote', '--exit-code', '--heads', 'origin', 'refs/heads/media'], { allowFailure: true });
   let previous;
   if (remote.status === 0) {
@@ -78,9 +77,16 @@ export function writeBranch(root = ROOT) {
     const common = runGit(root, ['merge-base', plan.source, previous], { allowFailure: true });
     if (common.status === 0) throw new Error('origin/media is not an orphan history; refusing to overwrite it');
     if (common.status !== 1) throw new Error(`Cannot verify orphan media history: ${common.stderr.trim()}`);
+    // After the cutover main carries only README images and helpers; mirroring it again
+    // would replace the overlay with a near-empty tree and break the live site.
+    const mediaCount = runGit(root, ['ls-tree', '-r', '--name-only', previous]).stdout.split('\n').filter(Boolean).length;
+    if (plan.candidates.length < mediaCount / 2) {
+      throw new Error(`main no longer holds the site media (origin/media has ${mediaCount} files, main offers ${plan.candidates.length}); maintain the media branch directly`);
+    }
   } else if (remote.status !== 2) {
     throw new Error(`Cannot inspect origin/media: ${remote.stderr.trim()}`);
   }
+  if (!plan.candidates.length) throw new Error('No site media candidates; refusing to publish an empty overlay');
 
   const staging = mkdtempSync(join(tmpdir(), 'wds-media-branch-'));
   const worktree = join(staging, 'tree');

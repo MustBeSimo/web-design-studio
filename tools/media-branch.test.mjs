@@ -138,3 +138,14 @@ test('removal plan keeps README-embedded images and non-media helpers on main', 
   ]);
   assert.equal(plan.removeBytes, 11_567_395);
 });
+
+test('refuses to mirror once main no longer holds the site media (overlay must be maintained directly)', (t) => {
+  const { root, temp, git } = fixture(t);
+  writeBranch(root);
+  const mainWorktree = join(temp, 'main-after-cutover');
+  git(['worktree', 'add', mainWorktree, 'main']);
+  git(['rm', '-q', 'assets/video/a.mp4'], mainWorktree);
+  git(['commit', '-q', '-m', 'media served from the media branch'], mainWorktree);
+  git(['push', '-q', 'origin', 'main'], mainWorktree);
+  assert.throws(() => writeBranch(root), /main no longer holds/);
+});

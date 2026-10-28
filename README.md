@@ -209,7 +209,7 @@ npm run proof -- examples/noir/index.html
 npm run bench -- https://example.com
 ```
 
-Promo media lives in the [`media-2026-10` release](https://github.com/MustBeSimo/web-design-studio/releases/tag/media-2026-10), not in the tree; `node tools/media-archive.mjs --plan` shows what would move.
+Promo media lives in the [`media-2026-10` release](https://github.com/MustBeSimo/web-design-studio/releases/tag/media-2026-10), not in the tree; `node tools/media-archive.mjs --plan` shows what would move. The photos and videos the live site plays live on the `media` branch, which the Pages workflow overlays on `main` at deploy time. A fresh clone therefore shows the example pages without images; to preview them locally run `git fetch origin media && git restore --source=origin/media --worktree -- examples assets` and leave those files uncommitted.
 
 ## Principles
 
