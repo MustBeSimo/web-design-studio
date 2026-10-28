@@ -117,3 +117,24 @@ test('cleans up the temporary worktree when the remote rejects a media push', (t
   assert.equal(git(['worktree', 'list', '--porcelain']).match(/^worktree /gm).length, 1);
   assert.equal(spawnSync('git', ['show-ref', '--verify', '--quiet', 'refs/heads/media'], { cwd: remote }).status, 1);
 });
+
+test('removal plan keeps README-embedded images and non-media helpers on main', async () => {
+  const { removalPlan } = await import('./media-branch.mjs');
+  const candidates = [
+    entry('examples/jungle-flythrough/poster.jpg', 224_000),
+    entry('examples/aureus-flythrough/poster.jpg', 88_000),
+    entry('examples/kern-calibration/assets/kern-color.mp4', 11_000_000),
+    entry('examples/kern-calibration/assets/generate-i2v.py', 2_000),
+    entry('examples/studio/assets/.gitkeep', 0),
+    entry('assets/previews/manifest.json', 500),
+    entry('assets/previews/flagship.mp4', 567_395),
+  ];
+  const readme = '![Jungle](examples/jungle-flythrough/poster.jpg) and [x](examples/aureus-flythrough/poster.jpg)';
+  const plan = removalPlan(candidates, { readmeText: readme });
+  assert.deepEqual(plan.remove.map((e) => e.path), ['assets/previews/flagship.mp4', 'examples/kern-calibration/assets/kern-color.mp4']);
+  assert.deepEqual(plan.keep.map((e) => e.path).sort(), [
+    'assets/previews/manifest.json', 'examples/aureus-flythrough/poster.jpg', 'examples/jungle-flythrough/poster.jpg',
+    'examples/kern-calibration/assets/generate-i2v.py', 'examples/studio/assets/.gitkeep',
+  ]);
+  assert.equal(plan.removeBytes, 11_567_395);
+});
