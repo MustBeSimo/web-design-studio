@@ -25,25 +25,37 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Collect metrics
+        shell: bash {0}
         run: |
-          set -uo pipefail
-          meta=$(gh api "repos/$REPO")
-          stars=$(jq -r .stargazers_count <<<"$meta")
-          forks=$(jq -r .forks_count <<<"$meta")
-          issues=$(jq -r .open_issues_count <<<"$meta")
-          pushed=$(jq -r .pushed_at <<<"$meta")
-          run_line() { gh api "repos/$REPO/actions/workflows/$1/runs?per_page=1${2:-}" --jq '.workflow_runs[0] | "\(.conclusion // .status) \(.created_at) \(.html_url)"' 2>/dev/null || echo "unavailable"; }
+          # Every source is optional: a missing value becomes "unavailable", never an aborted run.
+          meta=$(gh api "repos/$REPO" 2>/dev/null)
+          stars=$(jq -r '.stargazers_count // "unavailable"' <<<"$meta")
+          forks=$(jq -r '.forks_count // "unavailable"' <<<"$meta")
+          issues=$(jq -r '.open_issues_count // "unavailable"' <<<"$meta")
+          pushed=$(jq -r '.pushed_at // "unavailable"' <<<"$meta")
+          run_line() { gh api "repos/$REPO/actions/workflows/$1/runs?per_page=1$2" --jq '.workflow_runs[0] | "\(.conclusion // .status) \(.created_at) \(.html_url)"' 2>/dev/null || echo "unavailable"; }
           ci=$(run_line ci.yml '&branch=main')
           pages=$(run_line pages.yml '&branch=main')
-          publish=$(run_line publish-npm.yml)
+          publish=$(run_line publish-npm.yml '')
           pkg=$(jq -r .version package.json)
-          npm_latest=$(curl -s https://registry.npmjs.org/cinematic-scroll-skill | jq -r '."dist-tags".latest' 2>/dev/null || echo unavailable)
-          npm_week=$(curl -s https://api.npmjs.org/downloads/point/last-week/cinematic-scroll-skill | jq -r .downloads 2>/dev/null || echo unavailable)
-          skills_text=$(curl -sL -A 'Mozilla/5.0' https://skills.sh/mustbesimo/web-design-studio | sed -e 's/<script[^>]*>.*<\/script>//g' -e 's/<[^>]*>/ /g' | tr -s ' \n' ' ')
-          skills_total=$(grep -oE '[0-9][0-9.,]*K? total installs' <<<"$skills_text" | head -1); skills_total=${skills_total:-unavailable}
-          per_skill=$(grep -oE '(cinematic-scroll|scroll-audit|launch-page-strategy) [0-9][0-9.,]*K?' <<<"$skills_text" | sort -u | tr '\n' ';'); per_skill=${per_skill:-unavailable}
-          clawhub=$(curl -sL -A 'Mozilla/5.0' https://clawhub.ai/mustbesimo/skills/cinematic-scroll | grep -oE 'version=[0-9]+\.[0-9]+\.[0-9]+' | head -1 | cut -d= -f2); clawhub=${clawhub:-unavailable}
-          site_label=$(curl -s "$SITE/" | grep -oE 'data-release-version="[^"]+"' | head -1 | cut -d'"' -f2); site_label=${site_label:-unavailable}
+          npm_latest=$(curl -s https://registry.npmjs.org/cinematic-scroll-skill | jq -r '."dist-tags".latest // "unavailable"' 2>/dev/null); [ -n "$npm_latest" ] || npm_latest=unavailable
+          npm_week=$(curl -s https://api.npmjs.org/downloads/point/last-week/cinematic-scroll-skill | jq -r '.downloads // "unavailable"' 2>/dev/null); [ -n "$npm_week" ] || npm_week=unavailable
+          skills_json=$(curl -sL -A 'Mozilla/5.0' https://skills.sh/mustbesimo/web-design-studio | python3 -c '
+          import sys, re, html, json
+          t = sys.stdin.read()
+          t = re.sub(r"<script.*?</script>", "", t, flags=re.S)
+          txt = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", t)))
+          total = re.search(r"([0-9][0-9.,]*K?) total installs", txt)
+          per = {}
+          for s in ["cinematic-scroll", "scroll-audit", "launch-page-strategy"]:
+              m = re.search(s + r" ([0-9][0-9.,]*K?)", txt)
+              if m: per[s] = m.group(1)
+          print(json.dumps({"total": total.group(1) if total else "unavailable", "per": per}))
+          ' 2>/dev/null); [ -n "$skills_json" ] || skills_json='{"total":"unavailable","per":{}}'
+          skills_total=$(jq -r .total <<<"$skills_json")
+          per_skill=$(jq -r '.per | to_entries | map("\(.key) \(.value)") | join("; ")' <<<"$skills_json"); [ -n "$per_skill" ] || per_skill=unavailable
+          clawhub=$(curl -sL -A 'Mozilla/5.0' https://clawhub.ai/mustbesimo/skills/cinematic-scroll | grep -oE 'version=[0-9]+\.[0-9]+\.[0-9]+' | head -1 | cut -d= -f2); [ -n "$clawhub" ] || clawhub=unavailable
+          site_label=$(curl -s "$SITE/" | grep -oE 'data-release-version="[^"]+"' | head -1 | cut -d'"' -f2); [ -n "$site_label" ] || site_label=unavailable
           statuses=""; bad_urls=0
           for p in / /sitemap.xml /skills/cinematic-scroll/SKILL.md /examples/aureus-flythrough/ /examples/renaissance/ /assets/previews/flagship.mp4 /examples/studio/assets/0-hero.jpg; do
             code=$(curl -s -o /dev/null -w '%{http_code}' "$SITE$p"); statuses="$statuses $code $p;"
@@ -86,6 +98,7 @@ jobs:
           } > report.md
           cat report.md >> "$GITHUB_STEP_SUMMARY"
           cat report.md
+          exit 0
       - name: Post the report on the watch issue
         run: |
           set -euo pipefail
