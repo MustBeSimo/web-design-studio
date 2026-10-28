@@ -39,7 +39,8 @@ version sync to `package.json`.
 
 **Never add a skill file (SKILL.md) at the repository root.** The skills installer
 (`npx skills add`) stops at a root skill and treats the whole repository as the
-install payload. Removing it in 3.0.0 cut the install from minutes to under one.
+install payload. Removing it in 3.0.0 cut the install from minutes to under one;
+moving site media to the `media` branch on 2026-10-28 took it to about ten seconds.
 
 Toolkit references for maintainers and full-repository clones live in
 [`references/`](./references/) (deep guidance such as

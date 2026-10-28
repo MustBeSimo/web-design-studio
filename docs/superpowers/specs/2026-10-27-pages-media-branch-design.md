@@ -5,7 +5,11 @@ builds from `.github/workflows/pages.yml` (repository variable
 `PAGES_DEPLOY_ENABLED=true`); the first Actions deployment served all fourteen
 baseline URLs byte-identically to the branch build. The 103 media files that are
 not README embeds or helpers were then removed from `main` by
-`node tools/media-branch.mjs --remove-from-main`.
+`node tools/media-branch.mjs --remove-from-main`. After that removal the deployment
+from `main` plus the overlay again served all fourteen baseline URLs byte-identically,
+the tracked tree measured 27 MB (793 files), and `npx skills add
+MustBeSimo/web-design-studio --list` from GitHub took 9.6 seconds on the same
+connection that had measured 55 seconds the day before.
 
 ## Branch and artifact model
 

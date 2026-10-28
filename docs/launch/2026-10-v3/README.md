@@ -11,14 +11,12 @@ Merge the validated release and create the GitHub release `v3.0.0` using
 that the live showcase still serves its examples before distributing the links.
 
 The previous install attempted a 393 MB tree and was still cloning after 150
-seconds. The new path selects a roughly 30 KB skill folder. Measured on 27 October
-2026 from one home connection against the release branch: `npx skills add` listed
-all three skills in 55 seconds. Quote that measurement, or re-measure from main
-after the release, rather than a round number. The remaining time is the shallow
-clone of what still lives on main: mostly showcase media the live site serves,
-plus the Next.js template's public assets and benchmark captures; the next
-release moves the site media to a Pages build. Do not interpret installation speed as
-evidence of better generated websites.
+seconds. The new path selects a roughly 30 KB skill folder. Measured from one home
+connection: on 27 October 2026, against a 106 MB main, `npx skills add` listed all
+three skills in 55 seconds; on 28 October 2026, after the site media moved to the
+`media` branch and main shrank to 27 MB, the same command took 9.6 seconds. Quote
+the measured figure for the state you are describing rather than a round number.
+Do not interpret installation speed as evidence of better generated websites.
 
 After the release is ready, the owner runs these commands from the release checkout:
 
