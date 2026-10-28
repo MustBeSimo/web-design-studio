@@ -10,7 +10,7 @@
  */
 import { spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { mkdtempSync, realpathSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, realpathSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -110,6 +110,33 @@ export function writeBranch(root = ROOT) {
   }
 }
 
+/** Only real media leaves main; helper scripts, manifests and placeholders stay with the examples. */
+export const REMOVABLE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.mp4', '.webm', '.glb']);
+
+/** Repository paths the README embeds or links, which GitHub renders from main and must keep. */
+export function readmeEmbeddedPaths(readmeText) {
+  const out = new Set();
+  for (const match of readmeText.matchAll(/(?:examples|assets)\/[A-Za-z0-9_./-]+\.[A-Za-z0-9]+/g)) out.add(match[0]);
+  return out;
+}
+
+/**
+ * Split overlay candidates into the files that may leave main and the ones that stay:
+ * anything the README embeds, and anything that is not a media file.
+ * @param {Array<{path: string, size: number}>} candidates
+ * @param {{readmeText: string}} options
+ */
+export function removalPlan(candidates, { readmeText }) {
+  const embedded = readmeEmbeddedPaths(readmeText);
+  const remove = [];
+  const keep = [];
+  for (const entry of [...candidates].sort((a, b) => a.path.localeCompare(b.path))) {
+    const removable = REMOVABLE_EXTENSIONS.has(extname(entry.path).toLowerCase()) && !embedded.has(entry.path);
+    (removable ? remove : keep).push(entry);
+  }
+  return { remove, keep, removeBytes: remove.reduce((sum, entry) => sum + entry.size, 0) };
+}
+
 const mb = (bytes) => (bytes / 1_000_000).toFixed(2);
 export function formatSummary(plan) {
   return [
@@ -123,10 +150,44 @@ export function formatSummary(plan) {
   ].join('\n');
 }
 
+/** Plan which overlay files may leave main, keeping README images and non-media helpers. */
+export function buildRemovalPlan(root = ROOT) {
+  const plan = buildPlan(root);
+  const readmeText = readFileSync(join(root, 'README.md'), 'utf8');
+  return { ...plan, ...removalPlan(plan.candidates, { readmeText }) };
+}
+
+function printRemovalPlan(plan) {
+  console.log(`Source: origin/main (${plan.source})`);
+  console.log(`Remove from main: ${plan.remove.length} files, ${mb(plan.removeBytes)} MB`);
+  console.log(`Keep on main (README embeds or non-media helpers): ${plan.keep.length} files`);
+  for (const { path } of plan.keep) console.log(`  keep  ${path}`);
+  console.log(`Projected main after removal: ${mb(plan.totalBytes - plan.removeBytes)} MB`);
+}
+
 function main(argv) {
-  if (argv.length !== 1 || !['--plan', '--write-branch'].includes(argv[0])) {
-    console.error('usage: media-branch.mjs --plan | --write-branch');
+  if (argv.length !== 1 || !['--plan', '--write-branch', '--removal-plan', '--remove-from-main'].includes(argv[0])) {
+    console.error('usage: media-branch.mjs --plan | --write-branch | --removal-plan | --remove-from-main');
     return 2;
+  }
+  if (argv[0] === '--removal-plan') {
+    printRemovalPlan(buildRemovalPlan());
+    return 0;
+  }
+  if (argv[0] === '--remove-from-main') {
+    const plan = buildRemovalPlan();
+    const overlay = runGit(ROOT, ['rev-parse', '--verify', '--quiet', 'refs/remotes/origin/media^{commit}'], { allowFailure: true });
+    if (overlay.status !== 0) throw new Error('origin/media is missing; fetch it before removing media from main');
+    for (const { path } of plan.remove) {
+      if (runGit(ROOT, ['cat-file', '-e', `refs/remotes/origin/media:${path}`], { allowFailure: true }).status !== 0) {
+        throw new Error(`refusing to remove ${path}: it is not on origin/media`);
+      }
+    }
+    const paths = plan.remove.map(({ path }) => path);
+    for (let i = 0; i < paths.length; i += 100) git(ROOT, ['rm', '-q', '--', ...paths.slice(i, i + 100)]);
+    printRemovalPlan(plan);
+    console.log(`Staged removal of ${paths.length} files; review with git status, then commit.`);
+    return 0;
   }
   const plan = argv[0] === '--plan' ? buildPlan() : writeBranch();
   console.log(formatSummary(plan));

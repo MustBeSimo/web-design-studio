@@ -12,7 +12,8 @@
  *   node tools/check-site-links.mjs --root <dir> [<page>...]  # assembled Pages tree
  */
 import { existsSync, readFileSync, realpathSync, statSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { dirname, join, normalize, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -33,15 +34,39 @@ export function extractLocalRefs(html) {
   return [...out];
 }
 
-/** Targets in `pagePath` (relative to `root`) that do not exist on disk. */
-export function missingRefs(root, pagePath) {
+/** True when `overlayRef` names a commit in the repository at `root`. */
+export function overlayRefExists(root, overlayRef) {
+  if (!overlayRef) return false;
+  return spawnSync('git', ['-C', root, 'rev-parse', '--verify', '--quiet', `${overlayRef}^{commit}`], { encoding: 'utf8' }).status === 0;
+}
+
+/** True when the repository at `root` has `path` committed on `overlayRef` (the site media branch). */
+function existsOnOverlay(root, overlayRef, path) {
+  const result = spawnSync('git', ['-C', root, 'cat-file', '-e', `${overlayRef}:${path}`], { encoding: 'utf8' });
+  return result.status === 0;
+}
+
+/**
+ * Targets in `pagePath` (relative to `root`) that exist neither on disk nor, when
+ * an overlay ref is given, on that branch. GitHub Pages assembles main plus the
+ * `media` branch, so a path committed there is served even if main lacks it.
+ */
+export function missingRefs(root, pagePath, { overlayRef } = {}) {
   const html = readFileSync(join(root, pagePath), 'utf8');
   const base = join(root, dirname(pagePath));
-  return extractLocalRefs(html).filter((ref) => !existsSync(join(base, ref)));
+  return extractLocalRefs(html).filter((ref) => {
+    if (existsSync(join(base, ref))) return false;
+    if (!overlayRef) return true;
+    const repoPath = normalize(relative(root, join(base, ref))).split('\\').join('/');
+    if (repoPath.startsWith('..')) return true;
+    return !existsOnOverlay(root, overlayRef, repoPath);
+  });
 }
 
 function main(argv) {
   let root = ROOT;
+  let overlayRef;
+  let noOverlay = false;
   const requested = [];
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--root') {
@@ -50,6 +75,14 @@ function main(argv) {
         return 2;
       }
       root = resolve(argv[++i]);
+    } else if (argv[i] === '--overlay-ref') {
+      if (!argv[i + 1] || argv[i + 1].startsWith('--')) {
+        console.error('check-site-links: --overlay-ref requires a git ref');
+        return 2;
+      }
+      overlayRef = argv[++i];
+    } else if (argv[i] === '--no-overlay') {
+      noOverlay = true;
     } else if (argv[i].startsWith('--')) {
       console.error(`check-site-links: unknown option ${argv[i]}`);
       return 2;
@@ -59,6 +92,12 @@ function main(argv) {
     console.error(`check-site-links: root directory does not exist: ${root}`);
     return 2;
   }
+  if (overlayRef && !overlayRefExists(root, overlayRef)) {
+    console.error(`✗ check-site-links: overlay ref ${overlayRef} is not a commit in ${root}`);
+    return 1;
+  }
+  // Site media lives on the `media` branch (served by Pages as an overlay); use it when present.
+  if (!overlayRef && !noOverlay && overlayRefExists(root, 'refs/remotes/origin/media')) overlayRef = 'refs/remotes/origin/media';
   const pages = requested.length ? requested : DEFAULT_PAGES;
   const problems = [];
   let checked = 0;
@@ -69,13 +108,14 @@ function main(argv) {
     }
     const refs = extractLocalRefs(readFileSync(join(root, page), 'utf8'));
     checked += refs.length;
-    for (const ref of missingRefs(root, page)) problems.push(`${page}: dead link ${ref}`);
+    for (const ref of missingRefs(root, page, { overlayRef })) problems.push(`${page}: dead link ${ref}`);
   }
   if (problems.length) {
     console.error(`✗ check-site-links: ${problems.length} dead local link(s):\n  ${problems.join('\n  ')}`);
     return 1;
   }
-  console.log(`✓ check-site-links: ${checked} local links resolve across ${pages.length} page(s) (${pages.join(', ')}).`);
+  const overlayNote = overlayRef ? ` with overlay ${overlayRef.replace(/^refs\/remotes\//, '')}` : '';
+  console.log(`✓ check-site-links: ${checked} local links resolve across ${pages.length} page(s) (${pages.join(', ')})${overlayNote}.`);
   return 0;
 }
 

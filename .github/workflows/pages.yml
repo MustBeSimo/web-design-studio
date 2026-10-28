@@ -3,23 +3,24 @@ name: Assemble Pages with media overlay
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: pages-overlay
+  group: pages-overlay-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out main
+      - name: Check out the site source (main, or the pull request head)
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
           path: site-source
           persist-credentials: false
       - name: Check out the media overlay
@@ -46,7 +47,7 @@ jobs:
           path: ${{ runner.temp }}/pages-site
 
   deploy:
-    if: ${{ vars.PAGES_DEPLOY_ENABLED == 'true' }}
+    if: ${{ github.event_name != 'pull_request' && vars.PAGES_DEPLOY_ENABLED == 'true' }}
     needs: build
     runs-on: ubuntu-latest
     permissions:
