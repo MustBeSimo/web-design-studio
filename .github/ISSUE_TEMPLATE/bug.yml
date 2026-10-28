@@ -1,0 +1,49 @@
+name: Report a bug
+description: Tell us how you installed the skill and what went wrong.
+title: "Bug: "
+body:
+  - type: input
+    id: install-route
+    attributes:
+      label: Install route
+      description: Paste the install command or describe the route, such as skills CLI, npm, ClawHub, marketplace, or manual copy.
+      placeholder: npx skills add MustBeSimo/web-design-studio
+    validations:
+      required: true
+  - type: input
+    id: agent
+    attributes:
+      label: Agent
+      description: Include the agent name and version if known.
+      placeholder: Claude Code, Codex, Cursor, or another agent
+    validations:
+      required: true
+  - type: input
+    id: skill-version
+    attributes:
+      label: Skill name and version
+      description: Read name and metadata.version from the installed SKILL.md frontmatter; say unavailable if installation failed.
+      placeholder: scroll-audit, 3.0.0
+    validations:
+      required: true
+  - type: textarea
+    id: what-you-asked
+    attributes:
+      label: What you asked
+      description: Include the prompt and enough project context to reproduce the issue.
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: Describe the result and include any relevant error output.
+    validations:
+      required: true
+  - type: textarea
+    id: what-you-expected
+    attributes:
+      label: What you expected
+      description: Describe the result you wanted.
+    validations:
+      required: true

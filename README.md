@@ -191,6 +191,8 @@ Web Design Studio Pro adds the **Motif Engine**: retrieve patterns by intent, bu
 
 Follow [the release guide](docs/releasing.md) for version updates, trusted npm publishing and the separate ClawHub release.
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for skill proposals, media rules and pull request checks.
+
 ```bash
 npm install
 npm test
@@ -223,4 +225,4 @@ Promo media lives in the [`media-2026-10` release](https://github.com/MustBeSimo
 
 MIT © 2026 [Simone Leonelli](https://w230.net). See [LICENSE](./LICENSE).
 
-Built something with it? [Submit it to the showcase](https://github.com/MustBeSimo/web-design-studio/issues/new?title=Showcase:%20) or email [simone@w230.net](mailto:simone@w230.net).
+Built something with it? [Submit it to the showcase](https://github.com/MustBeSimo/web-design-studio/issues/new?template=showcase.yml) or email [simone@w230.net](mailto:simone@w230.net).

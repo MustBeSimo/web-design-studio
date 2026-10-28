@@ -1,0 +1,45 @@
+name: Submit a site built with Web Design Studio
+description: Share your site and the moment that makes it memorable.
+title: "Showcase: "
+body:
+  - type: input
+    id: live-url
+    attributes:
+      label: Live URL
+      description: Link to the publicly viewable site you built.
+      placeholder: https://example.com
+    validations:
+      required: true
+  - type: dropdown
+    id: skills-used
+    attributes:
+      label: Which skills did you use?
+      multiple: true
+      options:
+        - cinematic-scroll
+        - scroll-audit
+        - launch-page-strategy
+    validations:
+      required: true
+  - type: input
+    id: agent-used
+    attributes:
+      label: Agent used
+      placeholder: Claude Code, Codex, Cursor, or another agent
+    validations:
+      required: true
+  - type: input
+    id: signature-moment
+    attributes:
+      label: Signature moment
+      description: In one sentence, describe the moment visitors should try.
+      placeholder: The map follows the route as each chapter reveals the next stop.
+    validations:
+      required: true
+  - type: checkboxes
+    id: readme-permission
+    attributes:
+      label: Permission to list in the README
+      options:
+        - label: I have permission to share this site and allow its URL and description to be listed in the Web Design Studio README.
+          required: true
