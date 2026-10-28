@@ -45,9 +45,15 @@ test('runs the site checker through a bin symlink', (t) => {
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const entry = join(root, 'check-site-links');
   symlinkSync(fileURLToPath(new URL('./check-site-links.mjs', import.meta.url)), entry);
-  const result = spawnSync(process.execPath, [entry], { encoding: 'utf8' });
+  // A self-contained fixture: the real tree needs the media overlay, which a shallow CI checkout may lack.
+  const site = join(root, 'site');
+  mkdirSync(site);
+  writeFileSync(join(site, 'page.html'), '<img src="a.jpg"><a href="docs/">docs</a>');
+  writeFileSync(join(site, 'a.jpg'), 'image');
+  mkdirSync(join(site, 'docs'));
+  const result = spawnSync(process.execPath, [entry, '--root', site, '--no-overlay', 'page.html'], { encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /local links resolve/);
+  assert.match(result.stdout, /2 local links resolve across 1 page/);
 });
 
 test('--root checks the assembled tree, including custom page paths and missing roots', (t) => {

@@ -50,5 +50,8 @@ jobs:
         run: npm install --global npm@11 --no-audit --no-fund
       - run: npm install --no-audit --no-fund
       - run: node tools/check-skills.mjs --forbid-root-skill
+      # The site-link gate counts paths on the media branch as served; a tag checkout has no such ref.
+      - name: Fetch the media overlay ref
+        run: git fetch --depth=1 origin +refs/heads/media:refs/remotes/origin/media
       - run: npm test
       - run: npm publish --provenance --access public
