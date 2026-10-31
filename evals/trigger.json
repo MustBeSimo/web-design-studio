@@ -279,6 +279,56 @@
       "skill": "launch-page-strategy",
       "query": "debug why our site returns a 404 on the pricing route",
       "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Add an entrance reveal with a staggered eyebrow, heading and summary; keep normal page flow",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Install a depth card with pointer parallax into my existing React product story",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Map scroll-to-seek progress to our product video, with a permanent poster on phones",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Make a magnetic CTA whose decoration moves but whose clickable hit area stays still",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Turn our product photos into a frame-by-frame scroll sequence with a static fallback",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Build a horizontally moving editorial collection that becomes a vertical list on phones",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Add play, pause, volume and captions to our tutorial video player",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Fade the success toast after saving my account settings",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Animate an accordion opening in our billing dashboard",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Fix the horizontal scrollbar on our data table",
+      "should_trigger": false
     }
   ]
 }
