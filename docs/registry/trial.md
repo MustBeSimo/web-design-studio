@@ -66,8 +66,10 @@ publishing a participant's name or feedback.
 These are manual device checks until a result is recorded. A WebKit automation
 result is not a physical iPhone result.
 
+- For keyboard navigation on macOS Safari, use Option-Tab for links if plain Tab
+  skips them ([Apple keyboard guide](https://support.apple.com/guide/safari/cpsh003/mac)).
 - On desktop Safari, scroll the sample clip forward and backward, resize narrow
-  then wide, and confirm the poster remains if the video is blocked or missing.
+  then wide, reload mid-page and note the restored position, and confirm the poster remains if the video is blocked or missing.
 - On iPhone Safari, confirm a readable poster and caption in natural page flow,
   with no long pinned track or pointer tilt. Try portrait and landscape.
 - Enable the device's Reduce Motion setting and reload. Confirm all text and
