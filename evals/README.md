@@ -21,17 +21,21 @@ The dataset now labels each case with its target `skill`; `should_trigger` appli
 only to that skill, not the whole collection. All 23 original cinematic-scroll
 queries and labels are preserved, including its historical audit overlap.
 Sibling-skill negatives test routing boundaries, not whether the request is useful.
+Ten additional mechanism cases cover entrance reveal, depth card, scroll-to-seek,
+magnetic CTA, image sequence and horizontal collection with adjacent UI negatives.
+Existing cursor, tilt and scrub-video cases remain; this extends coverage rather
+than claiming those mechanisms were previously absent.
 
 | Skill | Should fire | Near-miss negatives | Total |
 |---|---:|---:|---:|
-| cinematic-scroll | 13 | 10 | 23 |
+| cinematic-scroll | 19 | 14 | 33 |
 | scroll-audit | 8 | 8 | 16 |
 | launch-page-strategy | 8 | 8 | 16 |
-| **Collection** | **29** | **26** | **55** |
+| **Collection** | **35** | **30** | **65** |
 
 ## What needs an LLM judge (not deterministic)
 
-- **Triggering accuracy** — run the 55 cases in `trigger.json` against each named
+- **Triggering accuracy** — run the 65 cases in `trigger.json` against each named
   skill's frontmatter `description` with an LLM judge; assess each skill separately.
   Targets: recall ≥ 0.9 on positives, precision ≥ 0.9 on negatives. Tune the description
   until both clear.

@@ -21,3 +21,27 @@ asset's purpose, crop, dimensions, loading priority, and fallback.
 The full repository linked in the skill metadata contains executable examples,
 components, runtime adapters, and verification tools. They are optional; this
 text-only package contains the complete recipes needed to build locally.
+
+## Find a mechanism by name
+
+Users often name an effect rather than an experience. These aliases select a
+mechanism inside the existing recipes; they are not extra skills or presets.
+Keep the host brand, native scrolling, and readable static content.
+
+| User asks for | Choose | Boundary / fallback |
+|---|---|---|
+| Entrance reveal, fade-up, staggered section arrival | Editorial story + a bounded entrance | Normal flow; no pin implied; content visible without JS or with reduced motion |
+| Sticky chapter, pinned reveal, scroll-controlled reveal | Editorial story + an explicit pin interval | Define start/end and release; natural flow on narrow screens |
+| Scroll-scrubbed video, scroll-to-seek, video timeline | Product reveal + media scrubbing | Permanent poster; no autoplay; no video fetch on coarse pointer or reduced motion |
+| Tilt card, depth card, pointer parallax card | Editorial story + proximity response | Fine-hover only; preserve native links and stable hit areas; neutral static card |
+| Magnetic button, cursor attraction | Motion toolkit proximity response | Move decoration, not the control hit area; ordinary hover styling alone needs no cinematic skill |
+| Split text, word cascade, kinetic heading | Editorial story + text choreography | Preserve heading semantics; don't split controls; readable reduced-motion text |
+| Image sequence, frame-by-frame product turn | Product reveal + local frames | Budget decoding and memory; poster if assets fail |
+| Horizontal collection, sideways gallery | Editorial story + bounded collection movement | Native vertical reading flow and reachable links on mobile |
+
+The optional repository registry offers React implementations of **entrance
+reveal**, **scrub video**, and **tilt card**. Those names describe their actual
+behavior. A request for an accordion, ordinary button, data-table scrolling, or
+video player controls does not become a cinematic task just because it mentions
+motion. For other stacks, build the mechanism locally using this text package;
+installing a component registry is not required.

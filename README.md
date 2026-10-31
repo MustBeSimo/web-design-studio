@@ -17,6 +17,9 @@
 
 Formerly **Cinematic Scroll**; the `cinematic-scroll` identifier, npm package and ClawHub listing are unchanged.
 
+Optional React toolkit: [three URL-installable motion components](docs/registry/README.md)
+with host-theme defaults. Agent discovery index: [llms.txt](llms.txt).
+
 ## Install
 
 ```bash

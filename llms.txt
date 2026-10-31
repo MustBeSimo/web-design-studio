@@ -1,0 +1,22 @@
+# Web Design Studio
+
+> Three free, text-only agent skills for cinematic website craft, scroll audits and launch-page strategy. The established build-skill identifier is cinematic-scroll.
+
+## Agent skills
+
+- [Build contract](https://mustbesimo.github.io/web-design-studio/skills/cinematic-scroll/SKILL.md): Read before building; the host brand and stack take precedence.
+- [Recipe and mechanism catalog](https://mustbesimo.github.io/web-design-studio/skills/cinematic-scroll/references/recipe-catalog.md): Entrance reveal, pinned chapters, scrub video, tilt cards, magnetic controls, split text and frame sequences.
+- [Scroll audit](https://mustbesimo.github.io/web-design-studio/skills/scroll-audit/SKILL.md): Diagnose an existing page and prioritize repairs.
+- [Launch-page strategy](https://mustbesimo.github.io/web-design-studio/skills/launch-page-strategy/SKILL.md): Audience, promise, evidence and next action.
+
+## Optional React component pilot
+
+- [Registry guide](https://mustbesimo.github.io/web-design-studio/docs/registry/README.md): URL installs, dependencies, host theme, lifecycle and verification limits.
+- [Entrance reveal](https://mustbesimo.github.io/web-design-studio/docs/registry/entrance-reveal.md): Staggered section arrival in normal flow; does not pin.
+- [Scrub video](https://mustbesimo.github.io/web-design-studio/docs/registry/scrub-video.md): Desktop scroll-to-seek with permanent poster and natural-flow fallback.
+- [Tilt card](https://mustbesimo.github.io/web-design-studio/docs/registry/tilt-card.md): Fine-pointer depth response with its shared runtime included.
+
+## Optional
+
+- [Project quickstart](https://mustbesimo.github.io/web-design-studio/README.md): Skill installation and repository toolkit.
+- [Verification contract](https://mustbesimo.github.io/web-design-studio/skills/cinematic-scroll/references/verification.md): Browser, reduced motion, keyboard, no-JS and resource ownership checks.
