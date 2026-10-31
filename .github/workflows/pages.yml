@@ -39,6 +39,8 @@ jobs:
             "$GITHUB_WORKSPACE/site-source/" "$RUNNER_TEMP/pages-site/"
           rsync -a --exclude='.git' --exclude='node_modules' --exclude='.superpowers' --exclude='.claude' \
             "$GITHUB_WORKSPACE/media-overlay/" "$RUNNER_TEMP/pages-site/"
+      - name: Build static component registry from canonical source
+        run: node site-source/tools/registry/build.mjs --out "$RUNNER_TEMP/pages-site/r"
       - name: Check links in the assembled tree
         run: node site-source/tools/check-site-links.mjs --root "$RUNNER_TEMP/pages-site"
       - name: Upload the assembled site

@@ -159,3 +159,33 @@ jobs:
             echo "== $s"
             skillspector scan "$s" --no-llm --format json --output "/tmp/skillspector-$(basename "$s").json"
           done
+
+  registry-pilot:
+    name: registry URL installs (Next + Vite)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install test tools
+        run: |
+          npm install --no-audit --no-fund
+          if ! command -v ffmpeg >/dev/null; then sudo apt-get update && sudo apt-get install -y ffmpeg; fi
+      - name: Deterministic registry and real consumers
+        run: |
+          npm run test:registry
+          CHROME_PATH="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          export CHROME_PATH
+          test -n "$CHROME_PATH"
+          npm run test:registry:consumers
+      - name: Keep the pilot evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: registry-pilot-proof
+          path: |
+            .verify/registry/report.json
+            .verify/registry/*.log
+            .verify/registry/*.png

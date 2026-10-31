@@ -50,7 +50,7 @@
     "skill:sync:check": "node tools/skill-sync.mjs --check",
     "bench": "node tools/bench/cli.mjs",
     "bench:selftest": "node tools/bench/score.mjs --selftest && node tools/bench/cli.mjs --selftest && node bench/build-leaderboard.mjs --selftest",
-    "test": "npm run runtime:check && npm run test:runtime && npm run tokens:check && npm run themes:check && npm run links:check && npm run consistency:check && npm run learn:selftest && npm run skill:sync:check && npm run components:doctor && npm run doctor:selftest && npm run evals:run && npm run bench:selftest && npm run test:workflow && npm run media:check && npm run skills:check && npm run site:check && npm run test:install",
+    "test": "npm run runtime:check && npm run test:runtime && npm run tokens:check && npm run themes:check && npm run links:check && npm run consistency:check && npm run learn:selftest && npm run skill:sync:check && npm run components:doctor && npm run doctor:selftest && npm run evals:run && npm run bench:selftest && npm run test:workflow && npm run media:check && npm run skills:check && npm run site:check && npm run test:install && npm run test:registry",
     "build:tokens": "node tools/build-tokens/build.mjs",
     "build:themes": "for f in themes/*.theme.json; do node tools/build-tokens/build.mjs --theme \"$f\"; done",
     "prepack": "npm run runtime:check && npm run check:lab && npm run check:flagship",
@@ -60,7 +60,10 @@
     "clawhub:validate": "node tools/check-skills.mjs --forbid-root-skill",
     "clawhub:scan": "npm run clawhub:validate && for s in skills/*/; do skillspector scan \"$s\" --no-llm || exit 1; done",
     "test:scenes": "node --test tools/page-proof/scenes.browser.test.mjs",
-    "build:gallery": "esbuild assets/gallery-motion.mjs --bundle --format=iife --target=es2020 --outfile=assets/gallery-motion.js"
+    "build:gallery": "esbuild assets/gallery-motion.mjs --bundle --format=iife --target=es2020 --outfile=assets/gallery-motion.js",
+    "registry:build": "node tools/registry/build.mjs",
+    "test:registry": "node --test tools/registry/registry.test.mjs",
+    "test:registry:consumers": "node tools/registry/consumers.mjs"
   },
   "keywords": [
     "claude",

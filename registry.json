@@ -1,0 +1,99 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "cinematic-scroll",
+  "homepage": "https://mustbesimo.github.io/web-design-studio",
+  "items": [
+    {
+      "name": "entrance-reveal",
+      "type": "registry:component",
+      "title": "Entrance reveal",
+      "description": "Staggered section arrival in normal flow; no pin.",
+      "dependencies": [
+        "gsap@3.13.0",
+        "@gsap/react@2.1.2"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/mode-b/entrance-reveal.tsx",
+          "type": "registry:component",
+          "target": "@components/entrance-reveal.tsx"
+        }
+      ]
+    },
+    {
+      "name": "scrub-video",
+      "type": "registry:component",
+      "title": "Scrub video",
+      "description": "Desktop scroll-to-seek with a permanent poster and natural-flow fallback.",
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/mode-b/scrub-video.tsx",
+          "type": "registry:component",
+          "target": "@components/scrub-video.tsx"
+        }
+      ]
+    },
+    {
+      "name": "tilt-card",
+      "type": "registry:component",
+      "title": "Tilt card",
+      "description": "Fine-pointer depth response with shared runtime and native controls.",
+      "dependencies": [],
+      "registryDependencies": [
+        "https://mustbesimo.github.io/web-design-studio/r/cinematic-runtime.json"
+      ],
+      "files": [
+        {
+          "path": "components/mode-b/tilt-card.tsx",
+          "type": "registry:component",
+          "target": "@components/tilt-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "cinematic-runtime",
+      "type": "registry:lib",
+      "title": "Cinematic React runtime",
+      "description": "Shared scoped clock, proximity response and React adapter; included by tilt card.",
+      "dependencies": [
+        "gsap@3.13.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "runtime/react.tsx",
+          "type": "registry:lib",
+          "target": "@lib/cinematic/react.tsx"
+        },
+        {
+          "path": "runtime/cinematic.mjs",
+          "type": "registry:lib",
+          "target": "@lib/cinematic/cinematic.mjs"
+        },
+        {
+          "path": "runtime/cinematic.d.mts",
+          "type": "registry:lib",
+          "target": "@lib/cinematic/cinematic.d.mts"
+        },
+        {
+          "path": "runtime/effects.mjs",
+          "type": "registry:lib",
+          "target": "@lib/cinematic/effects.mjs"
+        },
+        {
+          "path": "runtime/effects.d.mts",
+          "type": "registry:lib",
+          "target": "@lib/cinematic/effects.d.mts"
+        },
+        {
+          "path": "runtime/core.mjs",
+          "type": "registry:lib",
+          "target": "@lib/cinematic/core.mjs"
+        }
+      ]
+    }
+  ]
+}

@@ -17,6 +17,17 @@
     "examples": ["examples/effects-lab/index.html", "examples/v3-flagship/index.html"],
     "templateRoutes": ["/effects-lab", "/v3-flagship", "/webgpu-preview"]
   },
+  "registryPilot": {
+    "catalog": "registry.json",
+    "docs": "docs/registry/README.md",
+    "components": [
+      "entrance-reveal",
+      "scrub-video",
+      "tilt-card"
+    ],
+    "theme": "Host shadcn semantic color tokens with local fallbacks; Studio stylesheet optional.",
+    "note": "Legacy Mode A token contracts below remain unchanged; pilot Mode B props and tokens are documented in docs/registry/."
+  },
   "tokenContract": "design.md",
   "components": [
     {
