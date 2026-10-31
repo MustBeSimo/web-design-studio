@@ -61,6 +61,8 @@ existing KERN sample media.
 
 ## Verification and limits
 
+Run these maintainer checks from a full repository checkout.
+
 `npm run test:registry` checks deterministic payloads and dependency closure.
 `npm run test:registry:consumers` creates fresh Next and Vite projects, runs the
 pinned shadcn CLI against local URLs, typechecks, builds and exercises the browser
@@ -69,7 +71,9 @@ Playwright WebKit run, install the matching browser with
 `node node_modules/playwright-core/cli.js install webkit`, then use
 `REGISTRY_BROWSER=webkit npm run test:registry:consumers -- --browser-only` after
 the fresh consumer run. This tests the bundled WebKit engine, not an iPhone or
-the installed Safari app. Generated
+the installed Safari app. The WebKit runner resets scroll on reload, including on
+a static control page, so that run tests an explicit host-restored position;
+Chrome separately proves native reload restoration. Generated
 projects, media, screenshots and timing reports stay in `.verify/registry/`.
 
 Next verifies readable server markup with JavaScript actually disabled. Vite is
