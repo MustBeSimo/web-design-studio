@@ -31,10 +31,10 @@ export default function ScrubVideo({ src, poster, label, eyebrow, title, trackVh
       dispose();
       dispose = () => {};
       if (!query.matches) return;
-      let frame = 0, failed = false;
+      let frame = 0, failed = false, started = false;
       const seek = () => {
         frame = 0;
-        if (failed || !Number.isFinite(clip.duration) || clip.duration <= 0) return;
+        if (failed || !started || !Number.isFinite(clip.duration) || clip.duration <= 0) return;
         const rect = track.getBoundingClientRect();
         const progress = Math.max(0, Math.min(1, -rect.top / Math.max(1, rect.height - innerHeight)));
         // rVFC waits for a decoded frame; a paused video cannot use it to initiate a seek.
@@ -45,6 +45,7 @@ export default function ScrubVideo({ src, poster, label, eyebrow, title, trackVh
       const schedule = () => { if (!frame && !failed) frame = requestAnimationFrame(seek); };
       const ready = () => {
         if (failed || clip.readyState < 2) return;
+        started = true;
         track.dataset.wdsReady = '';
         schedule(); // includes restored scroll and source changes
       };
@@ -53,7 +54,10 @@ export default function ScrubVideo({ src, poster, label, eyebrow, title, trackVh
         cancelAnimationFrame(frame); frame = 0;
         delete track.dataset.wdsReady;
       };
+      // Do not seek on resize until a first frame has decoded. Seeking at metadata
+      // time can interrupt that first frame during rapid preference changes.
       clip.addEventListener('loadeddata', ready);
+      clip.addEventListener('canplay', ready);
       clip.addEventListener('error', fail);
       window.addEventListener('scroll', schedule, { passive: true });
       window.addEventListener('resize', schedule, { passive: true });
@@ -64,6 +68,7 @@ export default function ScrubVideo({ src, poster, label, eyebrow, title, trackVh
         failed = true;
         cancelAnimationFrame(frame);
         clip.removeEventListener('loadeddata', ready);
+        clip.removeEventListener('canplay', ready);
         clip.removeEventListener('error', fail);
         window.removeEventListener('scroll', schedule);
         window.removeEventListener('resize', schedule);

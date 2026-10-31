@@ -128,7 +128,13 @@ export async function verifyConsumers({ output, report, endpoints }) {
       await eventually(async () => assert.equal(await page.locator('[data-wds-ready]').count(), 0), 'live narrow layout releases media');
       assert.equal(await video.getAttribute('src'), null);
       await page.setViewportSize({width:1000,height:800});
-      await eventually(async () => assert.equal(await page.locator('[data-wds-ready]').count(), 2), 'wide layout resumes eligible media');
+      await eventually(async () => {
+        const states = await page.locator('video').evaluateAll(clips => clips.map(clip => ({
+          ready: clip.closest('section').hasAttribute('data-wds-ready'), readyState: clip.readyState,
+          networkState: clip.networkState, error: clip.error?.message, time: clip.currentTime,
+        })));
+        assert.equal(states.filter(state => state.ready).length, 2, JSON.stringify(states));
+      }, 'wide layout resumes eligible media');
       // Live preference switches return content to readable, non-pinned natural flow.
       await page.emulateMedia({reducedMotion:'reduce'});
       await eventually(async () => assert.equal(await page.locator('[data-wds-ready]').count(), 0), 'live reduced motion');
@@ -149,6 +155,33 @@ export async function verifyConsumers({ output, report, endpoints }) {
       report.assertions.push(kind + ': install, theme, instances, lifecycle, keyboard, seek, resize, preference and failure recovery');
       await page.close();
     }
+    // Hold decoded-frame readiness while metadata is available. Resize/scroll must
+    // not seek away from the first frame and prevent the ready transition.
+    const loading = await browser.newPage({viewport:{width:1200,height:900}});
+    await loading.addInitScript(() => {
+      const ready = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'readyState');
+      const time = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'currentTime');
+      window.holdFrames = true; window.prematureSeeks = [];
+      window.nativeMediaReady = clip => ready.get.call(clip);
+      Object.defineProperty(HTMLMediaElement.prototype, 'readyState', {
+        ...ready, get() { const value = ready.get.call(this); return window.holdFrames ? Math.min(1, value) : value; },
+      });
+      Object.defineProperty(HTMLMediaElement.prototype, 'currentTime', {
+        ...time, set(value) { if (window.holdFrames) window.prematureSeeks.push(value); time.set.call(this, value); },
+      });
+    });
+    await loading.goto(endpoints.find(([kind]) => kind === 'next')[1]);
+    await loading.waitForFunction(() => window.fixtureReady && [...document.querySelectorAll('video')].every(clip => window.nativeMediaReady(clip) >= 2));
+    await loading.evaluate(async () => {
+      scrollTo(0, 800); dispatchEvent(new Event('resize'));
+      await new Promise(requestAnimationFrame); await new Promise(requestAnimationFrame);
+    });
+    assert.deepEqual(await loading.evaluate(() => window.prematureSeeks), [], 'metadata-only media is not sought');
+    assert.equal(await loading.locator('[data-wds-ready]').count(), 0, 'loading retains the poster');
+    await loading.evaluate(() => { window.holdFrames = false; document.querySelectorAll('video').forEach(clip => clip.dispatchEvent(new Event('canplay'))); });
+    await eventually(async () => assert.equal(await loading.locator('[data-wds-ready]').count(), 2), 'decoded frames activate both instances');
+    report.assertions.push('metadata-only loading: no premature seeks, permanent poster, decoded-frame recovery');
+    await loading.close();
     for (const [name, options] of [
       ['reduced', {reducedMotion:'reduce',viewport:{width:1200,height:900}}],
       ['narrow', {viewport:{width:390,height:844}}],
