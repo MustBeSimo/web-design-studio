@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { join } from 'node:path';
-import { chromium } from 'playwright-core';
+import { chromium, webkit } from 'playwright-core';
 
 async function eventually(check, label, timeout = 10000) {
   const deadline = Date.now() + timeout;
@@ -45,7 +45,10 @@ function instrument() {
 
 export async function verifyConsumers({ output, report, endpoints }) {
   const executablePath = process.env.CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-  const browser = await chromium.launch({ executablePath, headless: true });
+  const engine = process.env.REGISTRY_BROWSER || 'chromium';
+  if (!['chromium', 'webkit'].includes(engine)) throw new Error('REGISTRY_BROWSER must be chromium or webkit');
+  const browser = await (engine === 'webkit' ? webkit.launch({headless:true}) : chromium.launch({ executablePath, headless: true }));
+  report.browser = engine;
   try {
     for (const [kind, origin] of endpoints) {
       console.log('Browser matrix: ' + kind);

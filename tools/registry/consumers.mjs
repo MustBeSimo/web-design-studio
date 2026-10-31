@@ -8,7 +8,10 @@ import { writeConsumer } from './fixture.mjs';
 import { verifyConsumers } from './verify-consumers.mjs';
 
 const output = join(root, '.verify/registry');
-const report = { mode: process.argv.includes('--browser-only') ? 'browser-only' : 'fresh', versions: { shadcn: '4.23.0', next: '16.4.3', vite: '7.3.7', react: '19.3.1', node: process.version }, timings: [], assertions: [] };
+const remoteIndex = process.argv.indexOf('--registry-base');
+const remoteBase = remoteIndex < 0 ? null : process.argv[remoteIndex + 1]?.replace(/\/$/, '');
+if (remoteIndex >= 0 && (!remoteBase || !/^https?:\/\//.test(remoteBase))) throw new Error('--registry-base requires an HTTP(S) base URL');
+const report = { registryBase: remoteBase || 'local', mode: process.argv.includes('--browser-only') ? 'browser-only' : 'fresh', versions: { shadcn: '4.23.0', next: '16.4.3', vite: '7.3.7', react: '19.3.1', node: process.version }, timings: [], assertions: [] };
 mkdirSync(output, { recursive: true });
 const services = [];
 const env = { ...process.env, NEXT_TELEMETRY_DISABLED: '1', SHADCN_TELEMETRY_DISABLED: '1' };
@@ -43,9 +46,19 @@ const registry = createServer((req, res) => {
   catch { res.writeHead(404).end(); }
 });
 await new Promise(r => registry.listen(0, '127.0.0.1', r));
-const base = `http://127.0.0.1:${registry.address().port}/web-design-studio`;
+const base = remoteBase || `http://127.0.0.1:${registry.address().port}/web-design-studio`;
 try {
-  buildRegistry({ base });
+  const expected = buildRegistry({ base });
+  if (remoteBase) {
+    for (const item of expected) {
+      const response = await fetch(`${base}/r/${item.name}.json`);
+      if (!response.ok) throw new Error(`Live registry ${item.name}: HTTP ${response.status}`);
+      const published = await response.json();
+      if (JSON.stringify(published) !== JSON.stringify(item)) throw new Error(`Live registry differs from this checkout: ${item.name}`);
+    }
+    const index = await fetch(`${base}/llms.txt`);
+    if (!index.ok || await index.text() !== readFileSync(join(root, 'llms.txt'), 'utf8')) throw new Error('Live llms.txt is missing or stale');
+  }
   if (!process.argv.includes('--browser-only')) {
     const cli = join(output, 'cli'); mkdirSync(cli, { recursive: true });
     await run('npm', ['install', '--prefix', cli, '--no-audit', '--no-fund', 'shadcn@4.23.0'], root, 'install-cli');

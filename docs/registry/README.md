@@ -19,10 +19,16 @@ npx shadcn@4.23.0 add https://mustbesimo.github.io/web-design-studio/r/scrub-vid
 npx shadcn@4.23.0 add https://mustbesimo.github.io/web-design-studio/r/tilt-card.json
 ```
 
-The URLs become available when the PR is merged and the existing Pages workflow
-deploys successfully. Preview locally with `npm run registry:build`; the consumer
+The public URLs are served by the existing Pages workflow. Preview locally with `npm run registry:build`; the consumer
 harness serves the generated JSON and exercises real URL installs before release.
 No directory listing or registered `@namespace` is implied.
+
+To check the deployed payloads against your checkout and run fresh consumer installs
+through the public URLs:
+
+```sh
+npm run test:registry:consumers -- --registry-base https://mustbesimo.github.io/web-design-studio
+```
 
 Components install under your configured component alias. Tilt card also installs
 the shared cinematic runtime under your lib alias, including TypeScript declarations.
@@ -47,12 +53,23 @@ No component contacts Web Design Studio or sends analytics. Only your media URLs
 are fetched at runtime. External media you supply is allowed. Keep copy and any
 CTA in semantic markup; footage must not be the sole carrier of information.
 
+## Developer trial
+
+Use the [trial instructions and feedback form](trial.md) with the
+[copyable Next demo](demo.tsx). The demo uses the three installed components and
+existing KERN sample media.
+
 ## Verification and limits
 
 `npm run test:registry` checks deterministic payloads and dependency closure.
 `npm run test:registry:consumers` creates fresh Next and Vite projects, runs the
 pinned shadcn CLI against local URLs, typechecks, builds and exercises the browser
-matrix. It requires Chrome and ffmpeg; neither is silently skipped. Generated
+matrix. It requires Chrome and ffmpeg; neither is silently skipped. For an additional
+Playwright WebKit run, install the matching browser with
+`node node_modules/playwright-core/cli.js install webkit`, then use
+`REGISTRY_BROWSER=webkit npm run test:registry:consumers -- --browser-only` after
+the fresh consumer run. This tests the bundled WebKit engine, not an iPhone or
+the installed Safari app. Generated
 projects, media, screenshots and timing reports stay in `.verify/registry/`.
 
 Next verifies readable server markup with JavaScript actually disabled. Vite is
