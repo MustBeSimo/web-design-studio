@@ -8,6 +8,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 /**
+ * Legacy name: this does not pin. New URL installs use entrance-reveal.tsx.
  * PinnedReveal — staggered eyebrow → title → summary reveal as the chapter enters view
  * (the long-take title arrival). Token-driven via className (consumes var(--ease-reveal),
  * var(--bg) … from tokens/build/variables.css); transform/opacity only; reduced-motion safe.
