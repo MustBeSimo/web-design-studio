@@ -1,14 +1,18 @@
 # Splat scene
 
 Use Gaussian splats when the subject is a real, captured place or object and the
-brief supplies a capture or can produce one. A splat scene is photoreal from the
-viewpoints that were captured and falls apart away from them, so the camera path is
-the design. Everything in the [real-time 3D](real-time-3d.md) scene contract applies.
+brief supplies a capture or can produce one. Inspect its attributes first: ordinary
+XYZ/RGB point clouds and mesh PLY files are not Gaussian-splat captures. Keep them
+on a suitable point/mesh renderer unless a conversion is explicitly part of the work.
+A splat scene is photoreal from the viewpoints that were captured and falls apart
+away from them, so the camera path is the design. Everything in the
+[real-time 3D](real-time-3d.md) scene contract applies.
 
 ## Renderer
 
-Spark (`@sparkjsdev/spark`, MIT, maintained by World Labs) renders splats as a
-Three.js object, so the existing renderer, camera and lifecycle stay in charge:
+Spark ([`@sparkjsdev/spark`](https://sparkjs.dev/docs/splat-mesh/), MIT, maintained
+by World Labs) renders splats as a Three.js object, so the existing renderer,
+camera and lifecycle stay in charge:
 
 ```js
 import { SplatMesh } from "@sparkjsdev/spark";
@@ -16,6 +20,10 @@ import { SplatMesh } from "@sparkjsdev/spark";
 const room = new SplatMesh({ url: "/captures/room.spz" });
 scene.add(room);
 ```
+
+This is attachment only: await `room.initialized` inside the scene's error-handled
+loader, and enter `ready` only after a rendered frame. Adding the object does not
+prove the capture loaded; retain the poster on rejection or timeout.
 
 Supported inputs include PLY, compressed PLY, SPZ, SPLAT, KSPLAT and SOG. It targets
 WebGL2 and its documentation pairs it with recent Three.js releases; pin Spark and

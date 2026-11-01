@@ -43,7 +43,7 @@ Keep the host brand, native scrolling, and readable static content.
 | Lottie, Rive, animated mascot or icon set inside a story | Editorial story + designer-authored motion in the [stack shelf](stack-shelf.md) | Pause on a readable frame under reduced motion; poster fallback; no decoration-only loops |
 | Smooth scroll, momentum, Lenis | The one smoothing layer allowed by the [stack shelf](stack-shelf.md) | Native scroll on touch and under reduced motion |
 | Physics, gravity, collisions, bouncing objects | Interaction design + the physics rows of the [stack shelf](stack-shelf.md) | Settled composition without JS or motion; pause off screen |
-| Promo film, launch video, voiceover, captions | Not this skill; the repository documents that lane in `docs/video-pipeline.md` | Website motion only here |
+| Promo film, launch video, voiceover, captions | Not this skill; see the repository's [video pipeline](https://github.com/MustBeSimo/web-design-studio/blob/main/docs/video-pipeline.md), which is not installed with the skill | Website motion only here |
 
 When the brief or the host project names a library, engine, editor or production
 tool, read the [stack shelf](stack-shelf.md) for its job, integration rule, licence
