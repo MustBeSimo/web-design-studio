@@ -161,6 +161,10 @@ evals/ and bench/          triggering checks, workflow evals, passive benchmark
 
 Three/types are pinned to 0.185.0 because the compatible postprocessing release excludes 0.186. Optional runtime code belongs to your output; there is no hosted service dependency or paid visual-effect tier.
 
+## The book
+
+**The Cinematic Web: Scroll-Driven Web Design with Claude Code, Codex and Reusable AI Skills** (Simone Leonelli, 2026) is the long-form version of these skills: twelve chapters on the motion grammar, the visual systems, the 60 fps contract, proving fallbacks, auditing any page and selling the work, each ending with prompts you can paste. [Kindle edition](https://www.amazon.com/dp/B0HPYP923J) · [Free sample chapter: the twelve scroll patterns](./docs/book/sample-chapter.md)
+
 ## Validation
 
 On 12 September 2026, source v2.7.6 passed **6 reference fixtures** and **9 verifier failure-path tests**; FIELD returned clean reports in **5 browser profiles**. [Test scope and reproduction commands](docs/skill-advantage/README.md#verification-actually-run). The 3.0.0 release changes distribution, not the skill's build rules; the public comparisons that shaped those rules keep their builds, costs, screenshots and failures: [first comparison](bench/skill-ab/REVEAL.md) · [second run](bench/skill-ab/run2-hard/RESULTS-RUN2.md) · [latest sealed forward protocol](bench/skill-ab/v4-forward/README.md).
