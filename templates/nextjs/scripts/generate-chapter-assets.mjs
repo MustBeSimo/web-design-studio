@@ -145,22 +145,48 @@ function buildPrompt(vp) {
   ].join(' ');
 }
 
-// ─── load chapters from the TS manifest at runtime via tiny regex ─────────
-// We avoid `ts-node` so the script stays dependency-free. Chapters are
-// exported as a `const editionChapters` array literal — readable by JSON.parse
-// after light cleanup.
+// ─── load chapters from the TS manifest ───────────────────────────────────
+// Transpile `lib/editions-manifest.ts` with the project's own `typescript`
+// dependency and import the result, so comments, template strings and nested
+// objects in the manifest all work. Falls back to Node's native type stripping
+// when `typescript` is not installed.
 
 async function loadChapters() {
-  const { readFile } = await import('node:fs/promises');
-  const src = await readFile(resolve(projectRoot, 'lib/editions-manifest.ts'), 'utf8');
-  const m = src.match(/export const editionChapters[^=]*=\s*(\[[\s\S]*?\n\]);/);
-  if (!m) throw new Error('Could not locate editionChapters in lib/editions-manifest.ts');
-  // Strip TS-only bits: trailing commas, single quotes, keys without quotes.
-  const jsonish = m[1]
-    .replace(/'/g, '"')
-    .replace(/,(\s*[}\]])/g, '$1')
-    .replace(/([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)\s*:/g, '$1"$2":');
-  return JSON.parse(jsonish);
+  const { readFile, writeFile, mkdtemp, rm } = await import('node:fs/promises');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const { pathToFileURL } = await import('node:url');
+  const manifestPath = resolve(projectRoot, 'lib/editions-manifest.ts');
+  const src = await readFile(manifestPath, 'utf8');
+  const dir = await mkdtemp(join(tmpdir(), 'editions-manifest-'));
+  const out = join(dir, 'editions-manifest.mjs');
+  try {
+    let js;
+    try {
+      const ts = (await import('typescript')).default;
+      js = ts.transpileModule(src, {
+        compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+      }).outputText;
+    } catch {
+      // No `typescript` available: strip the type-only import and rely on
+      // `node --experimental-strip-types` (Node 22.6+) via a re-exec.
+      js = null;
+    }
+    if (js === null) {
+      const { execFileSync } = await import('node:child_process');
+      const json = execFileSync(process.execPath, [
+        '--experimental-strip-types', '--no-warnings', '--input-type=module', '-e',
+        `import { editionChapters } from ${JSON.stringify(pathToFileURL(manifestPath).href)}; console.log(JSON.stringify(editionChapters));`,
+      ], { encoding: 'utf8' });
+      return JSON.parse(json);
+    }
+    await writeFile(out, js.replace(/^import type [^;]+;$/m, ''));
+    const mod = await import(pathToFileURL(out).href);
+    if (!Array.isArray(mod.editionChapters)) throw new Error('editionChapters is not an array in lib/editions-manifest.ts');
+    return mod.editionChapters;
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
 }
 
 // ─── main ─────────────────────────────────────────────────────────────────
