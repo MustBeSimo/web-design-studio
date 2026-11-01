@@ -160,7 +160,7 @@ Three/types are pinned to 0.185.0 because the compatible postprocessing release 
 
 ## The book
 
-**The Cinematic Web: Scroll-Driven Web Design with Claude Code, Codex and Reusable AI Skills** (Simone Leonelli, 2026) is the long-form version of these skills: twelve chapters on the motion grammar, the visual systems, the 60 fps contract, proving fallbacks, auditing any page and selling the work, each ending with prompts you can paste. [Kindle edition](https://www.amazon.com/dp/B0HPYP923J) · [Free sample chapter: the twelve scroll patterns](./docs/book/sample-chapter.md)
+**The Cinematic Web: Scroll-Driven Web Design with Claude Code, Codex and Reusable AI Skills** (Simone Leonelli, 2026) is the long-form version of these skills: twelve chapters on the motion grammar, the visual systems, the 60 fps contract, proving fallbacks, auditing any page and selling the work, each ending with prompts you can paste. [Kindle edition](https://www.amazon.com/dp/B0HPYP923J) · [Companion repo with a free sample chapter](https://github.com/MustBeSimo/the-cinematic-web)
 
 ## Validation
 
