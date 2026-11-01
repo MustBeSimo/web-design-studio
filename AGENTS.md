@@ -51,6 +51,14 @@ Toolkit references for maintainers and full-repository clones live in
 [`taste-guardrails.md`](./taste-guardrails.md). They are not part of any
 installed skill; do not link to them from inside `skills/`.
 
+Third-party stack integration lives inside the skill so installed copies carry it:
+`skills/cinematic-scroll/references/stack-shelf.md` (libraries, engines, editors,
+licences, status and fallbacks), `skills/cinematic-scroll/references/bake-pipeline.md`
+(offline simulation and frame sequences to scrubbed media) and
+`skills/cinematic-scroll/references/splat-scene.md` (Gaussian splats with Spark).
+Films about the work follow `docs/video-pipeline.md`; that production lane never
+enters the skill, and the skill never bundles or installs any library it describes.
+
 ## Media rule
 
 No tracked file may exceed 5 MB (`node tools/check-media-size.mjs`, allowlist in

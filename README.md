@@ -38,6 +38,8 @@ Then ask:
 
 More prompts: [`examples/PROMPTS.md`](./examples/PROMPTS.md). Other agents and routes: [INTEGRATIONS.md](./INTEGRATIONS.md).
 
+**Works with your stack.** The skill builds on whatever the project already uses, from GSAP, Motion, Anime.js and Lenis to Three.js, Spark splats, Rive and Lottie, and records each tool's licence, status and fallback in the [stack shelf](./skills/cinematic-scroll/references/stack-shelf.md). Offline simulations and renders reach a page through the [bake pipeline](./skills/cinematic-scroll/references/bake-pipeline.md); films about the work follow the [video pipeline](./docs/video-pipeline.md).
+
 ## See it
 
 Everything below was built with the skill and is served from this repository.

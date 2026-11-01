@@ -21,6 +21,9 @@ camera structure; derive shape, palette, surfaces, and composition from the brie
 - **A process:** connect a parameter such as density to both the simulation and its
   visible consequence. A changing label alone is not a working interaction.
 
+A captured place or object delivered as Gaussian splats follows the
+[splat scene](splat-scene.md) reference on top of this contract.
+
 Choose the mechanism before adapting an example's styling. A museum route need
 not inherit brass walls; a product study need not become a floating chrome orb.
 

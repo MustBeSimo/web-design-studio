@@ -1,6 +1,6 @@
 ---
 name: cinematic-scroll
-description: Design and build cinematic websites, interactive portfolios, product stories, and real-time 3D experiences with subject-specific art direction and scroll choreography. Use for new builds, redesigns, motion improvements, scroll audits, or storyboards in standalone HTML and existing apps, including entrance reveals, pinned chapters, scroll-scrubbed video, tilt cards, magnetic controls, and kinetic text in story pages; includes responsive, reduced-motion, and static fallbacks. Not for ordinary dashboards or unrelated animation.
+description: Design and build cinematic websites, interactive portfolios, product stories, and real-time 3D experiences with subject-specific art direction and scroll choreography. Use for new builds, redesigns, motion improvements, scroll audits, or storyboards in standalone HTML and existing apps, including entrance reveals, pinned chapters, scroll-scrubbed video, tilt cards, magnetic controls, kinetic text, Gaussian-splat scenes, and baked simulation or frame sequences in story pages, built on the host's own stack (GSAP, Motion, Anime.js, Lenis, Three.js, Rive, Lottie, physics engines); includes responsive, reduced-motion, and static fallbacks. Not for ordinary dashboards, video production, or unrelated animation.
 ---
 
 # cinematic-scroll (pointer)

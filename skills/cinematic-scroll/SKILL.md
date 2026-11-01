@@ -1,6 +1,6 @@
 ---
 name: cinematic-scroll
-description: Design and build cinematic websites, interactive portfolios, product stories, and real-time 3D experiences with subject-specific art direction and scroll choreography. Use for new builds, redesigns, motion improvements, scroll audits, or storyboards in standalone HTML and existing apps, including entrance reveals, pinned chapters, scroll-scrubbed video, tilt cards, magnetic controls, and kinetic text in story pages; includes responsive, reduced-motion, and static fallbacks. Not for ordinary dashboards or unrelated animation.
+description: Design and build cinematic websites, interactive portfolios, product stories, and real-time 3D experiences with subject-specific art direction and scroll choreography. Use for new builds, redesigns, motion improvements, scroll audits, or storyboards in standalone HTML and existing apps, including entrance reveals, pinned chapters, scroll-scrubbed video, tilt cards, magnetic controls, kinetic text, Gaussian-splat scenes, and baked simulation or frame sequences in story pages, built on the host's own stack (GSAP, Motion, Anime.js, Lenis, Three.js, Rive, Lottie, physics engines); includes responsive, reduced-motion, and static fallbacks. Not for ordinary dashboards, video production, or unrelated animation.
 metadata:
   version: 3.0.1
   openclaw:
@@ -29,6 +29,11 @@ Otherwise, read the [recipe catalog](references/recipe-catalog.md), then read **
   comparison, or object-focused story.
 - [Real-time 3D](references/real-time-3d.md) for a GLB, procedural object,
   orbit, or camera flight.
+
+When the brief or the host project names a library, engine, editor or production
+tool, check the [stack shelf](references/stack-shelf.md) before adding a
+dependency. Captured splat scenes and baked simulation or frame sequences have
+their own references, reached from the catalog.
 
 Companion skills: launch-page-strategy decides what the page must say and prove
 before motion; scroll-audit scores an existing page.
