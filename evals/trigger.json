@@ -329,6 +329,86 @@
       "skill": "cinematic-scroll",
       "query": "Fix the horizontal scrollbar on our data table",
       "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Add a Gaussian splat scan of our showroom that the visitor moves through as they scroll",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Turn the frames from our Taichi fluid simulation into a scroll-scrubbed hero on the landing page",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Our mascot is a Rive file; make it react as the product story scrolls",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "We use Anime.js, not GSAP. Build the pinned chapter sequence with it",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Add Lenis smooth scrolling to the editorial longread without breaking the pinned sections",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Drop physics tiles into the hero that fall and settle into the headline",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Use the Blender camera flythrough render as a scrubbed sequence on the about page",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Show a photoreal point-cloud capture of the venue as the hero, with stable views on mobile",
+      "should_trigger": true
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Render our launch video from React components with Remotion",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Cut the silences out of the webinar recording",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Generate a voiceover for the promo film",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Set up OBS to capture the demo at 60 fps",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Write a Taichi fluid simulation script and export the particle data",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Add subtitles to the YouTube version of our launch film",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Build a D3 dashboard with filterable bar charts",
+      "should_trigger": false
+    },
+    {
+      "skill": "cinematic-scroll",
+      "query": "Export this Lottie animation for the mobile app's loading screen",
+      "should_trigger": false
     }
   ]
 }

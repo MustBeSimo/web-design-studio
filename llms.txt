@@ -6,6 +6,9 @@
 
 - [Build contract](https://mustbesimo.github.io/web-design-studio/skills/cinematic-scroll/SKILL.md): Read before building; the host brand and stack take precedence.
 - [Recipe and mechanism catalog](https://mustbesimo.github.io/web-design-studio/skills/cinematic-scroll/references/recipe-catalog.md): Entrance reveal, pinned chapters, scrub video, tilt cards, magnetic controls, split text and frame sequences.
+- [Stack shelf](https://mustbesimo.github.io/web-design-studio/skills/cinematic-scroll/references/stack-shelf.md): How GSAP, Motion, Anime.js, Lenis, Three.js, Spark, Rive, Lottie, Rapier and the production tools fit the recipes, with licences, status and fallbacks.
+- [Bake pipeline](https://mustbesimo.github.io/web-design-studio/skills/cinematic-scroll/references/bake-pipeline.md): Offline simulations, renders and hand-drawn frames to scrubbed sequences with FFmpeg and RIFE.
+- [Splat scene](https://mustbesimo.github.io/web-design-studio/skills/cinematic-scroll/references/splat-scene.md): Gaussian-splat captures as scroll-driven places with Spark inside the real-time 3D contract.
 - [Scroll audit](https://mustbesimo.github.io/web-design-studio/skills/scroll-audit/SKILL.md): Diagnose an existing page and prioritize repairs.
 - [Launch-page strategy](https://mustbesimo.github.io/web-design-studio/skills/launch-page-strategy/SKILL.md): Audience, promise, evidence and next action.
 
@@ -20,3 +23,4 @@
 
 - [Project quickstart](https://mustbesimo.github.io/web-design-studio/README.md): Skill installation and repository toolkit.
 - [Verification contract](https://mustbesimo.github.io/web-design-studio/skills/cinematic-scroll/references/verification.md): Browser, reduced motion, keyboard, no-JS and resource ownership checks.
+- [Video and promo pipeline](https://mustbesimo.github.io/web-design-studio/docs/video-pipeline.md): Films about the work with OBS, Remotion, Qwen3-TTS, Auto-Editor, Audacity, Subtitle Edit, RIFE and FFmpeg, with licence notes.

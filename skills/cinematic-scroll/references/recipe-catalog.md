@@ -38,6 +38,19 @@ Keep the host brand, native scrolling, and readable static content.
 | Split text, word cascade, kinetic heading | Editorial story + text choreography | Preserve heading semantics; don't split controls; readable reduced-motion text |
 | Image sequence, frame-by-frame product turn | Product reveal + local frames | Budget decoding and memory; poster if assets fail |
 | Horizontal collection, sideways gallery | Editorial story + bounded collection movement | Native vertical reading flow and reachable links on mobile |
+| Gaussian splat, 3D scan, point cloud, photoreal room or captured object | Real-time 3D + [splat scene](splat-scene.md) | Camera stops inside the capture; poster from the capture; stable views on touch and under reduced motion |
+| Fluid, smoke, cloth or particle simulation, hand-drawn frames, rendered sequence | Product reveal + [bake pipeline](bake-pipeline.md) | Offline tools produce frames; the page scrubs or plays them; poster without JS |
+| Lottie, Rive, animated mascot or icon set inside a story | Editorial story + designer-authored motion in the [stack shelf](stack-shelf.md) | Pause on a readable frame under reduced motion; poster fallback; no decoration-only loops |
+| Smooth scroll, momentum, Lenis | The one smoothing layer allowed by the [stack shelf](stack-shelf.md) | Native scroll on touch and under reduced motion |
+| Physics, gravity, collisions, bouncing objects | Interaction design + the physics rows of the [stack shelf](stack-shelf.md) | Settled composition without JS or motion; pause off screen |
+| Promo film, launch video, voiceover, captions | Not this skill; the repository documents that lane in `docs/video-pipeline.md` | Website motion only here |
+
+When the brief or the host project names a library, engine, editor or production
+tool, read the [stack shelf](stack-shelf.md) for its job, integration rule, licence
+and fallback before adding a dependency. The shelf covers GSAP, Motion, Anime.js,
+Lenis, Theatre.js, Two.js, D3, Rive, Lottie, mo.js, Three.js, React Three Fiber,
+Babylon.js, Spark, Custom Shader Material, lygia, WebGPU, cables.gl, Rapier,
+Matter.js and the offline and production tools whose output reaches a page.
 
 The optional repository registry offers React implementations of **entrance
 reveal**, **scrub video**, and **tilt card**. Those names describe their actual

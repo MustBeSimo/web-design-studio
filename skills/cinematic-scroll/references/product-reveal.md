@@ -30,7 +30,8 @@ variables to multiple observers or experimental scroll timelines.
 For video, provide a poster and dimensions. Confirm metadata loads, duration is
 finite, seeking changes the visible frame, and decode failure reveals the poster.
 A dense-keyframe local encode usually seeks better. Provider generation is optional
-and outside this basic recipe.
+and outside this basic recipe. Frames produced offline by a simulator, renderer or
+hand-drawn tool arrive through the [bake pipeline](bake-pipeline.md).
 
 Support the reveal only with evidence the brief supplies: detail, specification,
 process, provenance, comparison, or use context. Keep the action available without
