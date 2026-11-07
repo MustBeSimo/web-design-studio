@@ -1,5 +1,9 @@
 # Web Design Studio 3.0.0 launch kit
 
+For current LinkedIn/X copy paired with the 36-second Simone film, use the
+[November promo pack](../2026-11-promo/README.md). The release notes and
+measurements below describe the October launch.
+
 Use this sequence after the release changes pass validation. These files are drafts
 for the owner to publish, not records of completed posts. Keep the measured evidence
 and its limits in the copy. No publication or account login is performed by this kit.
